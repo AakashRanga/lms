@@ -3,7 +3,7 @@
     <!-- Sidebar Header -->
     <div class="d-flex align-items-center mb-4">
         <img src="../images/logo1.png" alt="College Logo" class="me-2" style="width:40px; height:40px;">
-        <h4 class="mb-0">Admin Panel</h4>
+        <h4 class="mb-0">Student Panel</h4>
     </div>
 
     <!-- Sidebar Links -->
@@ -26,7 +26,7 @@
     <div class="offcanvas-header">
         <h5 class="offcanvas-title d-flex align-items-center" id="sidebarOffcanvasLabel">
             <img src="../images/logo1.png" alt="College Logo" class="me-2" style="width:35px; height:35px;">
-            <span>Admin Panel</span>
+            <span>Student Panel</span>
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>

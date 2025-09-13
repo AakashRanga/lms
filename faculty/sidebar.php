@@ -3,7 +3,7 @@
     <!-- Sidebar Header -->
     <div class="d-flex align-items-center mb-4">
         <img src="../images/logo1.png" alt="College Logo" class="me-2" style="width:40px; height:40px;">
-        <h4 class="mb-0">Admin Panel</h4>
+        <h4 class="mb-0">Faculty Panel</h4>
     </div>
 
     <!-- Sidebar Links -->
