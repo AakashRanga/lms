@@ -227,7 +227,7 @@
                   <hr>
                   <h5>Practice Questions</h5>
                   <div class="questions-container"></div>
-                  <button type="button" class="btn btn-secondary btn-sm mt-2 addQuestionBtn">Add Question</button>
+                  <button type="button" class="btn btn-secondary btn-sm mt-2 addQuestionBtn">Add Practice Question</button>
               </div>
           </div>
         `;
