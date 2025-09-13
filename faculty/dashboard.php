@@ -170,7 +170,7 @@
                                 </div>
 
                                 <!-- Assignment Approval -->
-                                <div class="col">
+                                <!-- <div class="col">
                                     <a href="assignment-approval.php" class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <i class="bi bi-check-circle feature-icon"></i>
@@ -179,10 +179,10 @@
                                             </p>
                                         </div>
                                     </a>
-                                </div>
+                                </div> -->
 
                                 <!-- Course Analytics -->
-                                <div class="col">
+                                <!-- <div class="col">
                                     <a href="course-analytics.php" class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <i class="bi bi-bar-chart-line feature-icon"></i>
@@ -191,7 +191,7 @@
                                             </p>
                                         </div>
                                     </a>
-                                </div>
+                                </div> -->
 
                             </div>
 

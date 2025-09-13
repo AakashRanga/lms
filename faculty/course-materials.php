@@ -28,26 +28,6 @@
             font-size: 0.9rem;
             border-radius: 0;
         }
-
-        .btn-submit {
-            background-color: #45B6AF;
-            color: #fff;
-            border: none;
-        }
-
-        .btn-submit:hover {
-            background-color: #3ca19a;
-        }
-
-        .btn-clear {
-            background-color: #9FA6B2;
-            color: #fff;
-            border: none;
-        }
-
-        .btn-clear:hover {
-            background-color: #8c929e;
-        }
     </style>
 </head>
 
@@ -65,15 +45,18 @@
                 <!-- Page Content -->
                 <div class="p-4 content-scroll">
                     <div class="card-custom mt-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="d-flex align-items-center justify-content-between">
                             <h5>Upload Course Material</h5>
-                            <button type="button" class="btn btn-secondary btn-sm" id="addModuleBtn">
-                                ➕ Add Another Module
-                            </button>
+
+                            <div class="d-flex align-items-center justify-content-between mb-4 gap-2">
+                                <button type="button" class="btn btn-secondary btn-sm" id="addModuleBtn">
+                                    Add Another Module
+                                </button>
+
+                            </div>
                         </div>
+
                         <form action="upload-material.php" method="POST" enctype="multipart/form-data" class="row g-3">
-
-
                             <!-- Course Name -->
                             <div class="col-md-6">
                                 <div class="form-floating">
@@ -91,12 +74,12 @@
                                     <label for="unit">Module / Unit</label>
                                 </div>
                             </div>
+
                             <!-- Dynamic Modules Container -->
                             <div id="modulesContainer" class="col-12">
                                 <!-- First Module Block -->
                                 <div class="module-block border rounded p-3 mb-3">
                                     <div class="row g-3">
-
                                         <div class="col-md-6">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control" name="chapter_number[]"
@@ -114,25 +97,32 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label">Reading Material (PDF)</label>
+                                            <label class="form-label">Course Material (Only PDF)</label>
                                             <input type="file" class="form-control" name="reading_material[]"
                                                 accept=".pdf">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label">Video Material</label>
+                                            <label class="form-label">Flipped Class</label>
                                             <input type="file" class="form-control" name="video_material[]"
                                                 accept="video/*">
+                                        </div>
+
+                                        <div class="col-12">
+                                            <hr>
+                                            <h5>Practice Questions</h5>
+                                            <div class="questions-container"></div>
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm mt-2 addQuestionBtn">Add Practice
+                                                Question</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-
-
                             <!-- Submit -->
                             <div class="col-12 text-center mt-3 d-flex justify-content-center gap-2">
-                                <button type="submit" class="btn btn-submit btn-small">Submit Modules</button>
+                                <button type="submit" class="btn btn-secondary btn-small">Submit Modules</button>
                             </div>
                         </form>
                     </div>
@@ -145,57 +135,114 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- External JS -->
+    <!-- JS Script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const modulesContainer = document.getElementById('modulesContainer');
             const addModuleBtn = document.getElementById('addModuleBtn');
 
+            // Function to attach question logic inside a module block
+            function attachQuestionLogic(moduleBlock) {
+                const questionsContainer = moduleBlock.querySelector('.questions-container');
+                const addQuestionBtn = moduleBlock.querySelector('.addQuestionBtn');
+
+                addQuestionBtn.addEventListener('click', () => {
+                    const questionBlock = document.createElement('div');
+                    questionBlock.classList.add('border', 'p-3', 'mt-3', 'rounded');
+                    questionBlock.innerHTML = `
+                    <div class="text-end mb-2">
+                  <button type="button" class="btn btn-danger btn-sm removeQuestionBtn">Remove </button>
+              </div>
+              <div class="mb-2">
+                  <input type="text" class="form-control" name="question_text[]" placeholder="Enter Question" required>
+              </div>
+              <div class="row g-2">
+                  <div class="col-md-6">
+                      <input type="text" class="form-control" name="option_a[]" placeholder="Option A" required>
+                  </div>
+                  <div class="col-md-6">
+                      <input type="text" class="form-control" name="option_b[]" placeholder="Option B" required>
+                  </div>
+                  <div class="col-md-6">
+                      <input type="text" class="form-control" name="option_c[]" placeholder="Option C" required>
+                  </div>
+                  <div class="col-md-6">
+                      <input type="text" class="form-control" name="option_d[]" placeholder="Option D" required>
+                  </div>
+              </div>
+              <div class="mt-2">
+                  <select class="form-select" name="correct_answer[]" required>
+                      <option value="" disabled selected>Select Correct Answer</option>
+                      <option value="A">Option A</option>
+                      <option value="B">Option B</option>
+                      <option value="C">Option C</option>
+                      <option value="D">Option D</option>
+                  </select>
+              </div>
+              
+          `;
+
+                    questionsContainer.appendChild(questionBlock);
+
+                    questionBlock.querySelector('.removeQuestionBtn').addEventListener('click', () => {
+                        questionBlock.remove();
+                    });
+                });
+            }
+
+            // Attach to the first module on page load
+            document.querySelectorAll('.module-block').forEach(attachQuestionLogic);
+
+            // Add new module block
             addModuleBtn.addEventListener('click', () => {
                 const moduleBlock = document.createElement('div');
                 moduleBlock.classList.add('module-block', 'border', 'rounded', 'p-3', 'mb-3');
+
                 moduleBlock.innerHTML = `
-            <div class="row g-3">
-            <div class="col-12 text-end">
-                    <button type="button" class="btn btn-danger btn-sm removeModuleBtn">Remove</button>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="chapter_number[]" placeholder="Chapter Number" required>
-                        <label>Chapter Number</label>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="chapter_title[]" placeholder="Chapter Title" required>
-                        <label>Chapter Title</label>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Reading Material (PDF)</label>
-                    <input type="file" class="form-control" name="reading_material[]" accept=".pdf">
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Video Material</label>
-                    <input type="file" class="form-control" name="video_material[]" accept="video/*">
-                </div>
-
-                
-            </div>
+          <div class="row g-3">
+              <div class="col-12 text-end">
+                  <button type="button" class="btn btn-danger btn-sm removeModuleBtn">Remove</button>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-floating">
+                      <input type="text" class="form-control" name="chapter_number[]" placeholder="Chapter Number" required>
+                      <label>Chapter Number</label>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-floating">
+                      <input type="text" class="form-control" name="chapter_title[]" placeholder="Chapter Title" required>
+                      <label>Chapter Title</label>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <label class="form-label">Reading Material (PDF)</label>
+                  <input type="file" class="form-control" name="reading_material[]" accept=".pdf">
+              </div>
+              <div class="col-md-6">
+                  <label class="form-label">Video Material</label>
+                  <input type="file" class="form-control" name="video_material[]" accept="video/*">
+              </div>
+              <div class="col-12">
+                  <hr>
+                  <h5>Practice Questions</h5>
+                  <div class="questions-container"></div>
+                  <button type="button" class="btn btn-secondary btn-sm mt-2 addQuestionBtn">Add Question</button>
+              </div>
+          </div>
         `;
 
                 modulesContainer.appendChild(moduleBlock);
 
-                // Handle remove
+                // remove button
                 moduleBlock.querySelector('.removeModuleBtn').addEventListener('click', () => {
                     moduleBlock.remove();
                 });
+
+                // attach logic to new module
+                attachQuestionLogic(moduleBlock);
             });
         });
-
     </script>
 </body>
 
