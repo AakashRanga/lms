@@ -2,8 +2,8 @@
 // Database configuration
 $host = "localhost";     // Database host (use your DB host)
 $username = "root";          // Database username
-$password = "";               // Database password
-$database = "arms2_0";    // Database name
+$password = "12345";               // Database password
+$database = "lms";    // Database name
 
 // Create connection
 $conn = new mysqli($host, $username, $password, $database);

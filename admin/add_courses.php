@@ -95,6 +95,40 @@
                             </div>
                         </form>
                     </div>
+                    <div class="card-custom shadow mt-4 p-4">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="mb-4">All Courses</h5>
+
+                            <!-- 🔍 Search Box -->
+                            <div class="mb-3">
+                                <input type="text" id="courseSearch" class="form-control"
+                                    placeholder="Search courses...">
+                            </div>
+
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-middle" id="coursesTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>S No</th>
+                                        <th>Course Name</th>
+                                        <th>Code</th>
+                                        <th>Seat Allotment</th>
+                                        <th>Duration</th>
+                                        <!-- <th>Department</th>
+                                        <th>Branch</th> -->
+                                        <th>Type</th>
+                                        <th>Faculty Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="coursesTableBody">
+                                    <!-- Courses will be loaded here -->
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
 
 
 
@@ -107,10 +141,132 @@
         </div>
     </div>
 
+    <div class="modal fade" id="editcourse" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:100%;max-width: 730px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Update Course</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <form id="addCourseForm">
+                        <div class="row g-3">
+                            <!-- Course Name -->
+                            <div class="col-lg-12">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="courseName" name="courseName"
+                                        placeholder="Course Name" required>
+                                    <label for="courseName">Course Name</label>
+                                </div>
+                            </div>
+
+                            <!-- Course Code -->
+                            <div class="col-lg-12">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="courseCode" name="courseCode"
+                                        placeholder="Course Code" required>
+                                    <label for="courseCode">Course Code</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        // Search in table
+        $('#courseSearch').on('keyup', function() {
+            let searchValue = $(this).val().toLowerCase();
+            $('#coursesTable tbody tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
+            });
+        });
+
+        // Add course via AJAX
+        $('#addCourseForm').on('submit', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '../api/add_course.php',
+                type: 'POST',
+                data: new FormData(this),
+                contentType: false, // required for FormData
+                processData: false, // required for FormData
+                dataType: 'json', // <-- let jQuery parse JSON automatically
+                success: function(data) {
+                    if (data.status == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: data.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                        $('#addCourseForm')[0].reset();
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Warning',
+                            text: data.message
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong: ' + error
+                    });
+                }
+            });
+        });
+
+        function loadCourses() {
+            $.ajax({
+                url: '../api/get_courses.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(courses) {
+                    let tbody = '';
+                    courses.forEach((course, index) => {
+                        tbody += `<tr>
+                    <td>${index + 1}</td>
+                    <td>${course.course_name}</td>
+                    <td>${course.course_code}</td>
+                    <td>${course.seat_allotment}</td>
+                    <td>${course.duration}</td>
+                    <td>${course.course_type}</td>
+                    <td>${course.faculty_name}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editcourse"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>`;
+                    });
+                    $('#coursesTableBody').html(tbody);
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error fetching courses:', error);
+                }
+            });
+        }
+
+        // Load courses on page load
+        $(document).ready(function() {
+            loadCourses();
+        });
+    </script>
 
 
 

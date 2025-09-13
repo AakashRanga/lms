@@ -10,7 +10,7 @@
     <a href="dashboard.php" class="d-block mb-2">
         <i class="bi bi-house-door me-2"></i> Home
     </a>
-    <a href="course-admin.php" class="d-block mb-2">
+    <a href="add_courses.php" class="d-block mb-2">
         <i class="bi bi-book me-2"></i> Courses
     </a>
     <a href="analytics.php" class="d-block mb-2">
