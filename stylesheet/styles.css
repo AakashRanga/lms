@@ -1,0 +1,76 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.sidebar {
+    min-height: 100vh;
+    background-color: #ffffff;
+    border-right: 1px solid #dee2e6;
+    padding: 20px;
+}
+
+.sidebar a {
+    color: #000;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.sidebar a.active,
+.sidebar a:hover {
+    background-color: #e9ecef;
+    color: #212529;
+}
+
+.card-custom {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Topbar */
+.topbar {
+    background-color: #ffffff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.topbar .brand {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #212529;
+}
+
+.topbar .nav-links a {
+    color: #495057;
+    margin-left: 15px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.topbar .nav-links a:hover {
+    color: #000;
+}
+
+.dropdown-toggle {
+    white-space: normal;
+    text-wrap: auto !important;
+}
+
+.content-scroll {
+    height: calc(100vh - 60px);
+    /* adjust 80px if your topbar height is different */
+    overflow-y: auto;
+    padding-right: 10px;
+    /* optional: spacing for scrollbar */
+}
