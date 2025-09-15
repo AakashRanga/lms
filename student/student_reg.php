@@ -109,6 +109,19 @@
                 <div class="p-4 content-scroll">
                     <div class="card-custom mt-4 p-4">
                         <h5 class="mb-4">Courses Details</h5>
+                        <!-- Slot Dropdown -->
+                        <div class="col-lg-12 col-md-6 mt-3 mb-5">
+                            <div class="d-flex justify-content-center">
+                                <div class="form-floating" style="width: 40%;">
+                                    <select class="form-select" id="course_slot" name="course_slot" required>
+                                        <option value="" selected disabled>Select Slot</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                    </select>
+                                    <label for="course_slot">Course Slot</label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3 course-container">
                             <!-- Course 1 -->
                             <div class="col">
@@ -118,109 +131,14 @@
                                         <span class="course-label">ACA0401 - Tractor and Automotive Engines for
                                             Sustainable Mobility - Dhatchayani</span>
                                         <span class="count-badge">40</span>
-
-                                    </label>
-
-                                </div>
-                            </div>
-
-                            <!-- Course 2 -->
-                            <div class="col">
-                                <div class="h-100">
-                                    <label class="course-item" for="course2">
-                                        <input type="radio" name="course" id="course2" class="course-radio" />
-                                        <span class="course-label">EEA0901 - Power System II for Hybrid EV -
-                                            Meenakshi</span>
-                                        <span class="count-badge">39</span>
-
-                                    </label>
-
-                                </div>
-                            </div>
-
-                            <!-- Course 3 -->
-                            <div class="col">
-                                <div class="h-100">
-                                    <label class="course-item" for="course3">
-                                        <input type="radio" name="course" id="course3" class="course-radio" />
-                                        <span class="course-label">CTA0201 - Wireless and Mobile Communication for Smart
-                                            Connectivity - Aakash</span>
-                                        <span class="count-badge">0</span>
-
-                                    </label>
-
-                                </div>
-                            </div>
-
-                            <!-- Course 4 -->
-                            <div class="col">
-                                <div class="h-100">
-                                    <label class="course-item" for="course4">
-                                        <input type="radio" name="course" id="course4" class="course-radio" />
-                                        <span class="course-label">UCM0201 - Mathematical Foundations of Computer
-                                            Science - Dr. G. MICHAEL</span>
-                                        <span class="count-badge">4</span>
-
-                                    </label>
-
-                                </div>
-                            </div>
-
-                            <!-- Course 5 -->
-                            <div class="col">
-                                <div class="h-100">
-                                    <label class="course-item" for="course1">
-                                        <input type="radio" name="course" id="course1" class="course-radio" />
-                                        <span class="course-label">ACA0401 - Tractor and Automotive Engines for
-                                            Sustainable Mobility - Dhatchayani</span>
-                                        <span class="count-badge">40</span>
-
-                                    </label>
-
-                                </div>
-                            </div>
-
-                            <!-- Course 6 -->
-                            <div class="col">
-                                <div class="h-100">
-                                    <label class="course-item" for="course1">
-                                        <input type="radio" name="course" id="course1" class="course-radio" />
-                                        <span class="course-label">ACA0401 - Tractor and Automotive Engines for
-                                            Sustainable Mobility - Dhatchayani</span>
-                                        <span class="count-badge">40</span>
                                     </label>
                                 </div>
                             </div>
-
-                            <!-- Course 7 -->
-                            <div class="col">
-                                <div class="h-100">
-                                    <label class="course-item" for="course1">
-                                        <input type="radio" name="course" id="course1" class="course-radio" />
-                                        <span class="course-label">ACA0401 - Tractor and Automotive Engines for
-                                            Sustainable Mobility - Dhatchayani</span>
-                                        <span class="count-badge">40</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Course 8 -->
-                            <div class="col">
-                                <div class="h-100">
-                                    <label class="course-item" for="course1">
-                                        <input type="radio" name="course" id="course1" class="course-radio" />
-                                        <span class="course-label">ACA0401 -Professional Certification for Database SQL
-                                            Specialist Expert - Dhatchayani</span>
-                                        <span class="count-badge">40</span>
-                                    </label>
-                                </div>
-                            </div>
-
                         </div>
+
                         <div class="mt-4 text-center">
                             <button id="sendApprovalBtn" class="btn btn-secondary">Send Approval</button>
                         </div>
-
 
                     </div>
                 </div>

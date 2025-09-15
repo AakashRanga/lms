@@ -43,7 +43,7 @@ if (!empty($missing)) {
 }
 
 // Insert into database
-$stmt = $conn->prepare("INSERT INTO courses 
+$stmt = $conn->prepare("INSERT INTO course
     (course_name, course_code, created_at)
     VALUES (?, ?, NOW())");
 

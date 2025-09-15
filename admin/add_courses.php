@@ -68,6 +68,15 @@
                         <h5 class="mb-4">Add New Course</h5>
                         <form id="addCourseForm">
                             <div class="row g-3">
+                                <!-- Course Code -->
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="courseCode" name="courseCode"
+                                            placeholder="Course Code" required>
+                                        <label for="courseCode">Course Code</label>
+                                    </div>
+                                </div>
+                                
                                 <!-- Course Name -->
                                 <div class="col-md-6">
                                     <div class="form-floating">
@@ -77,14 +86,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Course Code -->
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="courseCode" name="courseCode"
-                                            placeholder="Course Code" required>
-                                        <label for="courseCode">Course Code</label>
-                                    </div>
-                                </div>
+                                
 
 
                             </div>
@@ -111,14 +113,10 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>S No</th>
+                                        <th>Course Code</th>
                                         <th>Course Name</th>
-                                        <th>Code</th>
-                                        <th>Seat Allotment</th>
-                                        <th>Duration</th>
-                                        <!-- <th>Department</th>
-                                        <th>Branch</th> -->
-                                        <th>Type</th>
-                                        <th>Faculty Name</th>
+                                        <th>Status</th>
+                                        <th>Created At</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -143,12 +141,12 @@
                 </div>
                 <div class="modal-body">
 
-                    <form id="addCourseForm">
+                    <form id="editCourseForm">
                         <div class="row g-3">
                             <!-- Course Name -->
                             <div class="col-lg-12">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="courseName" name="courseName"
+                                    <input type="text" class="form-control" id="course_Name" name="courseName"
                                         placeholder="Course Name" required>
                                     <label for="courseName">Course Name</label>
                                 </div>
@@ -157,9 +155,19 @@
                             <!-- Course Code -->
                             <div class="col-lg-12">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="courseCode" name="courseCode"
+                                    <input type="text" class="form-control" id="course_Code" name="courseCode"
                                         placeholder="Course Code" required>
                                     <label for="courseCode">Course Code</label>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-floating">
+                                    <select name="status" id="status_" class="form-control" required>
+                                        <option value="" disabled>Select Status</option>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -168,7 +176,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" id="saveChangesBtn" class="btn btn-primary">Update</button>
                 </div>
             </div>
         </div>
@@ -191,7 +199,7 @@
             e.preventDefault();
 
             $.ajax({
-                url: '../api/add_course.php',
+                url: 'api/add_course.php',
                 type: 'POST',
                 data: new FormData(this),
                 contentType: false, // required for FormData
@@ -207,6 +215,7 @@
                             timer: 2000
                         });
                         $('#addCourseForm')[0].reset();
+                        loadCourses();
                     } else {
                         Swal.fire({
                             icon: 'warning',
@@ -227,7 +236,7 @@
 
         function loadCourses() {
             $.ajax({
-                url: 'api/add_course.php',
+                url: 'api/fetch_course.php',
                 type: 'GET',
                 dataType: 'json',
                 success: function(courses) {
@@ -235,13 +244,21 @@
                     courses.forEach((course, index) => {
                         tbody += `<tr>
                     <td>${index + 1}</td>
-                    <td>${course.course_name}</td>
                     <td>${course.course_code}</td>
-                    <td>${course.seat_allotment}</td>
-                    <td>${course.duration}</td>
+                    <td>${course.course_name}</td>
+                    <td>${course.status}</td>
+                    <td>${course.created_at}</td>
                    
                     <td>
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editcourse"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-primary edit-btn"
+                            data-id="${course.c_id}"
+                            data-name="${course.course_name}"
+                            data-code="${course.course_code}"
+                            data-status="${course.status}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editcourse">
+                            <i class="bi bi-pencil"></i>
+                        </button>
                         <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
                     </td>
                 </tr>`;
@@ -253,6 +270,48 @@
                 }
             });
         }
+
+        $(document).on('click', '.edit-btn', function() {
+            let courseId = $(this).data('id');
+            let courseName = $(this).data('name');
+            let courseCode = $(this).data('code');
+            let status = $(this).data('status');
+
+            // Populate modal form fields
+            $('#course_Name').val(courseName);
+            $('#course_Code').val(courseCode);
+            $('#status_').val(status);
+
+            // Optional: store ID in hidden input for updating later
+            if ($('#courseId').length === 0) {
+                $('#editCourseForm').append('<input type="hidden" id="courseId" name="courseId">');
+            }
+            $('#courseId').val(courseId);
+        });
+
+
+        $('#saveChangesBtn').on('click', function() {
+            let formData = $('#editCourseForm').serialize();
+
+            $.ajax({
+                url: 'api/update_course.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $('#editcourse').modal('hide');
+                        loadCourses(); // refresh table
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error updating course:', error);
+                }
+            });
+        });
+
 
         // Load courses on page load
         $(document).ready(function() {

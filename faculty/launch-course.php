@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Portal</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/logo1.png">
+    <link rel="icon" type="image/png" href="../images/logo1.png">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -60,23 +60,37 @@
             <!-- Main Content -->
             <div class="col-12 col-sm-10 col-md-10 col-lg-10 p-0">
                 <!-- Topbar -->
+
                 <?php include('topbar.php') ?>
+                <!-- Topbar with Breadcrumb -->
+                <style>
+                    a {
+                        text-decoration: none;
+                    }
+                </style>
+
                 <!-- Page Content -->
                 <div class="p-4 content-scroll">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" style="">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="course-admin.php">Course Admin</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Add Course</li>
+                        </ol>
+                    </nav>
                     <!-- Add New Course Form -->
                     <div class="card-custom shadow mt-4 p-4">
                         <h5 class="mb-4">Add New Course</h5>
                         <form id="addCourseForm">
                             <div class="row g-3">
-                                <!-- Course Name -->
 
+
+                                <!-- Course Name -->
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <select class="form-select" id="courseName" name="courseName" required>
                                             <option value="" selected disabled>Select Course Name</option>
-                                            <option value="CSE">CSE</option>
-                                            <option value="EEE">EEE</option>
-                                            <option value="ECE">ECE</option>
                                         </select>
                                         <label for="courseName">Course Name</label>
                                     </div>
@@ -87,20 +101,19 @@
                                     <div class="form-floating">
                                         <select class="form-select" id="courseCode" name="courseCode" required>
                                             <option value="" selected disabled>Select Course Code</option>
-                                            <option value="CSA07">CSA07</option>
-                                            <option value="EEA001">EEA001</option>
-                                            <option value="ECE100">ECE100</option>
                                         </select>
-                                        <label for="courseName">Course Name</label>
+                                        <label for="courseCode">Course Code</label>
                                     </div>
                                 </div>
+
+
 
                                 <!-- Seat Allotment -->
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" id="seatAllotment" name="seatAllotment"
                                             placeholder="Seat Allotment" required>
-                                        <label for="seatAllotment">Seat Allotment</label>
+                                        <label for="seatAllotment">Max Count</label>
                                     </div>
                                 </div>
 
@@ -123,6 +136,13 @@
                                             <option value="certificate">Certificate</option>
                                         </select>
                                         <label for="course_type">Course Type</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="slot" name="slot"
+                                            placeholder="Slot" required>
+                                        <label for="slot">Slot</label>
                                     </div>
                                 </div>
 
@@ -156,10 +176,9 @@
                                         <th>Code</th>
                                         <th>Seat Allotment</th>
                                         <th>Duration</th>
-                                        <!-- <th>Department</th>
-                                        <th>Branch</th> -->
                                         <th>Type</th>
                                         <th>Faculty Name</th>
+                                        <th>Slot</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -199,32 +218,28 @@
                 <div class="modal-body">
                     <form id="addCourseForm">
                         <div class="row g-3">
-                            <!-- Course Name -->
-
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <select class="form-select" id="courseName" name="courseName" required>
-                                        <option value="" selected disabled>Select Course Name</option>
-                                        <option value="CSE">CSE</option>
-                                        <option value="EEE">EEE</option>
-                                        <option value="ECE">ECE</option>
-                                    </select>
-                                    <label for="courseName">Course Name</label>
-                                </div>
-                            </div>
-
                             <!-- Course Code -->
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <select class="form-select" id="courseCode" name="courseCode" required>
                                         <option value="" selected disabled>Select Course Code</option>
-                                        <option value="CSA07">CSA07</option>
-                                        <option value="EEA001">EEA001</option>
-                                        <option value="ECE100">ECE100</option>
+                                    </select>
+                                    <label for="courseCode">Course Code</label>
+                                </div>
+                            </div>
+
+                            <!-- Course Name -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="courseName" name="courseName" required>
+                                        <option value="" selected disabled>Select Course Name</option>
                                     </select>
                                     <label for="courseName">Course Name</label>
                                 </div>
                             </div>
+
+
+
 
                             <!-- Seat Allotment -->
                             <div class="col-md-6">
@@ -275,7 +290,6 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
         // Search in table
         $('#courseSearch').on('keyup', function() {
@@ -290,7 +304,7 @@
             e.preventDefault();
 
             $.ajax({
-                url: '../api/add_course.php',
+                url: 'api/add_course.php',
                 type: 'POST',
                 data: new FormData(this),
                 contentType: false, // required for FormData
@@ -306,6 +320,7 @@
                             timer: 2000
                         });
                         $('#addCourseForm')[0].reset();
+                        loadCourses();
                     } else {
                         Swal.fire({
                             icon: 'warning',
@@ -326,7 +341,7 @@
 
         function loadCourses() {
             $.ajax({
-                url: '../api/get_courses.php',
+                url: 'api/get_courses.php',
                 type: 'GET',
                 dataType: 'json',
                 success: function(courses) {
@@ -340,6 +355,8 @@
                     <td>${course.duration}</td>
                     <td>${course.course_type}</td>
                     <td>${course.faculty_name}</td>
+                    <td>${course.slot}</td>
+
                     <td>
                         <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editcourse"><i class="bi bi-pencil"></i></button>
                         <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
@@ -354,12 +371,55 @@
             });
         }
 
+        function loadCourseDropdowns() {
+            $.ajax({
+                url: '../admin/api/fetch_course.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(courses) {
+                    let nameOptions = '<option value="" selected disabled>Select Course Name</option>';
+                    let codeOptions = '<option value="" selected disabled>Select Course Code</option>';
+
+                    courses.forEach(course => {
+                        // Course Name dropdown (value = course_name, data-code = course_code)
+                        nameOptions += `<option value="${course.course_name}" data-code="${course.course_code}">
+                                    ${course.course_name}
+                                </option>`;
+
+                        // Course Code dropdown (value = course_code, data-name = course_name)
+                        codeOptions += `<option value="${course.course_code}" data-name="${course.course_name}">
+                                    ${course.course_code}
+                                </option>`;
+                    });
+
+                    $('#courseName').html(nameOptions);
+                    $('#courseCode').html(codeOptions);
+
+                    // When selecting Course Name -> auto select Course Code
+                    $('#courseName').on('change', function() {
+                        let selectedCode = $(this).find(':selected').data('code');
+                        $('#courseCode').val(selectedCode);
+                    });
+
+                    // When selecting Course Code -> auto select Course Name
+                    $('#courseCode').on('change', function() {
+                        let selectedName = $(this).find(':selected').data('name');
+                        $('#courseName').val(selectedName);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error fetching courses:', error);
+                }
+            });
+        }
+
+
         // Load courses on page load
         $(document).ready(function() {
             loadCourses();
+            loadCourseDropdowns();
         });
     </script>
-
 
 
     <!-- Bootstrap JS Bundle (includes Popper) -->

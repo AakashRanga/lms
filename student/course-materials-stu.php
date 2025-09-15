@@ -83,14 +83,14 @@
 
                                             <!-- Materials -->
                                             <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingMaterials1">
+                                                <!-- <h2 class="accordion-header" id="headingMaterials1">
                                                     <button class="accordion-button" type="button"
                                                         data-bs-toggle="collapse" data-bs-target="#collapseMaterials1"
                                                         aria-expanded="true" aria-controls="collapseMaterials1">
                                                         📂 Materials
                                                     </button>
-                                                </h2>
-                                                <div id="collapseMaterials1" class="accordion-collapse collapse "
+                                                </h2> -->
+                                                <div id="collapseMaterials1" class="accordion-collapse  "
                                                     aria-labelledby="headingMaterials1" data-bs-parent="#chapter1Inner">
                                                     <div class="accordion-body">
                                                         <ul class="list-unstyled mb-0">
@@ -107,11 +107,11 @@
                                                     <button class="accordion-button collapsed" type="button"
                                                         data-bs-toggle="collapse" data-bs-target="#collapseVideo1"
                                                         aria-expanded="false" aria-controls="collapseVideo1">
-                                                        🎥 Video Lecture
+                                                        🎥 Flipped Class
                                                     </button>
                                                 </h2>
                                                 <div id="collapseVideo1" class="accordion-collapse collapse"
-                                                    aria-labelledby="headingVideo1" data-bs-parent="#chapter1Inner">
+                                                    aria-labelledby="headingVideo1">
                                                     <div class="accordion-body">
                                                         <div class="ratio ratio-16x9">
                                                             <video id="videoChapter1" controls
@@ -127,18 +127,21 @@
 
                                             <!-- Practice Test -->
                                             <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingTest1">
+                                                <!-- <h2 class="accordion-header" id="headingTest1">
                                                     <button class="accordion-button collapsed" type="button"
                                                         data-bs-toggle="collapse" data-bs-target="#collapseTest1"
                                                         aria-expanded="false" aria-controls="collapseTest1">
                                                         📝 Practice Test
                                                     </button>
-                                                </h2>
-                                                <div id="collapseTest1" class="accordion-collapse collapse"
+                                                </h2> -->
+                                                <div id="collapseTest1" class="accordion-collapse "
                                                     aria-labelledby="headingTest1" data-bs-parent="#chapter1Inner">
                                                     <div class="accordion-body">
-                                                        <a href="../tests/ch1-test.html"
-                                                            class="btn btn-primary btn-sm">Take Test</a>
+                                                        <div class="d-flex justify-content-between">
+                                                            <h6>📝 Practice Test</h6>
+                                                            <a href="../tests/ch1-test.html"
+                                                                class="btn btn-primary btn-sm">Take Test</a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
