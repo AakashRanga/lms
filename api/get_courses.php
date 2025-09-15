@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-include 'config.php'; // your DB connection
+include "../includes/config.php";
 
 $sql = "SELECT * FROM launch_courses ORDER BY id ASC"; // adjust table/column names
 $result = $conn->query($sql);

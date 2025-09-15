@@ -9,7 +9,7 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept");
 
 // Include database config
-include "config.php";
+include "../../includes/config.php";
 
 // Only accept POST
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
@@ -44,8 +44,8 @@ if (!empty($missing)) {
 
 // Insert into database
 $stmt = $conn->prepare("INSERT INTO courses 
-    (course_name, course_code, seat_allotment, duration, department, branch, course_type, faculty_name, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+    (course_name, course_code, created_at)
+    VALUES (?, ?, NOW())");
 
 if (!$stmt) {
     http_response_code(500);
@@ -57,15 +57,9 @@ if (!$stmt) {
 }
 
 $stmt->bind_param(
-    "ssisssss",
+    "ss",
     $course_name,
-    $course_code,
-    $seat_allotment,
-    $duration,
-    $department,
-    $branch,
-    $course_type,
-    $faculty_name
+    $course_code
 );
 
 if ($stmt->execute()) {

@@ -9,7 +9,7 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept");
 
 // Include database config
-include "config.php";
+include "../../includes/config.php";
 
 // Only accept POST
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {

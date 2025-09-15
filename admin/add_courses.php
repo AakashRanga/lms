@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Portal</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/logo1.png">
+    <link rel="icon" type="image/png" href="../images/logo1.png">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -129,14 +129,7 @@
                             </table>
                         </div>
                     </div>
-
-
-
-
-
-
                 </div>
-
             </div>
         </div>
     </div>
@@ -234,7 +227,7 @@
 
         function loadCourses() {
             $.ajax({
-                url: '../api/get_courses.php',
+                url: 'api/add_course.php',
                 type: 'GET',
                 dataType: 'json',
                 success: function(courses) {
@@ -246,8 +239,7 @@
                     <td>${course.course_code}</td>
                     <td>${course.seat_allotment}</td>
                     <td>${course.duration}</td>
-                    <td>${course.course_type}</td>
-                    <td>${course.faculty_name}</td>
+                   
                     <td>
                         <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editcourse"><i class="bi bi-pencil"></i></button>
                         <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>

@@ -72,7 +72,7 @@
                 <!-- Page Content -->
                 <div class="p-4 content-scroll">
                     <div class="card-custom mt-4 p-4">
-                        <h6 class="mb-3">Active Course</h6>
+                        <h6 class="mb-3">Anatomy</h6>
 
                         <div class="container mt-4">
                             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
