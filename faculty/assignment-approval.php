@@ -48,6 +48,12 @@
             border: 1px solid #f0f0f0;
             padding: 10px;
         }
+        .form-table{
+            padding-top: 20px;
+        }
+        .form-label{
+            color:#000;
+        }
     </style>
 </head>
 
@@ -72,12 +78,7 @@
                                 Add Assignment
                             </button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="view-tab" data-bs-toggle="tab" data-bs-target="#viewAssignment"
-                                type="button" role="tab">
-                                View Assignments
-                            </button>
-                        </li>
+                        
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="approval-tab" data-bs-toggle="tab"
                                 data-bs-target="#assignmentApproval" type="button" role="tab">
@@ -86,14 +87,10 @@
                         </li>
                     </ul>
                     <div class="card-custom-assignemt p-4 border-rounded-none">
-
-
-
                         <!-- Tab Contents -->
                         <div class="tab-content" id="assignmentTabsContent">
                             <!-- Add Assignment Tab -->
                             <div class="tab-pane fade show active" id="addAssignment" role="tabpanel">
-                                <h4 class="text-center pb-3">Add New Assignment</h4>
                                 <div class="form-div">
                                     <form>
                                         <!-- Title -->
@@ -111,47 +108,47 @@
                                                 placeholder="Enter instructions if any"></textarea>
                                         </div>
 
-                                        <!-- Upload PDF -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Upload File (PDF only)</label>
-                                            <input type="file" class="form-control" accept=".pdf" required>
-                                        </div>
-
-                                        <!-- Total Marks Dropdown -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Total Marks</label>
-                                            <select class="form-select" required>
-                                                <option value="" selected disabled>Select marks</option>
-                                                <option value="10">10</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="50">50</option>
-                                                <option value="100">100</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- Due Date -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Due Date</label>
-                                            <input type="date" class="form-control" required>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <!-- Upload PDF -->
+                                                <div class="mb-3">
+                                                    <label class="form-label">Upload File (PDF only)</label>
+                                                    <input type="file" class="form-control" accept=".pdf" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <!-- Total Marks Dropdown -->
+                                                <div class="mb-3">
+                                                    <label class="form-label">Total Marks</label>
+                                                    <select class="form-select" required>
+                                                        <option value="" selected disabled>Select marks</option>
+                                                        <option value="10">10</option>
+                                                        <option value="20">20</option>
+                                                        <option value="25">25</option>
+                                                        <option value="50">50</option>
+                                                        <option value="100">100</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <!-- Due Date -->
+                                                <div class="mb-3">
+                                                    <label class="form-label">Due Date</label>
+                                                    <input type="date" class="form-control" required>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <!-- Submit -->
                                         <div class="d-flex justify-content-center"> <button type="submit"
-                                                class="btn btn-secondary">Add
-                                                Assignment</button>
+                                                class="btn btn-secondary">Submit</button>
                                         </div>
                                     </form>
 
                                 </div>
-
-                            </div>
-
-
-                            <!-- View Assignments Tab -->
-                            <div class="tab-pane fade" id="viewAssignment" role="tabpanel">
-                                <h4>View Assignments</h4>
-                                <table class="table table-bordered mt-3">
+                                <div class="form-table shadow p-3 mt-4">
+                                    <h5>View Assignments</h5>
+                                    <table class="table table-bordered mt-3">
                                     <thead class="table-light">
                                         <tr>
                                             <th>Topic</th>
@@ -177,6 +174,8 @@
                                         </tr>
                                     </tbody>
                                 </table>
+
+                                </div>
 
                             </div>
 

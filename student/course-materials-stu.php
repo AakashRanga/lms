@@ -114,8 +114,12 @@
                                                     aria-labelledby="headingVideo1" data-bs-parent="#chapter1Inner">
                                                     <div class="accordion-body">
                                                         <div class="ratio ratio-16x9">
-                                                            <iframe src="https://www.youtube.com/embed/5MgBikgcWnY"
-                                                                title="Chapter 1 Video" allowfullscreen></iframe>
+                                                            <video id="videoChapter1" controls
+                                                                controlslist="nodownload noremoteplayback noplaybackrate nofullscreen"
+                                                                disablepictureinpicture>
+                                                                <source src="../videos/someone.mp4" type="video/mp4">
+                                                                Your browser does not support the video tag.
+                                                            </video>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -310,6 +314,58 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function enableResume(videoId, key) {
+            const video = document.getElementById(videoId);
+            if (!video) return;
+
+            // Resume from saved time
+            video.addEventListener('loadedmetadata', () => {
+                const saved = localStorage.getItem(key);
+                if (saved) video.currentTime = parseFloat(saved);
+            });
+
+            // Save progress
+            video.addEventListener('timeupdate', () => {
+                localStorage.setItem(key, video.currentTime);
+            });
+
+            video.addEventListener('pause', () => {
+                localStorage.setItem(key, video.currentTime);
+            });
+
+            video.addEventListener('ended', () => {
+                localStorage.removeItem(key);
+            });
+
+            // ✅ SINGLE CLICK → play/pause
+            video.addEventListener('click', () => {
+                if (video.paused) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+
+            // ✅ DOUBLE CLICK → skip left/right
+            video.addEventListener('dblclick', (e) => {
+                const rect = video.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+
+                if (clickX < rect.width / 2) {
+                    // Left side = rewind 10s
+                    video.currentTime = Math.max(video.currentTime - 10, 0);
+                } else {
+                    // Right side = forward 10s
+                    video.currentTime = Math.min(video.currentTime + 10, video.duration);
+                }
+            });
+        }
+
+        enableResume('videoChapter1', 'progress_song');
+        enableResume('videoChapter2', 'progress_ch2');
+        enableResume('videoChapter3', 'progress_ch3');
+    </script>
 </body>
 
 </html>
