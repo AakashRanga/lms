@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="../stylesheet/styles.css">
 
     <style>
+        a{
+            text-decoration: none;
+        }
         .card-custom {
             background-color: #fff;
             border-radius: 12px;
@@ -132,6 +135,16 @@
 
                 <!-- Page Content -->
                 <div class="p-4 content-scroll">
+
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
+                            <!-- <li class="breadcrumb-item"><a href="course-admin.php">Course Admin</a></li> -->
+                            <li class="breadcrumb-item active" aria-current="page">Course Admin</li>
+                        </ol>
+                    </nav>
+
                     <div class="card-custom mt-4 p-4">
                         <h6 class="mb-3">Course Management</h6>
 
