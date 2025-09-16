@@ -48,6 +48,11 @@
         .btn-clear:hover {
             background-color: #8c929e;
         }
+
+        canvas {
+            height: 300px !important;
+            /* or any value you prefer */
+        }
     </style>
 </head>
 
@@ -127,11 +132,14 @@
 
 
 
-                        <!-- Class Performance Graph -->
-                        <div class="mt-4">
-                            <label class="form-label">Class Performance Graph</label>
-                            <canvas id="classPerformanceGraph" height="140"></canvas>
+                        <!-- =========================
+                             Course Outcome Analysis
+                        ========================= -->
+                        <div class="mt-5">
+                            <h4 class="pb-3">Course Outcome Analysis</h4>
+                            <div class="row" id="coContainer"></div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -140,35 +148,115 @@
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
     <script>
+        const CO_DATA = [
+            { co: 'CO1', title: 'Ability to apply fundamental data structures effectively.', attainment: 84, avg: 73.6 },
+            { co: 'CO2', title: 'Proficiency in statistical modeling techniques for analysis.', attainment: 80, avg: 78.9 },
+            { co: 'CO3', title: 'Skill in machine learning algorithm implementation and tuning.', attainment: 77, avg: 67.4 },
+            { co: 'CO4', title: 'Competency in evaluating model performance and identifying biases.', attainment: 84, avg: 83.7 },
+            { co: 'CO5', title: 'Understanding of ethical implications and societal impact in AI.', attainment: 90, avg: 88.5 },
+        ];
 
+        function generateDistribution(mean = 70, stdDev = 10) {
+            const x = [], y = [];
+            for (let i = 0; i <= 100; i += 1) {
+                const exponent = -Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2));
+                const value = (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(exponent);
+                x.push(i);
+                y.push(value * 1000); // scale up
+            }
+            return { x, y };
+        }
 
-        // Class Performance Graph (Scores)
-        const ctx2 = document.getElementById('classPerformanceGraph').getContext('2d');
-        new Chart(ctx2, {
-            type: 'bar',
-            data: {
-                labels: ['John Doe', 'Jane Smith', 'Alex Kumar', 'Priya Sharma', 'David Lee'],
-                datasets: [{
-                    label: 'Overall Score (%)',
-                    data: [89, 83, 85, 91, 76],
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100
+        const container = document.getElementById('coContainer');
+
+        CO_DATA.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.className = 'col-md-4 mb-4';
+            card.innerHTML = `
+            <div class="border rounded p-3 h-100 shadow-sm">
+                <h6 class="fw-bold mb-1">${item.co}</h6>
+                <p class="small">${item.title}</p>
+                <canvas id="coChart${idx}" height="260"></canvas>
+                <div class="mt-2 text-center">
+                    <span class="fw-bold">${item.attainment}%</span> Attainment &nbsp;|&nbsp; 
+                    <span class="fw-bold">${item.avg}%</span> Avg Score
+                </div>
+                <div class="mt-2 text-center">
+                    <button class="btn btn-primary btn-sm">Download Raw Data</button>
+                </div>
+            </div>
+        `;
+            container.appendChild(card);
+
+            const ctx = card.querySelector(`#coChart${idx}`).getContext('2d');
+            const { x, y } = generateDistribution(item.avg, 10);
+
+            // Create left-to-right blue-to-red gradient
+            const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+            gradient.addColorStop(0, 'rgba(54, 162, 235, 0.3)'); // Blue
+            gradient.addColorStop(1, 'rgba(255, 99, 132, 0.3)'); // Red
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: x,
+                    datasets: [{
+                        label: 'Score Distribution',
+                        data: y,
+                        fill: true,
+                        backgroundColor: gradient,
+                        borderColor: '#333', // dark gray border
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        annotation: {
+                            annotations: {
+                                attainmentLine: {
+                                    type: 'line',
+                                    xMin: item.attainment,
+                                    xMax: item.attainment,
+                                    borderColor: 'black',
+                                    borderWidth: 1,
+                                    borderDash: [4, 4],
+                                    label: {
+                                        enabled: true,
+                                        content: 'Attainment',
+                                        position: 'start',
+                                        color: '#000',
+                                        backgroundColor: 'rgba(255,255,255,0.8)',
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Score' },
+                            min: 0,
+                            max: 100,
+                            grid: { display: false }
+                        },
+                        y: {
+                            title: { display: true, text: 'Students' },
+                            ticks: { display: false },
+                            grid: { drawTicks: false }
+                        }
                     }
                 }
-            }
+            });
         });
     </script>
+
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

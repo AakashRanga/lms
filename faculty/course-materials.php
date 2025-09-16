@@ -28,6 +28,15 @@
             font-size: 0.9rem;
             border-radius: 0;
         }
+
+        .question-index {
+            gap: 13px;
+        }
+
+        .badge .bg-primary {
+            padding: 10px !important;
+            width: 120px !important;
+        }
     </style>
 </head>
 
@@ -108,14 +117,20 @@
                                                 accept="video/*">
                                         </div>
 
-                                        <div class="col-12">
-                                            <hr>
+                                        <div class="d-flex justify-content-between align-items-center">
                                             <h5>Practice Questions</h5>
-                                            <div class="questions-container"></div>
-                                            <button type="button"
-                                                class="btn btn-secondary btn-sm mt-2 addQuestionBtn">Add Practice
-                                                Question</button>
+                                            <span class="badge bg-primary"
+                                                style="padding: 10px !important;width: 120px !important;font-size: 17px;font-weight: 400;">Total:
+                                                <span class="question-count">0</span></span>
                                         </div>
+                                        <div class="questions-container"></div>
+                                        <div class="col-12 text-center mt-3 d-flex justify-content-start gap-2">
+                                            <button type="button"
+                                                class="btn btn-secondary btn-sm mt-2 addQuestionBtn">Add
+                                                10 Practice Questions</button>
+                                        </div>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -141,109 +156,117 @@
             const modulesContainer = document.getElementById('modulesContainer');
             const addModuleBtn = document.getElementById('addModuleBtn');
 
-            // Function to attach question logic inside a module block
+            function createQuestionBlock(num) {
+                const block = document.createElement('div');
+                block.classList.add('question-block', 'border', 'p-3', 'mt-3', 'rounded');
+                block.innerHTML = `
+                <div class="d-flex justify-content-end mb-2">
+                    <button type="button" class="btn btn-danger btn-sm removeQuestionBtn">Remove</button>
+                </div>
+                <div class="d-flex justify-content-between align-items-center question-index mb-2">
+                    <h6 class="mb-0">Q${num}</h6>
+                    <input type="text" class="form-control" name="question_text[]" placeholder="Enter Question ${num}" required>
+                </div>
+                <div class="row g-2">
+                    ${['A', 'B', 'C', 'D'].map(opt => `
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div class="form-check me-2">
+                                <input class="form-check-input" type="radio" name="correct_answer_${num}" value="${opt}" required>
+                            </div>
+                            <input type="text" class="form-control" name="option_${opt.toLowerCase()}[]" placeholder="Option ${opt}" required>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+                return block;
+            }
+
             function attachQuestionLogic(moduleBlock) {
                 const questionsContainer = moduleBlock.querySelector('.questions-container');
                 const addQuestionBtn = moduleBlock.querySelector('.addQuestionBtn');
+                const questionCount = moduleBlock.querySelector('.question-count');
+
+                function updateQuestionNumbers() {
+                    const blocks = questionsContainer.querySelectorAll('.question-block');
+                    blocks.forEach((block, idx) => {
+                        const num = idx + 1;
+                        block.querySelector('h6').textContent = `Q${num}`;
+                        block.querySelector('input[name="question_text[]"]').setAttribute('placeholder', `Enter Question ${num}`);
+                        const radios = block.querySelectorAll('.form-check-input');
+                        radios.forEach(r => r.setAttribute('name', `correct_answer_${num}`));
+                    });
+                    questionCount.textContent = blocks.length;  // update count
+                }
 
                 addQuestionBtn.addEventListener('click', () => {
-                    const questionBlock = document.createElement('div');
-                    questionBlock.classList.add('border', 'p-3', 'mt-3', 'rounded');
-                    questionBlock.innerHTML = `
-                    <div class="text-end mb-2">
-                  <button type="button" class="btn btn-danger btn-sm removeQuestionBtn">Remove </button>
-              </div>
-              <div class="mb-2">
-                  <input type="text" class="form-control" name="question_text[]" placeholder="Enter Question" required>
-              </div>
-              <div class="row g-2">
-                  <div class="col-md-6">
-                      <input type="text" class="form-control" name="option_a[]" placeholder="Option A" required>
-                  </div>
-                  <div class="col-md-6">
-                      <input type="text" class="form-control" name="option_b[]" placeholder="Option B" required>
-                  </div>
-                  <div class="col-md-6">
-                      <input type="text" class="form-control" name="option_c[]" placeholder="Option C" required>
-                  </div>
-                  <div class="col-md-6">
-                      <input type="text" class="form-control" name="option_d[]" placeholder="Option D" required>
-                  </div>
-              </div>
-              <div class="mt-2">
-                  <select class="form-select" name="correct_answer[]" required>
-                      <option value="" disabled selected>Select Correct Answer</option>
-                      <option value="A">Option A</option>
-                      <option value="B">Option B</option>
-                      <option value="C">Option C</option>
-                      <option value="D">Option D</option>
-                  </select>
-              </div>
-              
-          `;
-
-                    questionsContainer.appendChild(questionBlock);
-
-                    questionBlock.querySelector('.removeQuestionBtn').addEventListener('click', () => {
-                        questionBlock.remove();
-                    });
+                    for (let i = 1; i <= 10; i++) {
+                        const currentIndex = questionsContainer.querySelectorAll('.question-block').length + 1;
+                        const block = createQuestionBlock(currentIndex);
+                        questionsContainer.appendChild(block);
+                        block.querySelector('.removeQuestionBtn').addEventListener('click', () => {
+                            block.remove();
+                            updateQuestionNumbers();
+                        });
+                    }
+                    updateQuestionNumbers();
                 });
             }
 
-            // Attach to the first module on page load
+            // Attach logic to existing modules
             document.querySelectorAll('.module-block').forEach(attachQuestionLogic);
 
-            // Add new module block
+            // Add new module
             addModuleBtn.addEventListener('click', () => {
                 const moduleBlock = document.createElement('div');
                 moduleBlock.classList.add('module-block', 'border', 'rounded', 'p-3', 'mb-3');
-
                 moduleBlock.innerHTML = `
-          <div class="row g-3">
-              <div class="col-12 text-end">
-                  <button type="button" class="btn btn-danger btn-sm removeModuleBtn">Remove</button>
-              </div>
-              <div class="col-md-6">
-                  <div class="form-floating">
-                      <input type="text" class="form-control" name="chapter_number[]" placeholder="Chapter Number" required>
-                      <label>Chapter Number</label>
-                  </div>
-              </div>
-              <div class="col-md-6">
-                  <div class="form-floating">
-                      <input type="text" class="form-control" name="chapter_title[]" placeholder="Chapter Title" required>
-                      <label>Chapter Title</label>
-                  </div>
-              </div>
-              <div class="col-md-6">
-                  <label class="form-label">Reading Material (PDF)</label>
-                  <input type="file" class="form-control" name="reading_material[]" accept=".pdf">
-              </div>
-              <div class="col-md-6">
-                  <label class="form-label">Video Material</label>
-                  <input type="file" class="form-control" name="video_material[]" accept="video/*">
-              </div>
-              <div class="col-12">
-                  <hr>
-                  <h5>Practice Questions</h5>
-                  <div class="questions-container"></div>
-                  <button type="button" class="btn btn-secondary btn-sm mt-2 addQuestionBtn">Add Practice Question</button>
-              </div>
-          </div>
-        `;
-
+                <div class="row g-3">
+                    <div class="col-12 text-end">
+                        <button type="button" class="btn btn-danger btn-sm removeModuleBtn">Remove</button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="chapter_number[]" placeholder="Chapter Number" required>
+                            <label>Chapter Number</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="chapter_title[]" placeholder="Chapter Title" required>
+                            <label>Chapter Title</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Reading Material (PDF)</label>
+                        <input type="file" class="form-control" name="reading_material[]" accept=".pdf">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Video Material</label>
+                        <input type="file" class="form-control" name="video_material[]" accept="video/*">
+                    </div>
+                    <div class="col-12">
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5>Practice Questions</h5>
+                            <span class="badge bg-primary">Total: <span class="question-count">0</span></span>
+                        </div>
+                        <div class="questions-container"></div>
+                        <button type="button" class="btn btn-secondary btn-sm mt-2 addQuestionBtn">Add 10 Practice Questions</button>
+                    </div>
+                </div>
+            `;
                 modulesContainer.appendChild(moduleBlock);
-
-                // remove button
                 moduleBlock.querySelector('.removeModuleBtn').addEventListener('click', () => {
                     moduleBlock.remove();
                 });
-
-                // attach logic to new module
                 attachQuestionLogic(moduleBlock);
             });
         });
     </script>
+
+
+
+
 </body>
 
 </html>

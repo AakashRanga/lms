@@ -20,29 +20,25 @@
             overflow: hidden;
         }
 
-        .chapter-accordion .accordion-button {
-            font-weight: 500;
+        .video-container {
+            position: relative;
         }
 
-        .course-card ul {
-            margin-bottom: 0;
-            /* Removes bottom space of the list */
-            padding-left: 0;
-            /* Removes default left padding */
-            list-style-type: none;
-            /* Removes bullets */
+        .video-click-left,
+        .video-click-right {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            cursor: pointer;
         }
 
-        .course-card li {
-            margin-bottom: 5px;
-            /* Optional: Small spacing between list items */
+        .video-click-left {
+            left: 0;
         }
 
-        .course-card li a {
-            text-decoration: none;
-            /* Removes underline */
-            color: #000;
-            /* Bootstrap primary color (optional for consistency) */
+        .video-click-right {
+            right: 0;
         }
     </style>
 </head>
@@ -50,13 +46,11 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-
             <!-- Sidebar -->
             <?php include('sidebar.php') ?>
 
             <!-- Main Content -->
             <div class="col-12 col-sm-10 col-md-10 col-lg-10 p-0">
-
                 <!-- Topbar -->
                 <?php include('topbar.php') ?>
 
@@ -65,250 +59,135 @@
                     <div class="course-card bg-white p-4">
                         <h4 class="mb-4">📘 Course: Business Strategy and Organizational Dynamics</h4>
 
-                        <div class="accordion chapter-accordion" id="chaptersAccordion">
-
-                            <!-- Chapter 1 -->
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="chapterOne">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Chapter 1: Introduction to Business Strategy
-                                    </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="chapterOne"
-                                    data-bs-parent="#chaptersAccordion">
-                                    <div class="accordion-body">
-
-                                        <div class="accordion chapter-inner" id="chapter1Inner">
-
-                                            <!-- Materials -->
-                                            <div class="accordion-item">
-                                                <!-- <h2 class="accordion-header" id="headingMaterials1">
-                                                    <button class="accordion-button" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#collapseMaterials1"
-                                                        aria-expanded="true" aria-controls="collapseMaterials1">
-                                                        📂 Materials
-                                                    </button>
-                                                </h2> -->
-                                                <div id="collapseMaterials1" class="accordion-collapse  "
-                                                    aria-labelledby="headingMaterials1" data-bs-parent="#chapter1Inner">
-                                                    <div class="accordion-body">
-                                                        <ul class="list-unstyled mb-0">
-                                                            <li><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf"
-                                                                    target="_blank">📂 Chapter Notes (PDF)</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Video -->
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingVideo1">
-                                                    <button class="accordion-button collapsed" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#collapseVideo1"
-                                                        aria-expanded="false" aria-controls="collapseVideo1">
-                                                        🎥 Flipped Class
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseVideo1" class="accordion-collapse collapse"
-                                                    aria-labelledby="headingVideo1">
-                                                    <div class="accordion-body">
-                                                        <div class="ratio ratio-16x9">
-                                                            <video id="videoChapter1" controls
-                                                                controlslist="nodownload noremoteplayback noplaybackrate nofullscreen"
-                                                                disablepictureinpicture>
-                                                                <source src="../videos/someone.mp4" type="video/mp4">
-                                                                Your browser does not support the video tag.
-                                                            </video>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Practice Test -->
-                                            <div class="accordion-item">
-                                                <!-- <h2 class="accordion-header" id="headingTest1">
-                                                    <button class="accordion-button collapsed" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#collapseTest1"
-                                                        aria-expanded="false" aria-controls="collapseTest1">
-                                                        📝 Practice Test
-                                                    </button>
-                                                </h2> -->
-                                                <div id="collapseTest1" class="accordion-collapse "
-                                                    aria-labelledby="headingTest1" data-bs-parent="#chapter1Inner">
-                                                    <div class="accordion-body">
-                                                        <div class="d-flex justify-content-between">
-                                                            <h6>📝 Practice Test</h6>
-                                                            <a href="../tests/ch1-test.html"
-                                                                class="btn btn-primary btn-sm">Take Test</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
+                        <!-- Chapter 1 -->
+                        <div class="mb-3 p-3 bg-light rounded shadow-sm">
+                            <h5 class="mb-2">Chapter 1: Introduction to Business Strategy</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div><i class="bi bi-file-earmark-pdf-fill me-2"></i>Reading Material</div>
+                                <a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf" target="_blank"
+                                    class="btn btn-outline-secondary btn-sm">View</a>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div><i class="bi bi-folder2-open me-2"></i>Flipped Class</div>
+                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#chapter1Resources" aria-expanded="false">View</button>
+                            </div>
+                            <!-- Inside your chapter collapse -->
+                            <div class="collapse mt-2" id="chapter1Resources">
+                                <div class="bg-white p-2 rounded border video-container" style="height:auto;">
+                                    <video id="chapter1Video" class="w-100" src="../videos/someone.mp4"></video>
+                                    <!-- Timeline / Progress -->
+                                    <div class="video-progress mt-2 d-flex align-items-center">
+                                        <span id="chapter1Current" class="me-2">0:00</span>
+                                        <div class="progress flex-grow-1" style="height: 5px;">
+                                            <div id="chapter1Bar" class="progress-bar bg-primary" role="progressbar"
+                                                style="width: 0%;"></div>
                                         </div>
+                                        <span id="chapter1Duration" class="ms-2">0:00</span>
+                                    </div>
 
+                                    <!-- Left click area -->
+                                    <div id="chapter1Left" class="video-click-left"></div>
+                                    <div id="chapter1Right" class="video-click-right"></div>
+
+                                    <!-- Play button overlay -->
+                                    <div id="chapter1PlayBtn" class="position-absolute top-50 start-50 translate-middle"
+                                        style="font-size:48px; color:white; cursor:pointer; text-shadow:0 0 5px black;">
+                                        ►
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Chapter 2 -->
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="chapterTwo">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                        Chapter 2: Competitive Analysis
-                                    </button>
-                                </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="chapterTwo"
-                                    data-bs-parent="#chaptersAccordion">
-                                    <div class="accordion-body">
-
-                                        <div class="accordion" id="chapter2Inner">
-
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingMaterials2">
-                                                    <button class="accordion-button" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#collapseMaterials2"
-                                                        aria-expanded="true" aria-controls="collapseMaterials2">
-                                                        📂 Materials
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseMaterials2" class="accordion-collapse collapse "
-                                                    aria-labelledby="headingMaterials2" data-bs-parent="#chapter2Inner">
-                                                    <div class="accordion-body">
-                                                        <ul>
-                                                            <li><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf"
-                                                                    target="_blank">📂
-                                                                    Chapter
-                                                                    Notes (PDF)</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingVideo2">
-                                                    <button class="accordion-button collapsed" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#collapseVideo2"
-                                                        aria-expanded="false" aria-controls="collapseVideo2">
-                                                        🎥 Video Lecture
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseVideo2" class="accordion-collapse collapse"
-                                                    aria-labelledby="headingVideo2" data-bs-parent="#chapter2Inner">
-                                                    <div class="accordion-body">
-                                                        <div class="ratio ratio-16x9">
-                                                            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                                                                title="Chapter 2 Video" allowfullscreen></iframe>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingTest2">
-                                                    <button class="accordion-button collapsed" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#collapseTest2"
-                                                        aria-expanded="false" aria-controls="collapseTest2">
-                                                        📝 Practice Test
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseTest2" class="accordion-collapse collapse"
-                                                    aria-labelledby="headingTest2" data-bs-parent="#chapter2Inner">
-                                                    <div class="accordion-body">
-                                                        <a href="../tests/ch2-test.html"
-                                                            class="btn btn-primary btn-sm">Take Test</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div><i class="bi bi-pencil-square me-2"></i>Practice Test</div>
+                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#chapter1Test" aria-expanded="false">View</button>
+                            </div>
+                            <div class="collapse mt-2" id="chapter1Test">
+                                <div class="bg-white p-2 rounded border">
+                                    <a href="https://example.com/chapter1-test" target="_blank" class="d-block mb-1">
+                                        <i class="bi bi-journal-check me-2"></i>Chapter 1 Practice Test
+                                    </a>
+                                    <a href="https://example.com/chapter1-test-2" target="_blank" class="d-block mb-1">
+                                        <i class="bi bi-journal-check me-2"></i>Chapter 1 Additional Test
+                                    </a>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Chapter 3 -->
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="chapterThree">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseThree" aria-expanded="false"
-                                        aria-controls="collapseThree">
-                                        Chapter 3: Organizational Dynamics
-                                    </button>
-                                </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse"
-                                    aria-labelledby="chapterThree" data-bs-parent="#chaptersAccordion">
-                                    <div class="accordion-body">
-
-                                        <div class="accordion" id="chapter3Inner">
-
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingMaterials3">
-                                                    <button class="accordion-button" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#collapseMaterials3"
-                                                        aria-expanded="true" aria-controls="collapseMaterials3">
-                                                        📂 Materials
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseMaterials3" class="accordion-collapse collapse"
-                                                    aria-labelledby="headingMaterials3" data-bs-parent="#chapter3Inner">
-                                                    <div class="accordion-body">
-                                                        <ul>
-                                                            <li><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf"
-                                                                    target="_blank">📂
-                                                                    Chapter
-                                                                    Notes (PDF)</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingVideo3">
-                                                    <button class="accordion-button collapsed" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#collapseVideo3"
-                                                        aria-expanded="false" aria-controls="collapseVideo3">
-                                                        🎥 Video Lecture
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseVideo3" class="accordion-collapse collapse"
-                                                    aria-labelledby="headingVideo3" data-bs-parent="#chapter3Inner">
-                                                    <div class="accordion-body">
-                                                        <div class="ratio ratio-16x9">
-                                                            <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ"
-                                                                title="Chapter 3 Video" allowfullscreen></iframe>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingTest3">
-                                                    <button class="accordion-button collapsed" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#collapseTest3"
-                                                        aria-expanded="false" aria-controls="collapseTest3">
-                                                        📝 Practice Test
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseTest3" class="accordion-collapse collapse"
-                                                    aria-labelledby="headingTest3" data-bs-parent="#chapter3Inner">
-                                                    <div class="accordion-body">
-                                                        <a href="../tests/ch3-test.html"
-                                                            class="btn btn-primary btn-sm">Take Test</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
+                        <!-- Chapter 2 -->
+                        <div class="mb-3 p-3 bg-light rounded shadow-sm">
+                            <h5 class="mb-2">Chapter 2: Market Analysis</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div><i class="bi bi-file-earmark-pdf-fill me-2"></i>Reading Material</div>
+                                <a href="../materials/CHAPTER2_MARKET_ANALYSIS.pdf" target="_blank"
+                                    class="btn btn-outline-secondary btn-sm">View</a>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div><i class="bi bi-folder2-open me-2"></i>Flipped Class</div>
+                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#chapter2Resources" aria-expanded="false">View</button>
+                            </div>
+                            <div class="collapse mt-2" id="chapter2Resources">
+                                <div class="bg-white p-2 rounded border video-container" style="height:auto;">
+                                    <video id="chapter2Video" class="w-100" src="../videos/someone.mp4"></video>
+                                    <div id="chapter2Left" class="video-click-left"></div>
+                                    <div id="chapter2Right" class="video-click-right"></div>
                                 </div>
                             </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div><i class="bi bi-pencil-square me-2"></i>Practice Test</div>
+                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#chapter2Test" aria-expanded="false">View</button>
+                            </div>
+                            <div class="collapse mt-2" id="chapter2Test">
+                                <div class="bg-white p-2 rounded border">
+                                    <a href="https://example.com/chapter2-test" target="_blank" class="d-block mb-1">
+                                        <i class="bi bi-journal-check me-2"></i>Chapter 2 Practice Test
+                                    </a>
+                                    <a href="https://example.com/chapter2-test-2" target="_blank" class="d-block mb-1">
+                                        <i class="bi bi-journal-check me-2"></i>Chapter 2 Additional Test
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
 
-                        </div> <!-- End Chapters Accordion -->
+                        <!-- Chapter 3 -->
+                        <div class="mb-3 p-3 bg-light rounded shadow-sm">
+                            <h5 class="mb-2">Chapter 3: Strategic Planning</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div><i class="bi bi-file-earmark-pdf-fill me-2"></i>Reading Material</div>
+                                <a href="../materials/CHAPTER3_STRATEGIC_PLANNING.pdf" target="_blank"
+                                    class="btn btn-outline-secondary btn-sm">View</a>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div><i class="bi bi-folder2-open me-2"></i>Flipped Class</div>
+                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#chapter3Resources" aria-expanded="false">View</button>
+                            </div>
+                            <div class="collapse mt-2" id="chapter3Resources">
+                                <div class="bg-white p-2 rounded border video-container" style="height:auto;">
+                                    <video id="chapter3Video" class="w-100" src="../videos/someone.mp4"></video>
+                                    <div id="chapter3Left" class="video-click-left"></div>
+                                    <div id="chapter3Right" class="video-click-right"></div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div><i class="bi bi-pencil-square me-2"></i>Practice Test</div>
+                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#chapter3Test" aria-expanded="false">View</button>
+                            </div>
+                            <div class="collapse mt-2" id="chapter3Test">
+                                <div class="bg-white p-2 rounded border">
+                                    <a href="https://example.com/chapter3-test" target="_blank" class="d-block mb-1">
+                                        <i class="bi bi-journal-check me-2"></i>Chapter 3 Practice Test
+                                    </a>
+                                    <a href="https://example.com/chapter3-test-2" target="_blank" class="d-block mb-1">
+                                        <i class="bi bi-journal-check me-2"></i>Chapter 3 Additional Test
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -316,59 +195,87 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function enableResume(videoId, key) {
-            const video = document.getElementById(videoId);
-            if (!video) return;
+        const chapters = [1, 2, 3];
 
-            // Resume from saved time
-            video.addEventListener('loadedmetadata', () => {
-                const saved = localStorage.getItem(key);
-                if (saved) video.currentTime = parseFloat(saved);
+        chapters.forEach(id => {
+            const video = document.getElementById(`chapter${id}Video`);
+            const leftArea = document.getElementById(`chapter${id}Left`);
+            const rightArea = document.getElementById(`chapter${id}Right`);
+            const playBtn = document.getElementById(`chapter${id}PlayBtn`);
+
+            const currentTimeEl = document.getElementById(`chapter${id}Current`);
+            const durationEl = document.getElementById(`chapter${id}Duration`);
+            const progressBar = document.getElementById(`chapter${id}Bar`);
+
+            // Hide default controls
+            video.controls = false;
+            if (playBtn) playBtn.style.display = 'block'; // show overlay initially
+
+            // Overlay click toggles play/pause
+            if (playBtn) {
+                playBtn.addEventListener('click', () => {
+                    if (video.paused) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                });
+            }
+
+            // Left: skip backward 10s
+            leftArea.addEventListener('click', e => {
+                e.stopPropagation();
+                video.currentTime = Math.max(0, video.currentTime - 10);
             });
 
-            // Save progress
-            video.addEventListener('timeupdate', () => {
-                localStorage.setItem(key, video.currentTime);
+            // Right: skip forward 10s
+            rightArea.addEventListener('click', e => {
+                e.stopPropagation();
+                video.currentTime = Math.min(video.duration, video.currentTime + 10);
             });
 
+            // Update overlay visibility based on play/pause
+            video.addEventListener('play', () => {
+                if (playBtn) playBtn.style.display = 'none';
+            });
             video.addEventListener('pause', () => {
-                localStorage.setItem(key, video.currentTime);
+                if (playBtn) playBtn.style.display = 'block';
             });
 
-            video.addEventListener('ended', () => {
-                localStorage.removeItem(key);
+            // Update duration once metadata is loaded
+            video.addEventListener('loadedmetadata', () => {
+                const durMinutes = Math.floor(video.duration / 60);
+                const durSeconds = Math.floor(video.duration % 60).toString().padStart(2, '0');
+                durationEl.textContent = `${durMinutes}:${durSeconds}`;
             });
 
-            // ✅ SINGLE CLICK → play/pause
+            // Update progress bar and current time
+            video.addEventListener('timeupdate', () => {
+                if (video.duration) {
+                    const percent = (video.currentTime / video.duration) * 100;
+                    progressBar.style.width = percent + '%';
+
+                    const curMinutes = Math.floor(video.currentTime / 60);
+                    const curSeconds = Math.floor(video.currentTime % 60).toString().padStart(2, '0');
+                    currentTimeEl.textContent = `${curMinutes}:${curSeconds}`;
+                }
+            });
+
+            // Allow clicking **anywhere on the video** to play/pause
             video.addEventListener('click', () => {
-                if (video.paused) {
-                    video.play();
-                } else {
-                    video.pause();
-                }
+                if (video.paused) video.play();
+                else video.pause();
             });
+        });
 
-            // ✅ DOUBLE CLICK → skip left/right
-            video.addEventListener('dblclick', (e) => {
-                const rect = video.getBoundingClientRect();
-                const clickX = e.clientX - rect.left;
 
-                if (clickX < rect.width / 2) {
-                    // Left side = rewind 10s
-                    video.currentTime = Math.max(video.currentTime - 10, 0);
-                } else {
-                    // Right side = forward 10s
-                    video.currentTime = Math.min(video.currentTime + 10, video.duration);
-                }
-            });
-        }
 
-        enableResume('videoChapter1', 'progress_song');
-        enableResume('videoChapter2', 'progress_ch2');
-        enableResume('videoChapter3', 'progress_ch3');
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
     </script>
 </body>
+
 
 </html>
