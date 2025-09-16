@@ -45,7 +45,7 @@ try {
         $record = mysqli_fetch_assoc($CheckUserQueryResults);
 
         // Check admin_status Pending
-        if ($record['admin_status'] == 0) {
+        if ($record['admin_status'] == 'pending') {
             // If admin_status is not 1, send a message to wait for approval
             $Data = [
                 'status' => 403, // Forbidden (waiting for approval)
@@ -55,7 +55,7 @@ try {
             exit; // Stop further execution
         }
         // Check admin_status Suspend
-        if ($record['admin_status'] == 2) {
+        if ($record['admin_status'] == 'blocked') {
             $Data = [
                 'status' => 403, // Forbidden (waiting for approval)
                 'message' => 'Your Account Has Been Suspended, Please Contact Admin'
@@ -66,18 +66,18 @@ try {
 
         // Determine account type
         $AccountType = "";
-        if ($record["role"] == "Admin") {
+        if ($record["user_type"] == "Admin") {
             $AccountType = "Admin";
-        } elseif ($record["role"] == "Trust") {
-            $AccountType = "Trust";
-        } elseif ($record["role"] == "NGO") {
-            $AccountType = "NGO";
+        } elseif ($record["user_type"] == "Student") {
+            $AccountType = "Student";
+        } elseif ($record["user_type"] == "Faculty") {
+            $AccountType = "Faculty";
         }
 
         // Handle session and response for web platform
         if ($platform === "web") {
             $_SESSION["user_logged_in"] = true;
-            $_SESSION["id"] = $record["id"];
+            $_SESSION["userid"] = $record["u_id"];
             $_SESSION["name"] = $record["name"];
             $_SESSION["email"] = $record["email"];
 
@@ -86,7 +86,7 @@ try {
                 'message' => 'Success',
                 'user_type' => $AccountType,
                 'user_name' => $_SESSION["name"],
-                'user_id' => $_SESSION["id"]
+                'user_id' => $_SESSION["userid"]
             ];
             header("HTTP/1.0 200 Success");
             echo json_encode($Data);
@@ -95,7 +95,7 @@ try {
                 'status' => 200,
                 'message' => 'Login Success',
                 'user_logged_in' => 'true',
-                'user_id' => $record["id"],
+                'user_id' => $record["u_id"],
                 'user_name' => $record["name"],
                 'user_email' => $record["email"],
                 'user_type' => $AccountType
