@@ -27,9 +27,9 @@
 
                         <!-- Username -->
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="username" name="username" placeholder="Username"
+                            <input type="text" class="form-control" id="email" name="email" placeholder="Email"
                                 required autocomplete="off">
-                            <label for="username">Username</label>
+                            <label for="email">Email</label>
                         </div>
 
                         <!-- Password -->
@@ -52,6 +52,58 @@
             </div>
         </div>
     </section>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            if (!email || !password) {
+                alert("Please enter both email and password");
+                return;
+            }
+
+            try {
+                const res = await fetch("api/loginbk.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: email, // Backend expects "email"
+                        password: password
+                    })
+                });
+
+                const data = await res.json();
+                console.log("Login Response:", data);
+
+                if (data.status === 200) {
+                    alert(data.message);
+
+                    // ✅ Redirect user based on role
+                    if (data.user_type === "Admin") {
+                        window.location.href = "admin/add_courses.php";
+                    } else if (data.user_type === "Student") {
+                        window.location.href = "student/student_reg.php";
+                    } else if (data.user_type === "Faculty") {
+                        window.location.href = "faculty/dashboard.php";
+                    } else {
+                        alert("Unknown role. Please contact support.");
+                    }
+
+                } else {
+                    alert(data.message);
+                }
+            } catch (err) {
+                console.error("Login Error:", err);
+                alert("Something went wrong. Please try again.");
+            }
+        });
+    </script>
+
 </body>
 
 </html>

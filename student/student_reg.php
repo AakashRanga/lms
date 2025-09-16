@@ -92,6 +92,25 @@
             }
         }
     </style>
+    <style>
+        .status-approved {
+            background-color: #d4edda !important;
+            /* light green */
+            border: 1px solid #28a745;
+        }
+
+        .status-pending {
+            background-color: #fff3cd !important;
+            /* light yellow */
+            border: 1px solid #ffc107;
+        }
+
+        .status-rejected {
+            background-color: #f8d7da !important;
+            /* light red */
+            border: 1px solid #dc3545;
+        }
+    </style>
 </head>
 
 <body>
@@ -177,20 +196,31 @@
 
                             courses.forEach((course, index) => {
                                 const id = `course_${selectedSlot}_${index}`;
+
+                                let statusClass = "";
+                                if (course.student_status === "pending") {
+                                    statusClass = "status-pending"; // yellow
+                                } else if (course.student_status === "approved") {
+                                    statusClass = "status-approved"; // green
+                                } else if (course.student_status === "rejected") {
+                                    statusClass = "status-rejected"; // red
+                                }
+
                                 courseHtml += `
-                            <div class="col">
-                                <div class="h-100">
-                                    <label class="course-item d-flex" for="${id}">
-                                        <input type="radio" name="course" id="${id}" class="course-radio" 
-                                            value="${course.launch_c_id}" required />
-                                        <span class="course-label">
-                                            ${course.course_code} - ${course.course_name} - ${course.faculty_name}
-                                        </span>
-                                        <span class="count-badge">${course.seat_count}</span>
-                                    </label>
-                                </div>
-                            </div>`;
+                                    <div class="col">
+                                        <div class="h-100">
+                                            <label class="course-item d-flex ${statusClass}" for="${id}">
+                                                <input type="radio" name="course" id="${id}" class="course-radio" 
+                                                    value="${course.launch_c_id}" required />
+                                                <span class="course-label">
+                                                    ${course.course_code} - ${course.course_name} - ${course.faculty_name}
+                                                </span>
+                                                <span class="count-badge">${course.seat_count}</span>
+                                            </label>
+                                        </div>
+                                    </div>`;
                             });
+
 
                             $(".course-container").html(courseHtml);
                         });
