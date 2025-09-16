@@ -18,6 +18,9 @@
     <link rel="stylesheet" href="../stylesheet/styles.css">
 
     <style>
+        a{
+            text-decoration: none;
+        }
         /* ====== Dashboard Cards ====== */
         .dashboard-card {
             border: 1px solid #e5e7eb;
@@ -71,6 +74,25 @@
 
                 <!-- Page Content -->
                 <div class="p-4 content-scroll">
+                    <?php
+                    $pageTitles = [
+                        "dashboard.php"    => "Dashboard",
+                        "course-admin.php" => "Course Admin",
+                        "add-course.php"   => "Add Course"
+                    ];
+
+                    $currentPage = basename($_SERVER['PHP_SELF']); // e.g. add-course.php
+                    ?>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="active-course.php">Active Course</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <?= $pageTitles[$currentPage] ?? ucfirst(pathinfo($currentPage, PATHINFO_FILENAME)) ?>
+                            </li>
+                        </ol>
+                    </nav>
+
                     <div class="card-custom mt-4 p-4">
                         <h6 class="mb-3">Anatomy</h6>
 

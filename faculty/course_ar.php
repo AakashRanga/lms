@@ -18,6 +18,10 @@
 
     <link rel="stylesheet" href="../stylesheet/styles.css">
     <style>
+        a{
+            text-decoration:none;
+        }
+
         .card-custom {
             background-color: #fff;
             border-radius: 12px;
@@ -63,8 +67,19 @@
                 <?php include('topbar.php') ?>
                 <!-- Page Content -->
                 <div class="p-4 content-scroll">
+
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="course-admin.php">Course Admin</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Course Approval</li>
+                        </ol>
+                    </nav>
+
                     <!-- Courses Table -->
                     <div class="card-custom shadow mt-4 p-4">
+                        
                         <h5 class="mb-4">Courses List</h5>
                         <div class="table-responsive">
                             <table class="table table-bordered align-middle" id="coursesTable">
@@ -103,7 +118,7 @@
         $(document).ready(function () {
             function loadCourses() {
                 $.ajax({
-                    url: '../api/get_courses.php', // adjust path
+                    url: 'api/get_courses.php', // adjust path
                     type: 'GET',
                     dataType: 'json',
                     success: function (courses) {

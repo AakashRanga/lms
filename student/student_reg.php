@@ -115,8 +115,6 @@
                                 <div class="form-floating" style="width: 40%;">
                                     <select class="form-select" id="course_slot" name="course_slot" required>
                                         <option value="" selected disabled>Select Slot</option>
-                                        <option value="A">A</option>
-                                        <option value="B">B</option>
                                     </select>
                                     <label for="course_slot">Course Slot</label>
                                 </div>
@@ -124,7 +122,8 @@
                         </div>
                         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3 course-container">
                             <!-- Course 1 -->
-                            <div class="col">
+
+                            <!-- <div class="col">
                                 <div class="h-100">
                                     <label class="course-item d-flex" for="course1">
                                         <input type="radio" name="course" id="course1" class="course-radio" />
@@ -133,7 +132,8 @@
                                         <span class="count-badge">40</span>
                                     </label>
                                 </div>
-                            </div>
+                            </div> -->
+
                         </div>
 
                         <div class="mt-4 text-center">
@@ -149,6 +149,99 @@
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Fetch Lauch Slot -->
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: 'api/fetch_launch_course.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === "success") {
+                        const slots = Object.keys(response.data);
+
+                        // Fill slot dropdown
+                        let slotOptions = '<option value="" selected disabled>Select Slot</option>';
+                        slots.forEach(slot => {
+                            slotOptions += `<option value="${slot}">${slot}</option>`;
+                        });
+                        $('#course_slot').html(slotOptions);
+
+                        // On slot change -> show courses
+                        $('#course_slot').on('change', function() {
+                            const selectedSlot = $(this).val();
+                            const courses = response.data[selectedSlot];
+                            let courseHtml = "";
+
+                            courses.forEach((course, index) => {
+                                const id = `course_${selectedSlot}_${index}`;
+                                courseHtml += `
+                            <div class="col">
+                                <div class="h-100">
+                                    <label class="course-item d-flex" for="${id}">
+                                        <input type="radio" name="course" id="${id}" class="course-radio" 
+                                            value="${course.launch_c_id}" required />
+                                        <span class="course-label">
+                                            ${course.course_code} - ${course.course_name} - ${course.faculty_name}
+                                        </span>
+                                        <span class="count-badge">${course.seat_count}</span>
+                                    </label>
+                                </div>
+                            </div>`;
+                            });
+
+                            $(".course-container").html(courseHtml);
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching courses:", error);
+                }
+            });
+        });
+    </script>
+
+    <!-- send approval -->
+    <script>
+        $(document).ready(function() {
+            $("#sendApprovalBtn").on("click", function() {
+                const selectedCourse = $("input[name='course']:checked").val();
+                const selectedSlot = $("#course_slot").val();
+                const studentName = $("#student_name").val(); // hidden input / session
+                const studentRegNo = $("#student_reg_no").val(); // hidden input / session
+
+                if (!selectedCourse || !selectedSlot) {
+                    alert("Please select a slot and course before sending approval.");
+                    return;
+                }
+
+                $.ajax({
+                    url: 'api/send_student_approval.php',
+                    type: 'POST',
+                    data: {
+                        launch_c_id: selectedCourse,
+                        student_name: studentName,
+                        student_reg_no: studentRegNo,
+                        slot: selectedSlot
+                    },
+                    success: function(response) {
+                        if (response.status === "success") {
+                            alert("✅ " + response.message);
+                            location.reload();
+                        } else {
+                            alert("❌ " + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error:", error);
+                        alert("Something went wrong, please try again.");
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
