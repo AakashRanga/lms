@@ -4,6 +4,8 @@
     box-sizing: border-box;
 }
 
+
+
 .sidebar {
     min-height: 100vh;
     background-color: #ffffff;
@@ -36,6 +38,62 @@
 }
 
 /* Topbar */
+/* Topbar overall layout */
+.topbar {
+    background-color: #fff;
+    position: relative;
+    z-index: 100;
+}
+
+/* Avatar wrapper */
+.avatar {
+    position: relative;
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    display: inline-block;
+}
+
+/* Avatar image */
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    border-radius: 0.75rem;
+    border: 1px solid #e0e0e0;
+    padding: 0.5rem 0;
+    min-width: 12rem;
+}
+
+/* Dropdown items */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease;
+}
+
+/* Hover effect on dropdown items */
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Divider styling */
+.dropdown-divider {
+    margin: 0.5rem 0;
+}
+
+/* For mobile brand image spacing */
+.brand img {
+    border-radius: 6px;
+}
+
 .topbar {
     background-color: #ffffff;
     padding: 10px 20px;

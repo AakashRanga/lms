@@ -1,3 +1,6 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
 <!-- Sidebar for Small, Medium, and Large Screens (≥576px) -->
 <div class="col-sm-2 col-md-2 col-lg-2 d-none d-sm-block sidebar shadow bg-light p-3">
     <!-- Sidebar Header -->
@@ -10,12 +13,28 @@
     <a href="dashboard.php" class="d-block mb-2">
         <i class="bi bi-house-door me-2"></i> Home
     </a>
-    <a href="add_courses.php" class="d-block mb-2">
-        <i class="bi bi-book me-2"></i> Courses
-    </a>
-    <a href="analytics.php" class="d-block mb-2">
-        <i class="bi bi-bar-chart-line me-2"></i> Analytics
-    </a>
+    <div class="mb-2">
+        <!-- Main clickable toggle -->
+        <a class="d-flex justify-content-between align-items-center text-decoration-none" href="#"
+            data-bs-toggle="collapse" data-bs-target="#coursesMenu" aria-expanded="false">
+            <span><i class="bi bi-book me-2"></i> Courses</span>
+            <i class="bi bi-chevron-down"></i>
+        </a>
+
+        <!-- Collapsible submenu -->
+        <div class="collapse ps-4 mt-1" id="coursesMenu">
+            <ul class="list-styled mb-0">
+                <li class="mb-1">
+                    <a href="add_courses.php" class="text-decoration-none d-block">Add Course</a>
+                </li>
+                <li>
+                    <a href="course_approval.php" class="text-decoration-none d-block">Course Approval</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
     <a href="notifications.php" class="d-block mb-2">
         <i class="bi bi-bell me-2"></i> Notifications
     </a>
@@ -36,12 +55,30 @@
         <a href="dashboard.php" class="d-block mb-2">
             <i class="bi bi-house-door me-2"></i> Home
         </a>
-        <a href="course-admin.php" class="d-block mb-2">
-            <i class="bi bi-book me-2"></i> Courses
+        <div class="mb-2">
+            <!-- Main clickable toggle -->
+            <a class="d-flex justify-content-between align-items-center text-decoration-none" href="#"
+                data-bs-toggle="collapse" data-bs-target="#coursesMenu" aria-expanded="false">
+                <span><i class="bi bi-book me-2"></i> Courses</span>
+                <i class="bi bi-chevron-down"></i>
+            </a>
+
+            <!-- Collapsible submenu -->
+            <div class="collapse ps-4 mt-1" id="coursesMenu">
+                <ul class="list-styled mb-0">
+                    <li class="mb-1">
+                        <a href="add_courses.php" class="text-decoration-none d-block">Add Course</a>
+                    </li>
+                    <li>
+                        <a href="course_approval.php" class="text-decoration-none d-block">Course Approval</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <a href="course_approval.php" class="d-block mb-2">
+            <i class="bi bi-bar-chart-line me-2"></i> Course Approval
         </a>
-        <a href="analytics.php" class="d-block mb-2">
-            <i class="bi bi-bar-chart-line me-2"></i> Analytics
-        </a>
+
         <a href="notifications.php" class="d-block mb-2">
             <i class="bi bi-bell me-2"></i> Notifications
         </a>

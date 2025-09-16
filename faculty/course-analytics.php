@@ -53,6 +53,10 @@
             height: 300px !important;
             /* or any value you prefer */
         }
+
+        li a {
+            text-decoration: none !important;
+        }
     </style>
 </head>
 
@@ -69,6 +73,25 @@
 
                 <!-- Page Content -->
                 <div class="p-4 content-scroll">
+                    <?php
+                    $pageTitles = [
+                        "dashboard.php" => "Dashboard",
+                        "course-admin.php" => "Course Admin",
+                        "add-course.php" => "Add Course"
+                    ];
+
+                    $currentPage = basename($_SERVER['PHP_SELF']); // e.g. add-course.php
+                    ?>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="active-course.php">Active Course</a></li>
+                            <li class="breadcrumb-item"><a href="course-details.php">Course Details</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <?= $pageTitles[$currentPage] ?? ucfirst(pathinfo($currentPage, PATHINFO_FILENAME)) ?>
+                            </li>
+                        </ol>
+                    </nav>
                     <div class="card-custom mt-4">
                         <h4 class="pb-3">Course Analytics</h4>
 
@@ -183,9 +206,7 @@
                     <span class="fw-bold">${item.attainment}%</span> Attainment &nbsp;|&nbsp; 
                     <span class="fw-bold">${item.avg}%</span> Avg Score
                 </div>
-                <div class="mt-2 text-center">
-                    <button class="btn btn-primary btn-sm">Download Raw Data</button>
-                </div>
+                
             </div>
         `;
             container.appendChild(card);

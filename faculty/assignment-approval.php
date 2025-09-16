@@ -48,11 +48,17 @@
             border: 1px solid #f0f0f0;
             padding: 10px;
         }
-        .form-table{
+
+        .form-table {
             padding-top: 20px;
         }
-        .form-label{
-            color:#000;
+
+        .form-label {
+            color: #000;
+        }
+
+        li a {
+            text-decoration: none !important;
         }
     </style>
 </head>
@@ -70,6 +76,28 @@
 
                 <!-- Page Content -->
                 <div class="p-4 content-scroll">
+                    <?php
+                    $pageTitles = [
+                        "dashboard.php" => "Dashboard",
+                        "course-admin.php" => "Course Admin",
+                        "add-course.php" => "Add Course"
+                    ];
+
+                    $currentPage = basename($_SERVER['PHP_SELF']); // e.g. add-course.php
+                    ?>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="active-course.php">Active Course</a></li>
+                            <li class="breadcrumb-item"><a href="course-details.php">Course Details</a></li>
+
+
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <?= $pageTitles[$currentPage] ?? ucfirst(pathinfo($currentPage, PATHINFO_FILENAME)) ?>
+                            </li>
+                        </ol>
+                    </nav>
+                    <br>
                     <!-- Nav Tabs -->
                     <ul class="nav nav-tabs" id="assignmentTabs" role="tablist">
                         <li class="nav-item" role="presentation">
@@ -78,7 +106,7 @@
                                 Add Assignment
                             </button>
                         </li>
-                        
+
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="approval-tab" data-bs-toggle="tab"
                                 data-bs-target="#assignmentApproval" type="button" role="tab">
@@ -149,31 +177,31 @@
                                 <div class="form-table shadow p-3 mt-4">
                                     <h5>View Assignments</h5>
                                     <table class="table table-bordered mt-3">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Topic</th>
-                                            <th>Assigned Date</th>
-                                            <th>Due Date</th>
-                                            <th>View File</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Algebra Basics</td>
-                                            <td>2025-09-10</td>
-                                            <td>2025-09-20</td>
-                                            <td><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf"
-                                                    target="_blank">View File</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Chemistry Basics</td>
-                                            <td>2025-09-11</td>
-                                            <td>2025-09-21</td>
-                                            <td><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf"
-                                                    target="_blank">View File</a></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Topic</th>
+                                                <th>Assigned Date</th>
+                                                <th>Due Date</th>
+                                                <th>View File</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Algebra Basics</td>
+                                                <td>2025-09-10</td>
+                                                <td>2025-09-20</td>
+                                                <td><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf"
+                                                        target="_blank">View File</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Chemistry Basics</td>
+                                                <td>2025-09-11</td>
+                                                <td>2025-09-21</td>
+                                                <td><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf"
+                                                        target="_blank">View File</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
                                 </div>
 

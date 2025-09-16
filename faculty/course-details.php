@@ -18,9 +18,10 @@
     <link rel="stylesheet" href="../stylesheet/styles.css">
 
     <style>
-        a{
+        a {
             text-decoration: none;
         }
+
         /* ====== Dashboard Cards ====== */
         .dashboard-card {
             border: 1px solid #e5e7eb;
@@ -76,9 +77,9 @@
                 <div class="p-4 content-scroll">
                     <?php
                     $pageTitles = [
-                        "dashboard.php"    => "Dashboard",
+                        "dashboard.php" => "Dashboard",
                         "course-admin.php" => "Course Admin",
-                        "add-course.php"   => "Add Course"
+                        "add-course.php" => "Add Course"
                     ];
 
                     $currentPage = basename($_SERVER['PHP_SELF']); // e.g. add-course.php
@@ -87,6 +88,8 @@
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="active-course.php">Active Course</a></li>
+                            <!-- <li class="breadcrumb-item"><a href="course-details.php">Course Details</a></li> -->
+
                             <li class="breadcrumb-item active" aria-current="page">
                                 <?= $pageTitles[$currentPage] ?? ucfirst(pathinfo($currentPage, PATHINFO_FILENAME)) ?>
                             </li>
