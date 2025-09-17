@@ -149,10 +149,24 @@
                                         </div>
                                         <div class="questions-container"></div>
                                         <div class="col-12 text-center mt-3 d-flex justify-content-start gap-2">
-                                            <button type="button"
-                                                class="btn btn-secondary btn-sm mt-2 addQuestionBtn">Add
-                                                10 Practice Questions</button>
+                                            <!-- Add Question Button -->
+                                            <button type="button" class="btn btn-primary btn-sm mt-2 addQuestionBtn">
+                                                + Add 10 Questions
+                                            </button>
+
+                                            <!-- CO Level Select -->
+                                            <select class="form-select form-select-sm mt-2" style="width: auto;" id="coLevelSelect">
+                                                <option selected disabled>Select CO Level</option>
+                                                <option value="CO1">CO1</option>
+                                                <option value="CO2">CO2</option>
+                                                <option value="CO3">CO3</option>
+                                                <option value="CO4">CO4</option>
+                                                <option value="CO5">CO5</option>
+                                                <option value="CO6">CO6</option>
+                                            </select>
                                         </div>
+
+
 
 
                                     </div>
@@ -219,7 +233,7 @@
                         const radios = block.querySelectorAll('.form-check-input');
                         radios.forEach(r => r.setAttribute('name', `correct_answer_${num}`));
                     });
-                    questionCount.textContent = blocks.length;  // update count
+                    questionCount.textContent = blocks.length; // update count
                 }
 
                 addQuestionBtn.addEventListener('click', () => {
@@ -275,7 +289,7 @@
                             <span class="badge bg-primary">Total: <span class="question-count">0</span></span>
                         </div>
                         <div class="questions-container"></div>
-                        <button type="button" class="btn btn-secondary btn-sm mt-2 addQuestionBtn">Add 10 Practice Questions</button>
+                        <button type="button" class="btn btn-secondary btn-sm mt-2 addQuestionBtn"> + Add 10 Questions</button>
                     </div>
                 </div>
             `;

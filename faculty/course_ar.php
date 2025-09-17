@@ -18,8 +18,8 @@
 
     <link rel="stylesheet" href="../stylesheet/styles.css">
     <style>
-        a{
-            text-decoration:none;
+        a {
+            text-decoration: none;
         }
 
         .card-custom {
@@ -79,7 +79,7 @@
 
                     <!-- Courses Table -->
                     <div class="card-custom shadow mt-4 p-4">
-                        
+
                         <h5 class="mb-4">Courses List</h5>
                         <div class="table-responsive">
                             <table class="table table-bordered align-middle" id="coursesTable">
@@ -88,8 +88,9 @@
                                         <th>S no</th>
                                         <th>Course Name</th>
                                         <th>Course Code</th>
-                                        <th>Department</th>
-                                        <th>Branch</th>
+                                        <th>Slot</th>
+                                        <th>Name</th>
+                                        <th>Register Number</th>
                                         <th>Course Type</th>
                                         <th>Duration</th>
                                         <th>Seats</th>
@@ -115,25 +116,26 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             function loadCourses() {
                 $.ajax({
-                    url: 'api/get_courses.php', // adjust path
+                    url: 'api/get_courses.php',
                     type: 'GET',
                     dataType: 'json',
-                    success: function (courses) {
+                    success: function(courses) {
                         let tbody = '';
                         courses.forEach((course, index) => {
                             let statusBadge = course.status === 'approved' ? 'bg-success' :
                                 course.status === 'rejected' ? 'bg-danger' : 'bg-warning';
                             let statusText = course.status ? course.status.charAt(0).toUpperCase() + course.status.slice(1) : 'Pending';
 
-                            tbody += `<tr>
+                            tbody += `<tr data-approval-id="${course.approval_id}">
                         <td>${index + 1}</td>
                         <td>${course.course_name}</td>
                         <td>${course.course_code}</td>
-                        <td>${course.department}</td>
-                        <td>${course.branch}</td>
+                        <td>${course.slot}</td>
+                        <td>${course.student_name}</td>
+                        <td>${course.student_reg_no}</td>
                         <td>${course.course_type}</td>
                         <td>${course.duration}</td>
                         <td>${course.seat_allotment}</td>
@@ -146,7 +148,7 @@
                         });
                         $('#coursesApproveReject').html(tbody);
                     },
-                    error: function (err) {
+                    error: function(err) {
                         console.error('Error fetching courses:', err);
                     }
                 });
@@ -154,18 +156,39 @@
 
             loadCourses();
 
-            // Approve/Reject buttons
-            $('#coursesApproveReject').on('click', '.approveBtn, .rejectBtn', function () {
+            // Approve/Reject buttons with AJAX call
+            $('#coursesApproveReject').on('click', '.approveBtn, .rejectBtn', function() {
                 let row = $(this).closest('tr');
-                let badge = row.find('td:nth-child(9) span');
-                if ($(this).hasClass('approveBtn')) {
-                    badge.removeClass('bg-warning bg-danger').addClass('bg-success').text('Approved');
-                } else {
-                    badge.removeClass('bg-warning bg-success').addClass('bg-danger').text('Rejected');
-                }
+                let approvalId = row.data('approval-id');
+                let newStatus = $(this).hasClass('approveBtn') ? 'approved' : 'rejected';
+
+                $.ajax({
+                    url: 'api/update_course_status.php',
+                    type: 'POST',
+                    data: {
+                        approval_id: approvalId,
+                        status: newStatus
+                    },
+                    success: function(res) {
+                        if (res.status === 'success') {
+                            let badge = row.find('td:nth-child(10) span'); // badge column
+                            if (newStatus === 'approved') {
+                                badge.removeClass('bg-warning bg-danger').addClass('bg-success').text('Approved');
+                            } else {
+                                badge.removeClass('bg-warning bg-success').addClass('bg-danger').text('Rejected');
+                            }
+                        } else {
+                            alert(res.message || 'Failed to update');
+                        }
+                    },
+                    error: function(err) {
+                        console.error('Error updating status:', err);
+                    }
+                });
             });
         });
     </script>
+
 </body>
 
 </html>
