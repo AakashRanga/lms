@@ -22,10 +22,10 @@
         <div class="collapse ps-4 mt-1" id="coursesMenu">
             <ul class="list-styled mb-0">
                 <li class="mb-1">
-                    <a href="add_courses.php" class="text-decoration-none d-block">Add Course</a>
+                    <a href="launch-course.php" class="text-decoration-none d-block">Add Course</a>
                 </li>
                 <li>
-                    <a href="course_approval.php" class="text-decoration-none d-block">Course Approval</a>
+                    <a href="course_ar.php" class="text-decoration-none d-block">Course Approval</a>
                 </li>
             </ul>
         </div>

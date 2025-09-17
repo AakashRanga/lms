@@ -107,38 +107,38 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             function loadCourses() {
                 $.ajax({
-                    url: 'api/get_courses.php', // adjust path
+                    url: 'api/get_courses.php',
                     type: 'GET',
                     dataType: 'json',
-                    success: function (courses) {
+                    success: function(courses) {
                         let tbody = '';
                         courses.forEach((course, index) => {
                             let statusBadge = course.status === 'approved' ? 'bg-success' :
                                 course.status === 'rejected' ? 'bg-danger' : 'bg-warning';
                             let statusText = course.status ? course.status.charAt(0).toUpperCase() + course.status.slice(1) : 'Pending';
 
-                            tbody += `<tr>
-                        <td>${index + 1}</td>
-                        <td>${course.course_name}</td>
-                        <td>${course.course_code}</td>
-                        <td>${course.department}</td>
-                        <td>${course.branch}</td>
-                        <td>${course.course_type}</td>
-                        <td>${course.duration}</td>
-                        <td>${course.seat_allotment}</td>
-                        <td><span class="badge ${statusBadge}">${statusText}</span></td>
-                        <td>
-                            <button class="btn btn-success btn-sm me-1 approveBtn">Approve</button>
-                            <button class="btn btn-danger btn-sm rejectBtn">Reject</button>
-                        </td>
-                    </tr>`;
+                            tbody += `<tr data-id="${course.id}">
+                            <td>${index + 1}</td>
+                            <td>${course.course_name}</td>
+                            <td>${course.course_code}</td>
+                            <td>${course.department}</td>
+                            <td>${course.branch}</td>
+                            <td>${course.course_type}</td>
+                            <td>${course.duration}</td>
+                            <td>${course.seat_allotment}</td>
+                            <td><span class="badge ${statusBadge}">${statusText}</span></td>
+                            <td>
+                                <button class="btn btn-success btn-sm me-1 approveBtn">Approve</button>
+                                <button class="btn btn-danger btn-sm rejectBtn">Reject</button>
+                            </td>
+                        </tr>`;
                         });
                         $('#coursesApproveReject').html(tbody);
                     },
-                    error: function (err) {
+                    error: function(err) {
                         console.error('Error fetching courses:', err);
                     }
                 });
@@ -146,18 +146,40 @@
 
             loadCourses();
 
-            // Approve/Reject buttons
-            $('#coursesApproveReject').on('click', '.approveBtn, .rejectBtn', function () {
+            // Approve/Reject buttons with backend call
+            $('#coursesApproveReject').on('click', '.approveBtn, .rejectBtn', function() {
                 let row = $(this).closest('tr');
-                let badge = row.find('td:nth-child(9) span');
-                if ($(this).hasClass('approveBtn')) {
-                    badge.removeClass('bg-warning bg-danger').addClass('bg-success').text('Approved');
-                } else {
-                    badge.removeClass('bg-warning bg-success').addClass('bg-danger').text('Rejected');
-                }
+                let courseId = row.data('id');
+                let newStatus = $(this).hasClass('approveBtn') ? 'approved' : 'rejected';
+
+                $.ajax({
+                    url: 'api/update_course_status.php',
+                    type: 'POST',
+                    data: {
+                        id: courseId,
+                        status: newStatus
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.status === "success") {
+                            let badge = row.find('td:nth-child(9) span');
+                            if (newStatus === 'approved') {
+                                badge.removeClass('bg-warning bg-danger').addClass('bg-success').text('Approved');
+                            } else {
+                                badge.removeClass('bg-warning bg-success').addClass('bg-danger').text('Rejected');
+                            }
+                        } else {
+                            alert("Error: " + res.message);
+                        }
+                    },
+                    error: function(err) {
+                        console.error("Error updating status:", err);
+                    }
+                });
             });
         });
     </script>
+
 </body>
 
 </html>
