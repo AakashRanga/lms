@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -76,7 +77,7 @@
                                         <label for="courseCode">Course Code</label>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Course Name -->
                                 <div class="col-md-6">
                                     <div class="form-floating">
@@ -86,7 +87,7 @@
                                     </div>
                                 </div>
 
-                                
+
 
 
                             </div>
@@ -187,15 +188,15 @@
 
     <script>
         // Search in table
-        $('#courseSearch').on('keyup', function() {
+        $('#courseSearch').on('keyup', function () {
             let searchValue = $(this).val().toLowerCase();
-            $('#coursesTable tbody tr').filter(function() {
+            $('#coursesTable tbody tr').filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
             });
         });
 
         // Add course via AJAX
-        $('#addCourseForm').on('submit', function(e) {
+        $('#addCourseForm').on('submit', function (e) {
             e.preventDefault();
 
             $.ajax({
@@ -205,7 +206,7 @@
                 contentType: false, // required for FormData
                 processData: false, // required for FormData
                 dataType: 'json', // <-- let jQuery parse JSON automatically
-                success: function(data) {
+                success: function (data) {
                     if (data.status == 200) {
                         Swal.fire({
                             icon: 'success',
@@ -224,7 +225,7 @@
                         });
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -239,7 +240,7 @@
                 url: 'api/fetch_course.php',
                 type: 'GET',
                 dataType: 'json',
-                success: function(courses) {
+                success: function (courses) {
                     let tbody = '';
                     courses.forEach((course, index) => {
                         tbody += `<tr>
@@ -265,13 +266,13 @@
                     });
                     $('#coursesTableBody').html(tbody);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.log('Error fetching courses:', error);
                 }
             });
         }
 
-        $(document).on('click', '.edit-btn', function() {
+        $(document).on('click', '.edit-btn', function () {
             let courseId = $(this).data('id');
             let courseName = $(this).data('name');
             let courseCode = $(this).data('code');
@@ -290,7 +291,7 @@
         });
 
 
-        $('#saveChangesBtn').on('click', function() {
+        $('#saveChangesBtn').on('click', function () {
             let formData = $('#editCourseForm').serialize();
 
             $.ajax({
@@ -298,7 +299,7 @@
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         $('#editcourse').modal('hide');
                         loadCourses(); // refresh table
@@ -306,7 +307,7 @@
                         alert(response.message);
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.log('Error updating course:', error);
                 }
             });
@@ -314,16 +315,11 @@
 
 
         // Load courses on page load
-        $(document).ready(function() {
+        $(document).ready(function () {
             loadCourses();
         });
     </script>
 
-
-
-
-    <!-- Bootstrap JS Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

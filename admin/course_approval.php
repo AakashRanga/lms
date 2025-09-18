@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -102,18 +103,16 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             function loadCourses() {
                 $.ajax({
                     url: 'api/get_courses.php',
                     type: 'GET',
                     dataType: 'json',
-                    success: function(courses) {
+                    success: function (courses) {
                         let tbody = '';
                         courses.forEach((course, index) => {
                             let statusBadge = course.status === 'approved' ? 'bg-success' :
@@ -138,7 +137,7 @@
                         });
                         $('#coursesApproveReject').html(tbody);
                     },
-                    error: function(err) {
+                    error: function (err) {
                         console.error('Error fetching courses:', err);
                     }
                 });
@@ -147,7 +146,7 @@
             loadCourses();
 
             // Approve/Reject buttons with backend call
-            $('#coursesApproveReject').on('click', '.approveBtn, .rejectBtn', function() {
+            $('#coursesApproveReject').on('click', '.approveBtn, .rejectBtn', function () {
                 let row = $(this).closest('tr');
                 let courseId = row.data('id');
                 let newStatus = $(this).hasClass('approveBtn') ? 'approved' : 'rejected';
@@ -160,7 +159,7 @@
                         status: newStatus
                     },
                     dataType: 'json',
-                    success: function(res) {
+                    success: function (res) {
                         if (res.status === "success") {
                             let badge = row.find('td:nth-child(9) span');
                             if (newStatus === 'approved') {
@@ -172,7 +171,7 @@
                             alert("Error: " + res.message);
                         }
                     },
-                    error: function(err) {
+                    error: function (err) {
                         console.error("Error updating status:", err);
                     }
                 });

@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Portal</title>
+    <title>Facutly Portal</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="../images/logo1.png">
 
@@ -142,8 +142,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="slot" name="slot"
-                                            placeholder="Slot" required>
+                                        <input type="text" class="form-control" id="slot" name="slot" placeholder="Slot"
+                                            required>
                                         <label for="slot">Slot</label>
                                     </div>
                                 </div>
@@ -194,7 +194,7 @@
 
                     <!-- 🔍 JavaScript for search -->
                     <script>
-                        document.getElementById('courseSearch').addEventListener('keyup', function() {
+                        document.getElementById('courseSearch').addEventListener('keyup', function () {
                             const searchValue = this.value.toLowerCase();
                             const rows = document.querySelectorAll('#coursesTable tbody tr');
 
@@ -294,14 +294,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Search in table
-        $('#courseSearch').on('keyup', function() {
+        $('#courseSearch').on('keyup', function () {
             let searchValue = $(this).val().toLowerCase();
-            $('#coursesTable tbody tr').filter(function() {
+            $('#coursesTable tbody tr').filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
             });
         });
 
-        $('#addCourseForm').on('submit', function(e) {
+        $('#addCourseForm').on('submit', function (e) {
             e.preventDefault();
 
             const $form = $(this);
@@ -318,7 +318,7 @@
                 headers: {
                     'Accept': 'application/json'
                 },
-                success: function(data, textStatus, xhr) {
+                success: function (data, textStatus, xhr) {
                     // Success callback for 2xx responses
                     if (data && data.status == 200) {
                         Swal.fire({
@@ -340,7 +340,7 @@
                         });
                     }
                 },
-                error: function(xhr, textStatus, errorThrown) {
+                error: function (xhr, textStatus, errorThrown) {
                     // Try to extract exact message from JSON response
                     let message = null;
 
@@ -377,7 +377,7 @@
                         responseText: xhr.responseText
                     });
                 },
-                complete: function() {
+                complete: function () {
                     // re-enable button
                     $btn.prop('disabled', false);
                 }
@@ -389,7 +389,7 @@
                 url: 'api/get_courses.php',
                 type: 'GET',
                 dataType: 'json',
-                success: function(courses) {
+                success: function (courses) {
                     let tbody = '';
                     courses.forEach((course, index) => {
                         tbody += `<tr>
@@ -410,7 +410,7 @@
                     });
                     $('#coursesTableBody').html(tbody);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.log('Error fetching courses:', error);
                 }
             });
@@ -421,7 +421,7 @@
                 url: '../admin/api/fetch_course.php',
                 type: 'GET',
                 dataType: 'json',
-                success: function(courses) {
+                success: function (courses) {
                     let nameOptions = '<option value="" selected disabled>Select Course Name</option>';
                     let codeOptions = '<option value="" selected disabled>Select Course Code</option>';
 
@@ -441,7 +441,7 @@
                     $('#courseCode').html(codeOptions);
 
                     // When selecting Course Name -> auto select Course Code
-                    $('#courseName').on('change', function() {
+                    $('#courseName').on('change', function () {
                         let selectedCode = $(this).find(':selected').data('code');
                         let selectedId = $(this).find(':selected').data('id');
                         $('#courseCode').val(selectedCode);
@@ -449,14 +449,14 @@
                     });
 
                     // When selecting Course Code -> auto select Course Name
-                    $('#courseCode').on('change', function() {
+                    $('#courseCode').on('change', function () {
                         let selectedName = $(this).find(':selected').data('name');
                         let selectedId = $(this).find(':selected').data('id');
                         $('#courseName').val(selectedName);
                         $('#courseid').val(selectedId);
                     });
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.log('Error fetching courses:', error);
                 }
             });
@@ -464,15 +464,12 @@
 
 
         // Load courses on page load
-        $(document).ready(function() {
+        $(document).ready(function () {
             loadCourses();
             loadCourseDropdowns();
         });
     </script>
 
-
-    <!-- Bootstrap JS Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

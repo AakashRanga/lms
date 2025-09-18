@@ -1,10 +1,13 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Portal</title>
+    <title>Faculty Portal</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="../images/logo1.png">
 
@@ -111,18 +114,16 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             function loadCourses() {
                 $.ajax({
                     url: 'api/get_course_approval.php',
                     type: 'GET',
                     dataType: 'json',
-                    success: function(courses) {
+                    success: function (courses) {
                         let tbody = '';
                         courses.forEach((course, index) => {
                             let statusBadge = course.status === 'approved' ? 'bg-success' :
@@ -148,7 +149,7 @@
                         });
                         $('#coursesApproveReject').html(tbody);
                     },
-                    error: function(err) {
+                    error: function (err) {
                         console.error('Error fetching courses:', err);
                     }
                 });
@@ -157,7 +158,7 @@
             loadCourses();
 
             // Approve/Reject buttons with AJAX call
-            $('#coursesApproveReject').on('click', '.approveBtn, .rejectBtn', function() {
+            $('#coursesApproveReject').on('click', '.approveBtn, .rejectBtn', function () {
                 let row = $(this).closest('tr');
                 let approvalId = row.data('approval-id');
                 let newStatus = $(this).hasClass('approveBtn') ? 'approved' : 'rejected';
@@ -169,7 +170,7 @@
                         approval_id: approvalId,
                         status: newStatus
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (res.status === 'success') {
                             let badge = row.find('td:nth-child(10) span'); // badge column
                             if (newStatus === 'approved') {
@@ -181,12 +182,13 @@
                             alert(res.message || 'Failed to update');
                         }
                     },
-                    error: function(err) {
+                    error: function (err) {
                         console.error('Error updating status:', err);
                     }
                 });
             });
         });
+    </script>
     </script>
 
 </body>

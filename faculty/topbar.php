@@ -1,4 +1,3 @@
-
 <!-- Topbar -->
 <div class="topbar d-flex justify-content-between justify-content-md-end align-items-center shadow p-3 shadow-sm">
 
@@ -62,17 +61,19 @@
 </div>
 
 <script>
-document.getElementById("logoutBtn").addEventListener("click", function(e) {
-    e.preventDefault(); // stop default link
-    fetch("api/logout.php", { method: "POST" })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === 200) {
-            window.location.href = "../"; // go to login page
-        } else {
-            alert("Logout failed: " + data.message);
-        }
-    })
-    .catch(err => console.error(err));
-});
+    document.getElementById("logoutBtn").addEventListener("click", function (e) {
+        e.preventDefault(); // stop default link
+        fetch("api/logout.php", { method: "POST" })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 200) {
+                    window.location.href = "../"; // go to login page
+                } else {
+                    alert("Logout failed: " + data.message);
+                }
+            })
+            .catch(err => console.error(err));
+    });
 </script>
+<!-- Bootstrap JS Bundle (includes Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -172,12 +175,12 @@
 
     <!-- Fetch Lauch Slot -->
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $.ajax({
                 url: 'api/fetch_launch_course.php',
                 type: 'GET',
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     if (response.status === "success") {
                         const slots = Object.keys(response.data);
 
@@ -189,7 +192,7 @@
                         $('#course_slot').html(slotOptions);
 
                         // On slot change -> show courses
-                        $('#course_slot').on('change', function() {
+                        $('#course_slot').on('change', function () {
                             const selectedSlot = $(this).val();
                             const courses = response.data[selectedSlot];
                             let courseHtml = "";
@@ -226,7 +229,7 @@
                         });
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("Error fetching courses:", error);
                 }
             });
@@ -235,8 +238,8 @@
 
     <!-- send approval -->
     <script>
-        $(document).ready(function() {
-            $("#sendApprovalBtn").on("click", function() {
+        $(document).ready(function () {
+            $("#sendApprovalBtn").on("click", function () {
                 const selectedCourse = $("input[name='course']:checked").val();
                 const selectedSlot = $("#course_slot").val();
                 const studentName = $("#student_name").val(); // hidden input / session
@@ -256,7 +259,7 @@
                         student_reg_no: studentRegNo,
                         slot: selectedSlot
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.status === "success") {
                             alert("✅ " + response.message);
                             location.reload();
@@ -264,7 +267,7 @@
                             alert("❌ " + response.message);
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error("Error:", error);
                         alert("Something went wrong, please try again.");
                     }

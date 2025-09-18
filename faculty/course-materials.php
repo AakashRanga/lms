@@ -1,9 +1,12 @@
 <?php
+session_start();
+?>
+<?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $course_name = $_POST['course_name'] ?? '';
     $course_code = $_POST['course_code'] ?? '';
 
-  
+
 }
 ?>
 
@@ -103,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" id="courseName" name="course_name"
-                                    value="<?php echo $course_name; ?>"  placeholder="Course Name" readonly>
+                                        value="<?php echo $course_name; ?>" placeholder="Course Name" readonly>
                                     <label for="courseName">Course Name</label>
                                 </div>
                             </div>
@@ -112,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" id="courseCode" name="code_code"
-                                       value="<?php echo $course_code; ?>" placeholder="Course Code" readonly>
+                                        value="<?php echo $course_code; ?>" placeholder="Course Code" readonly>
                                     <label for="unit">Course Code </label>
                                 </div>
                             </div>
@@ -164,7 +167,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             </button>
 
                                             <!-- CO Level Select -->
-                                            <select class="form-select form-select-sm mt-2" style="width: auto;" id="coLevelSelect">
+                                            <select class="form-select form-select-sm mt-2" style="width: auto;"
+                                                id="coLevelSelect">
                                                 <option selected disabled>Select CO Level</option>
                                                 <option value="CO1">CO1</option>
                                                 <option value="CO2">CO2</option>
@@ -194,8 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <!-- JS Script -->
     <script>

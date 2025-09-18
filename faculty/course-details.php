@@ -27,7 +27,7 @@ if ($lauch_course_id) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Portal</title>
+    <title>Faculty Portal</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="../images/logo1.png">
@@ -143,12 +143,16 @@ if ($lauch_course_id) {
 
                                 <!-- Course Materials -->
                                 <div class="col">
-                                    <form id="courseForm" action="course-materials.php" method="POST" style="display:none;">
-                                        <input type="hidden" name="course_name" value="<?php echo htmlspecialchars($course_name); ?>">
-                                        <input type="hidden" name="course_code" value="<?php echo htmlspecialchars($course_code); ?>">
+                                    <form id="courseForm" action="course-materials.php" method="POST"
+                                        style="display:none;">
+                                        <input type="hidden" name="course_name"
+                                            value="<?php echo htmlspecialchars($course_name); ?>">
+                                        <input type="hidden" name="course_code"
+                                            value="<?php echo htmlspecialchars($course_code); ?>">
                                     </form>
 
-                                    <a href="javascript:void(0);" class="text-decoration-none text-dark" onclick="document.getElementById('courseForm').submit();">
+                                    <a href="javascript:void(0);" class="text-decoration-none text-dark"
+                                        onclick="document.getElementById('courseForm').submit();">
                                         <div class="dashboard-card text-center p-4">
                                             <div class="icon-circle mb-2">
                                                 <i class="bi bi-book"></i>
@@ -198,8 +202,6 @@ if ($lauch_course_id) {
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

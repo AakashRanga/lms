@@ -1,10 +1,13 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Portal</title>
+    <title>Faculty Portal</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="../images/logo1.png">
 
@@ -75,9 +78,9 @@
                 <div class="p-4 content-scroll">
                     <?php
                     $pageTitles = [
-                        "dashboard.php"    => "Dashboard",
+                        "dashboard.php" => "Dashboard",
                         "course-admin.php" => "Course Admin",
-                        "add-course.php"   => "Add Course"
+                        "add-course.php" => "Add Course"
                     ];
 
                     $currentPage = basename($_SERVER['PHP_SELF']); // e.g. add-course.php
@@ -111,19 +114,18 @@
     </div>
 
     <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $.ajax({
                 url: "api/faculty_courses.php",
                 type: "GET",
                 dataType: "json",
-                success: function(response) {
+                success: function (response) {
                     if (response.status === 200) {
                         let html = "";
-                        response.data.forEach(function(course) {
+                        response.data.forEach(function (course) {
                             html += `
                                                     <div class="col">
                                                         <a href="course-details.php?launch_c_id=${course.id}" class="text-decoration-none text-dark">
@@ -144,7 +146,7 @@
                         $("#courseList").html("<p class='text-muted'>No active courses found.</p>");
                     }
                 },
-                error: function() {
+                error: function () {
                     $("#courseList").html("<p class='text-danger'>Error loading courses.</p>");
                 }
             });
