@@ -2,20 +2,22 @@
 $lauch_course_id = $_GET['launch_c_id'] ?? null;
 $course_name = 'Null';
 $course_code = 'Null';
+$course_id = 'Null';
+$faculty_id = 'Null';
 
 if ($lauch_course_id) {
     include "../includes/config.php";
 
     // JOIN query to fetch course_name and course_code directly
     $stmt = $conn->prepare("
-        SELECT c.course_name, c.course_code 
+        SELECT c.course_name, c.course_code, c.c_id, lc.faculty_id, lc.id
         FROM launch_courses lc
         INNER JOIN course c ON lc.c_id = c.c_id
-        WHERE lc.c_id = ?
+        WHERE lc.id = ?
     ");
     $stmt->bind_param("s", $lauch_course_id);
     $stmt->execute();
-    $stmt->bind_result($course_name, $course_code);
+    $stmt->bind_result($course_name, $course_code, $course_id, $faculty_id, $launch_c_id);
     $stmt->fetch();
     $stmt->close();
 }
@@ -149,6 +151,12 @@ if ($lauch_course_id) {
                                             value="<?php echo htmlspecialchars($course_name); ?>">
                                         <input type="hidden" name="course_code"
                                             value="<?php echo htmlspecialchars($course_code); ?>">
+                                        <input type="hidden" name="course_id"
+                                        value="<?php echo htmlspecialchars($course_id); ?>">
+                                        <input type="hidden" name="faculty_id"
+                                        value="<?php echo htmlspecialchars($faculty_id); ?>">
+                                           <input type="hidden" name="launch_c_id"
+                                        value="<?php echo htmlspecialchars($launch_c_id); ?>">
                                     </form>
 
                                     <a href="javascript:void(0);" class="text-decoration-none text-dark"

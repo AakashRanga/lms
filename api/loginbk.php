@@ -27,14 +27,14 @@ try {
         throw new Exception('Missing Field(s): ' . implode(', ', $missingFields), 400);
     }
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        throw new Exception('Invalid email format', 400);
-    }
+    // if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    //     throw new Exception('Invalid email format', 400);
+    // }
 
     $platform    = isset($json_data['platform']) ? addslashes(trim($json_data['platform'])) : 'web';
 
     // Query to check user existence and their admin status
-    $CheckUserQuery = "SELECT * FROM lms_login WHERE email = '$email' AND password = '$password'";
+    $CheckUserQuery = "SELECT * FROM lms_login WHERE reg_no = '$email' AND password = '$password'";
     $CheckUserQueryResults = mysqli_query($conn, $CheckUserQuery);
 
     if (!$CheckUserQueryResults) {

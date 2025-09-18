@@ -26,7 +26,7 @@
                             </div>
                             <div class="flex-grow-1">
                                 <span class="fw-semibold d-block"><?php echo $_SESSION["name"]; ?></span>
-                                <small class="text-muted">Faculty</small>
+                                <small class="text-muted">Admin</small>
                             </div>
                         </div>
                     </a>
