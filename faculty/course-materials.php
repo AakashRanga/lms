@@ -1,3 +1,12 @@
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $course_name = $_POST['course_name'] ?? '';
+    $course_code = $_POST['course_code'] ?? '';
+
+  
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -94,7 +103,7 @@
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" id="courseName" name="course_name"
-                                        placeholder="Course Name" required>
+                                    value="<?php echo $course_name; ?>"  placeholder="Course Name" readonly>
                                     <label for="courseName">Course Name</label>
                                 </div>
                             </div>
@@ -102,9 +111,9 @@
                             <!-- Module/Unit -->
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="unit" name="unit"
-                                        placeholder="Module/Unit" required>
-                                    <label for="unit">Module / Unit</label>
+                                    <input type="text" class="form-control" id="courseCode" name="code_code"
+                                       value="<?php echo $course_code; ?>" placeholder="Course Code" readonly>
+                                    <label for="unit">Course Code </label>
                                 </div>
                             </div>
 
@@ -289,7 +298,23 @@
                             <span class="badge bg-primary">Total: <span class="question-count">0</span></span>
                         </div>
                         <div class="questions-container"></div>
-                        <button type="button" class="btn btn-secondary btn-sm mt-2 addQuestionBtn"> + Add 10 Questions</button>
+                        <div class="col-12 text-center mt-3 d-flex justify-content-start gap-2">
+                                            <!-- Add Question Button -->
+                                            <button type="button" class="btn btn-primary btn-sm mt-2 addQuestionBtn">
+                                                + Add 10 Questions
+                                            </button>
+
+                                            <!-- CO Level Select -->
+                                            <select class="form-select form-select-sm mt-2" style="width: auto;" id="coLevelSelect">
+                                                <option selected disabled>Select CO Level</option>
+                                                <option value="CO1">CO1</option>
+                                                <option value="CO2">CO2</option>
+                                                <option value="CO3">CO3</option>
+                                                <option value="CO4">CO4</option>
+                                                <option value="CO5">CO5</option>
+                                                <option value="CO6">CO6</option>
+                                            </select>
+                                        </div>
                     </div>
                 </div>
             `;

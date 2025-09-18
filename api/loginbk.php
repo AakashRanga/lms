@@ -31,7 +31,7 @@ try {
         throw new Exception('Invalid email format', 400);
     }
 
-    $platform = 'web';
+    $platform    = isset($json_data['platform']) ? addslashes(trim($json_data['platform'])) : 'web';
 
     // Query to check user existence and their admin status
     $CheckUserQuery = "SELECT * FROM lms_login WHERE email = '$email' AND password = '$password'";

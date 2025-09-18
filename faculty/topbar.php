@@ -1,3 +1,4 @@
+
 <!-- Topbar -->
 <div class="topbar d-flex justify-content-between justify-content-md-end align-items-center shadow p-3 shadow-sm">
 
@@ -25,7 +26,7 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <span class="fw-semibold d-block">John Doe</span>
+                                <span class="fw-semibold d-block"><?php echo $_SESSION["name"]; ?></span>
                                 <small class="text-muted">Faculty</small>
                             </div>
                         </div>

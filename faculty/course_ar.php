@@ -119,7 +119,7 @@
         $(document).ready(function() {
             function loadCourses() {
                 $.ajax({
-                    url: 'api/get_courses.php',
+                    url: 'api/get_course_approval.php',
                     type: 'GET',
                     dataType: 'json',
                     success: function(courses) {

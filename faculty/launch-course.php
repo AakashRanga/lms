@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -84,7 +85,8 @@
                         <h5 class="mb-4">Add New Course</h5>
                         <form id="addCourseForm">
                             <div class="row g-3">
-
+                                <!-- Course ID -->
+                                <input type="hidden" id="courseid" name="courseid">
 
                                 <!-- Course Name -->
                                 <div class="col-md-6">
@@ -299,19 +301,26 @@
             });
         });
 
-        // Add course via AJAX
         $('#addCourseForm').on('submit', function(e) {
             e.preventDefault();
+
+            const $form = $(this);
+            const $btn = $form.find('button[type="submit"]');
+            $btn.prop('disabled', true);
 
             $.ajax({
                 url: 'api/add_course.php',
                 type: 'POST',
                 data: new FormData(this),
-                contentType: false, // required for FormData
-                processData: false, // required for FormData
-                dataType: 'json', // <-- let jQuery parse JSON automatically
-                success: function(data) {
-                    if (data.status == 200) {
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                success: function(data, textStatus, xhr) {
+                    // Success callback for 2xx responses
+                    if (data && data.status == 200) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
@@ -319,22 +328,58 @@
                             showConfirmButton: false,
                             timer: 2000
                         });
-                        $('#addCourseForm')[0].reset();
+                        $form[0].reset();
                         loadCourses();
                     } else {
+                        // Defensive: server returned 2xx but status isn't 200 in payload
+                        const msg = (data && data.message) ? data.message : 'Unknown response from server';
                         Swal.fire({
                             icon: 'warning',
                             title: 'Warning',
-                            text: data.message
+                            text: msg
                         });
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function(xhr, textStatus, errorThrown) {
+                    // Try to extract exact message from JSON response
+                    let message = null;
+
+                    // 1) If jQuery parsed JSON, it'll be in responseJSON
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        // 2) Try to parse responseText
+                        try {
+                            const parsed = JSON.parse(xhr.responseText);
+                            if (parsed && parsed.message) message = parsed.message;
+                        } catch (err) {
+                            // not JSON or parse failed
+                        }
+                    }
+
+                    // 3) Fallback to statusText / errorThrown
+                    if (!message) {
+                        message = (errorThrown && errorThrown !== 'error') ? errorThrown : textStatus;
+                        // also include HTTP code if available
+                        if (xhr.status) message = `(${xhr.status}) ${message}`;
+                    }
+
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Something went wrong: ' + error
+                        text: message
                     });
+
+                    // optional: log full response for debugging
+                    console.error('AJAX Error:', {
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        responseText: xhr.responseText
+                    });
+                },
+                complete: function() {
+                    // re-enable button
+                    $btn.prop('disabled', false);
                 }
             });
         });
@@ -382,12 +427,12 @@
 
                     courses.forEach(course => {
                         // Course Name dropdown (value = course_name, data-code = course_code)
-                        nameOptions += `<option value="${course.course_name}" data-code="${course.course_code}">
+                        nameOptions += `<option value="${course.course_name}" data-code="${course.course_code}" data-id="${course.c_id}">
                                     ${course.course_name}
                                 </option>`;
 
                         // Course Code dropdown (value = course_code, data-name = course_name)
-                        codeOptions += `<option value="${course.course_code}" data-name="${course.course_name}">
+                        codeOptions += `<option value="${course.course_code}" data-name="${course.course_name}" data-id="${course.c_id}">
                                     ${course.course_code}
                                 </option>`;
                     });
@@ -398,13 +443,17 @@
                     // When selecting Course Name -> auto select Course Code
                     $('#courseName').on('change', function() {
                         let selectedCode = $(this).find(':selected').data('code');
+                        let selectedId = $(this).find(':selected').data('id');
                         $('#courseCode').val(selectedCode);
+                        $('#courseid').val(selectedId);
                     });
 
                     // When selecting Course Code -> auto select Course Name
                     $('#courseCode').on('change', function() {
                         let selectedName = $(this).find(':selected').data('name');
+                        let selectedId = $(this).find(':selected').data('id');
                         $('#courseName').val(selectedName);
+                        $('#courseid').val(selectedId);
                     });
                 },
                 error: function(xhr, status, error) {

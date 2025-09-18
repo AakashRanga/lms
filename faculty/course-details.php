@@ -1,3 +1,26 @@
+<?php
+$lauch_course_id = $_GET['launch_c_id'] ?? null;
+$course_name = 'Null';
+$course_code = 'Null';
+
+if ($lauch_course_id) {
+    include "../includes/config.php";
+
+    // JOIN query to fetch course_name and course_code directly
+    $stmt = $conn->prepare("
+        SELECT c.course_name, c.course_code 
+        FROM launch_courses lc
+        INNER JOIN course c ON lc.c_id = c.c_id
+        WHERE lc.c_id = ?
+    ");
+    $stmt->bind_param("s", $lauch_course_id);
+    $stmt->execute();
+    $stmt->bind_result($course_name, $course_code);
+    $stmt->fetch();
+    $stmt->close();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -120,7 +143,12 @@
 
                                 <!-- Course Materials -->
                                 <div class="col">
-                                    <a href="course-materials.php" class="text-decoration-none text-dark">
+                                    <form id="courseForm" action="course-materials.php" method="POST" style="display:none;">
+                                        <input type="hidden" name="course_name" value="<?php echo htmlspecialchars($course_name); ?>">
+                                        <input type="hidden" name="course_code" value="<?php echo htmlspecialchars($course_code); ?>">
+                                    </form>
+
+                                    <a href="javascript:void(0);" class="text-decoration-none text-dark" onclick="document.getElementById('courseForm').submit();">
                                         <div class="dashboard-card text-center p-4">
                                             <div class="icon-circle mb-2">
                                                 <i class="bi bi-book"></i>
@@ -130,6 +158,7 @@
                                         </div>
                                     </a>
                                 </div>
+
 
                                 <!-- Assignment Approval -->
                                 <div class="col">

@@ -17,9 +17,10 @@
     <link rel="stylesheet" href="../stylesheet/styles.css">
 
     <style>
-        a{
+        a {
             text-decoration: none;
         }
+
         .course-card {
             border: 1px solid #e5e7eb;
             border-radius: 12px;
@@ -95,63 +96,14 @@
                         <h6 class="mb-3">Active Course</h6>
 
                         <div class="container mt-4">
-                            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-
-                                <!-- Course Item -->
-                                <div class="col">
-                                    <a href="course-details.php" class="text-decoration-none text-dark">
-                                        <div class="course-card text-center p-4">
-                                            <div class="icon-circle mb-3">
-                                                <i class="bi bi-person"></i>
-                                            </div>
-                                            <h6 class="fw-semibold mb-1">Anatomy</h6>
-                                            <p class="text-muted small mb-0">Code: BDS101</p>
-                                        </div>
-                                    </a>
-                                </div>
-
-                                <div class="col">
-                                    <a href="course-details.php" class="text-decoration-none text-dark">
-                                        <div class="course-card text-center p-4">
-                                            <div class="icon-circle mb-3">
-                                                <i class="bi bi-clipboard"></i>
-                                            </div>
-                                            <h6 class="fw-semibold mb-1">Physiology</h6>
-                                            <p class="text-muted small mb-0">Code: BDS102</p>
-                                        </div>
-                                    </a>
-                                </div>
-
-                                <div class="col">
-                                    <a href="course-details.php" class="text-decoration-none text-dark">
-                                        <div class="course-card text-center p-4">
-                                            <div class="icon-circle mb-3">
-                                                <i class="bi bi-bar-chart-line"></i>
-                                            </div>
-                                            <h6 class="fw-semibold mb-1">Biochemistry</h6>
-                                            <p class="text-muted small mb-0">Code: BDS103</p>
-                                        </div>
-                                    </a>
-                                </div>
-
-                                <div class="col">
-                                    <a href="course-details.php" class="text-decoration-none text-dark">
-                                        <div class="course-card text-center p-4">
-                                            <div class="icon-circle mb-3">
-                                                <i class="bi bi-check-circle"></i>
-                                            </div>
-                                            <h6 class="fw-semibold mb-1">Dental Materials</h6>
-                                            <p class="text-muted small mb-0">Code: BDS104</p>
-                                        </div>
-                                    </a>
-                                </div>
-
-
+                            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="courseList">
+                                <!-- Courses will load here -->
                             </div>
                         </div>
-
-
                     </div>
+
+
+
                 </div>
 
             </div>
@@ -160,6 +112,44 @@
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "api/faculty_courses.php",
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === 200) {
+                        let html = "";
+                        response.data.forEach(function(course) {
+                            html += `
+                                                    <div class="col">
+                                                        <a href="course-details.php?launch_c_id=${course.id}" class="text-decoration-none text-dark">
+                                                            <div class="course-card text-center p-4">
+                                                                <div class="icon-circle mb-3">
+                                                                    <i class="bi bi-book"></i>
+                                                                </div>
+                                                                <h6 class="fw-semibold mb-1">${course.course_name}</h6>
+                                                                <p class="text-muted small mb-0">Code: ${course.course_code}</p>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                `;
+                        });
+
+                        $("#courseList").html(html);
+                    } else {
+                        $("#courseList").html("<p class='text-muted'>No active courses found.</p>");
+                    }
+                },
+                error: function() {
+                    $("#courseList").html("<p class='text-danger'>Error loading courses.</p>");
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

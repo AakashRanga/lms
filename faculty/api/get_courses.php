@@ -2,23 +2,8 @@
 header('Content-Type: application/json');
 include "../../includes/config.php";
 
-$sql = "SELECT 
-    sca.stu_ap_id AS approval_id,
-    sca.student_name,
-    sca.student_reg_no,
-    sca.slot,
-    sca.status,
-    sca.created_at,
-    lc.course_name,
-    lc.course_code,
-    lc.seat_allotment,
-    lc.duration,
-    lc.course_type,
-    lc.faculty_name
-FROM student_course_approval sca
-INNER JOIN launch_courses lc 
-    ON sca.launch_c_id = lc.id
-ORDER BY sca.created_at ASC";
+$faculty_id = $_SESSION['userid'];
+$sql = "SELECT * from launch_courses where faculty_id=$faculty_id ";
 $result = $conn->query($sql);
 
 $courses = [];
