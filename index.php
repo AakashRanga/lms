@@ -92,9 +92,10 @@
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
         }
 
-        .brand-tagline,.brand-tagline-offcanvas {
+        .brand-tagline,
+        .brand-tagline-offcanvas {
             font-size: 0.7rem;
-            color:#2563eb;
+            color: #2563eb;
             font-weight: 400;
             letter-spacing: 1px;
         }
@@ -121,10 +122,12 @@
                 text-decoration: none;
                 color: #000;
             }
-            .brand-name-offcanvas{
+
+            .brand-name-offcanvas {
                 font-size: small !important;
             }
-            .navbar-custom{
+
+            .navbar-custom {
                 padding: 2px !important;
             }
         }
@@ -252,14 +255,16 @@
                     <a href="index.php"><button class="btn btn-primary">Login</button></a>
                 </div>
                 <!-- Offcanvas Toggle Button (Visible only on small screens) -->
-                <button class="btn-offcanvas btn btn-primary d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
+                <button class="btn-offcanvas btn btn-primary d-lg-none me-2" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
                     <i class="bi bi-list"></i>
                 </button>
             </div>
         </nav>
 
         <!-- Offcanvas Sidebar -->
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel">
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarOffcanvas"
+            aria-labelledby="sidebarOffcanvasLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title d-flex align-items-center" id="sidebarOffcanvasLabel">
                     <img src="images/logo1.png" alt="College Logo" class="me-2" style="width:35px; height:35px;">
@@ -350,7 +355,7 @@
         });
 
         // Handle login
-        document.getElementById("loginForm").addEventListener("submit", async function(e) {
+        document.getElementById("loginForm").addEventListener("submit", async function (e) {
             e.preventDefault();
             const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value.trim();

@@ -32,9 +32,10 @@ session_start();
         .video-click-right {
             position: absolute;
             top: 0;
-            height: 100%;
-            width: 50%;
+            height: 50%;
+            width: 30%;
             cursor: pointer;
+            z-index: 1;
         }
 
         .video-click-left {
@@ -43,6 +44,26 @@ session_start();
 
         .video-click-right {
             right: 0;
+        }
+
+        /* Styling for the play/pause overlay icon */
+        .video-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 3rem;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .video-container:hover .video-overlay,
+        .video-overlay.visible {
+            opacity: 1;
         }
     </style>
 </head>
@@ -74,35 +95,24 @@ session_start();
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <div><i class="bi bi-folder2-open me-2"></i>Flipped Class</div>
                                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#chapter1Resources" aria-expanded="false">View</button>
+                                    data-bs-target="#chapter1Resources" aria-expanded="false"
+                                    aria-controls="chapter1Resources">
+                                    View
+                                </button>
                             </div>
-                            <!-- Inside your chapter collapse -->
                             <div class="collapse mt-2" id="chapter1Resources">
-                                <div class="bg-white p-2 rounded border video-container" style="height:auto;">
-                                    <video id="chapter1Video" class="w-100" src="../videos/someone.mp4"></video>
-                                    <!-- Timeline / Progress -->
-                                    <div class="video-progress mt-2 d-flex align-items-center">
-                                        <span id="chapter1Current" class="me-2">0:00</span>
-                                        <div class="progress flex-grow-1" style="height: 5px;">
-                                            <div id="chapter1Bar" class="progress-bar bg-primary" role="progressbar"
-                                                style="width: 0%;"></div>
-                                        </div>
-                                        <span id="chapter1Duration" class="ms-2">0:00</span>
-                                    </div>
-
-                                    <!-- Left click area -->
+                                <div class="bg-white p-2 rounded border video-container">
+                                    <video id="chapter1Video" class="w-100" src="../videos/someone.mp4" controls
+                                        controlsList="nodownload noremoteplayback"
+                                        oncontextmenu="return false;"></video>
                                     <div id="chapter1Left" class="video-click-left"></div>
                                     <div id="chapter1Right" class="video-click-right"></div>
-
-                                    <!-- Play button overlay -->
-                                    <div id="chapter1PlayBtn" class="position-absolute top-50 start-50 translate-middle"
-                                        style="font-size:48px; color:white; cursor:pointer; text-shadow:0 0 5px black;">
-                                        ►
-                                    </div>
+                                    <i id="chapter1Overlay" class="video-overlay bi bi-play-fill"></i>
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-between align-items-center">
+
+                            <div class="d-flex justify-content-between align-items-center mt-2">
                                 <div><i class="bi bi-pencil-square me-2"></i>Practice Test</div>
                                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#chapter1Test" aria-expanded="false">View</button>
@@ -118,80 +128,60 @@ session_start();
                                 </div>
                             </div>
                         </div>
+                        <small class="text-muted">✅ Complete this chapter to unlock the next one.</small>
 
-                        <!-- Chapter 2 -->
-                        <div class="mb-3 p-3 bg-light rounded shadow-sm">
-                            <h5 class="mb-2">Chapter 2: Market Analysis</h5>
+                        <!-- chapter 2 -->
+                        <!-- Chapter 2 (Initially Locked) -->
+                        <div id="chapter2" class="mb-3 p-3 bg-light rounded shadow-sm disabled"
+                            style="opacity: 0.5; pointer-events: none;">
+                            <h5 class="mb-2">
+                                Chapter 2: Competitive Analysis
+                                <i class="bi bi-lock-fill text-danger ms-2" id="lockIcon2"></i>
+                            </h5>
+
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <div><i class="bi bi-file-earmark-pdf-fill me-2"></i>Reading Material</div>
-                                <a href="../materials/CHAPTER2_MARKET_ANALYSIS.pdf" target="_blank"
+                                <a href="../materials/Chapter2.pdf" target="_blank"
                                     class="btn btn-outline-secondary btn-sm">View</a>
                             </div>
+
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <div><i class="bi bi-folder2-open me-2"></i>Flipped Class</div>
                                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#chapter2Resources" aria-expanded="false">View</button>
+                                    data-bs-target="#chapter2Resources" aria-expanded="false"
+                                    aria-controls="chapter2Resources">
+                                    View
+                                </button>
                             </div>
+
                             <div class="collapse mt-2" id="chapter2Resources">
-                                <div class="bg-white p-2 rounded border video-container" style="height:auto;">
-                                    <video id="chapter2Video" class="w-100" src="../videos/someone.mp4"></video>
+                                <div class="bg-white p-2 rounded border video-container">
+                                    <video id="chapter2Video" class="w-100" src="../videos/someone.mp4" controls
+                                        controlsList="nodownload noremoteplayback"
+                                        oncontextmenu="return false;"></video>
                                     <div id="chapter2Left" class="video-click-left"></div>
                                     <div id="chapter2Right" class="video-click-right"></div>
+                                    <i id="chapter2Overlay" class="video-overlay bi bi-play-fill"></i>
                                 </div>
                             </div>
+
                             <div class="d-flex justify-content-between align-items-center">
                                 <div><i class="bi bi-pencil-square me-2"></i>Practice Test</div>
                                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#chapter2Test" aria-expanded="false">View</button>
                             </div>
+
                             <div class="collapse mt-2" id="chapter2Test">
                                 <div class="bg-white p-2 rounded border">
                                     <a href="https://example.com/chapter2-test" target="_blank" class="d-block mb-1">
                                         <i class="bi bi-journal-check me-2"></i>Chapter 2 Practice Test
                                     </a>
-                                    <a href="https://example.com/chapter2-test-2" target="_blank" class="d-block mb-1">
-                                        <i class="bi bi-journal-check me-2"></i>Chapter 2 Additional Test
-                                    </a>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Chapter 3 -->
-                        <div class="mb-3 p-3 bg-light rounded shadow-sm">
-                            <h5 class="mb-2">Chapter 3: Strategic Planning</h5>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div><i class="bi bi-file-earmark-pdf-fill me-2"></i>Reading Material</div>
-                                <a href="../materials/CHAPTER3_STRATEGIC_PLANNING.pdf" target="_blank"
-                                    class="btn btn-outline-secondary btn-sm">View</a>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div><i class="bi bi-folder2-open me-2"></i>Flipped Class</div>
-                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#chapter3Resources" aria-expanded="false">View</button>
-                            </div>
-                            <div class="collapse mt-2" id="chapter3Resources">
-                                <div class="bg-white p-2 rounded border video-container" style="height:auto;">
-                                    <video id="chapter3Video" class="w-100" src="../videos/someone.mp4"></video>
-                                    <div id="chapter3Left" class="video-click-left"></div>
-                                    <div id="chapter3Right" class="video-click-right"></div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div><i class="bi bi-pencil-square me-2"></i>Practice Test</div>
-                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#chapter3Test" aria-expanded="false">View</button>
-                            </div>
-                            <div class="collapse mt-2" id="chapter3Test">
-                                <div class="bg-white p-2 rounded border">
-                                    <a href="https://example.com/chapter3-test" target="_blank" class="d-block mb-1">
-                                        <i class="bi bi-journal-check me-2"></i>Chapter 3 Practice Test
-                                    </a>
-                                    <a href="https://example.com/chapter3-test-2" target="_blank" class="d-block mb-1">
-                                        <i class="bi bi-journal-check me-2"></i>Chapter 3 Additional Test
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+
+
 
                     </div>
                 </div>
@@ -199,82 +189,114 @@ session_start();
         </div>
     </div>
 
+
     <script>
-        const chapters = [1, 2, 3];
+        // Add all your chapters here
+        const chapters = [1, 2, 3, 4]; // Add more as needed
+
+        function unlockChapter(chapterId) {
+            const chapter = document.getElementById(`chapter${chapterId}`);
+            const lockIcon = document.getElementById(`lockIcon${chapterId}`);
+            if (chapter) {
+                chapter.classList.remove('disabled');
+                chapter.style.pointerEvents = 'auto';
+                chapter.style.opacity = 1;
+            }
+            if (lockIcon) {
+                lockIcon.style.display = 'none';
+            }
+        }
 
         chapters.forEach(id => {
             const video = document.getElementById(`chapter${id}Video`);
             const leftArea = document.getElementById(`chapter${id}Left`);
             const rightArea = document.getElementById(`chapter${id}Right`);
-            const playBtn = document.getElementById(`chapter${id}PlayBtn`);
+            const overlayIcon = document.getElementById(`chapter${id}Overlay`);
+            const collapseElement = document.getElementById(`chapter${id}Resources`);
+            const progressBar = document.getElementById(`chapter${id}Progress`);
+            const progressText = document.getElementById(`chapter${id}ProgressText`);
+            const videoStateKey = `videoTime_chapter${id}`;
+            const chapterCompleteKey = `chapter${id}Completed`;
 
-            const currentTimeEl = document.getElementById(`chapter${id}Current`);
-            const durationEl = document.getElementById(`chapter${id}Duration`);
-            const progressBar = document.getElementById(`chapter${id}Bar`);
+            if (!video) return;
 
-            // Hide default controls
-            video.controls = false;
-            if (playBtn) playBtn.style.display = 'block'; // show overlay initially
-
-            // Overlay click toggles play/pause
-            if (playBtn) {
-                playBtn.addEventListener('click', () => {
-                    if (video.paused) {
-                        video.play();
-                    } else {
-                        video.pause();
-                    }
-                });
+            // Restore progress
+            const savedTime = localStorage.getItem(videoStateKey);
+            if (savedTime) {
+                video.currentTime = parseFloat(savedTime);
             }
 
-            // Left: skip backward 10s
-            leftArea.addEventListener('click', e => {
-                e.stopPropagation();
-                video.currentTime = Math.max(0, video.currentTime - 10);
+            // Unlock next chapter if already completed
+            const isCompleted = localStorage.getItem(chapterCompleteKey);
+            if (isCompleted === 'true') {
+                unlockChapter(id + 1);
+            }
+
+            // Handle video end
+            video.addEventListener('ended', () => {
+                localStorage.setItem(chapterCompleteKey, 'true');
+                unlockChapter(id + 1);
             });
 
-            // Right: skip forward 10s
-            rightArea.addEventListener('click', e => {
-                e.stopPropagation();
-                video.currentTime = Math.min(video.duration, video.currentTime + 10);
-            });
-
-            // Update overlay visibility based on play/pause
-            video.addEventListener('play', () => {
-                if (playBtn) playBtn.style.display = 'none';
-            });
-            video.addEventListener('pause', () => {
-                if (playBtn) playBtn.style.display = 'block';
-            });
-
-            // Update duration once metadata is loaded
-            video.addEventListener('loadedmetadata', () => {
-                const durMinutes = Math.floor(video.duration / 60);
-                const durSeconds = Math.floor(video.duration % 60).toString().padStart(2, '0');
-                durationEl.textContent = `${durMinutes}:${durSeconds}`;
-            });
-
-            // Update progress bar and current time
-            video.addEventListener('timeupdate', () => {
-                if (video.duration) {
-                    const percent = (video.currentTime / video.duration) * 100;
-                    progressBar.style.width = percent + '%';
-
-                    const curMinutes = Math.floor(video.currentTime / 60);
-                    const curSeconds = Math.floor(video.currentTime % 60).toString().padStart(2, '0');
-                    currentTimeEl.textContent = `${curMinutes}:${curSeconds}`;
-                }
-            });
-
-            // Allow clicking **anywhere on the video** to play/pause
-            video.addEventListener('click', () => {
+            function togglePlayPause() {
                 if (video.paused) video.play();
                 else video.pause();
+            }
+
+            function updateOverlayIcon() {
+                if (video.paused) {
+                    overlayIcon.classList.remove('bi-pause-fill');
+                    overlayIcon.classList.add('bi-play-fill', 'visible');
+                } else {
+                    overlayIcon.classList.remove('bi-play-fill', 'visible');
+                    overlayIcon.classList.add('bi-pause-fill');
+                }
+            }
+
+            function updateProgressBar() {
+                if (!video.duration) return;
+                const percent = (video.currentTime / video.duration) * 100;
+                if (progressBar) progressBar.style.width = `${percent}%`;
+                if (progressText) progressText.textContent = `${Math.floor(percent)}% completed`;
+            }
+
+            leftArea?.addEventListener('click', e => {
+                e.stopPropagation();
+                video.currentTime = Math.max(0, video.currentTime - 10);
+                togglePlayPause();
+            });
+
+            rightArea?.addEventListener('click', e => {
+                e.stopPropagation();
+                video.currentTime = Math.min(video.duration, video.currentTime + 10);
+                togglePlayPause();
+            });
+
+            const videoContainer = video.closest('.video-container');
+            videoContainer?.addEventListener('dblclick', togglePlayPause);
+
+            video.addEventListener('play', updateOverlayIcon);
+            video.addEventListener('pause', updateOverlayIcon);
+
+            videoContainer?.addEventListener('mouseleave', () => {
+                if (!video.paused) overlayIcon.classList.remove('visible');
+            });
+
+            videoContainer?.addEventListener('mouseenter', updateOverlayIcon);
+
+            video.addEventListener('timeupdate', () => {
+                updateProgressBar();
+                localStorage.setItem(videoStateKey, video.currentTime);
+            });
+
+            window.addEventListener('beforeunload', () => {
+                localStorage.setItem(videoStateKey, video.currentTime);
+            });
+
+            collapseElement?.addEventListener('hide.bs.collapse', () => {
+                video.pause();
             });
         });
-
-
-
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
