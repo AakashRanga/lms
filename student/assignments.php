@@ -66,83 +66,108 @@ session_start();
 
                 <!-- Page Content -->
                 <div class="p-4">
-                    <div class="course-card shadow p-4">
-                        <h4 class="mb-4">📝 Submitted Assignments</h4>
+                    <div class="row">
+                        <!-- Left Column: Submit Assignment -->
+                        <div class="col-md-6">
+                            <div class="course-card shadow p-4 mb-4">
+                                <h5><strong>Submit Assignment</strong></h5>
+                                <p class="text-muted">Upload your files and add comments for your submission.</p>
 
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered align-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>S No.</th>
-                                        <th>Assignment Name</th>
-                                        <th>Grade</th>
-                                        <th>View</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Product Design Report</td>
-                                        <td><span class="badge bg-success">A+</span></td>
-                                        <td>
-                                            <button class="btn btn-primary btn-sm view-btn" data-target="doc1">
-                                                View
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr class="document-list" id="doc1">
-                                        <td colspan="4">
-                                            <ul>
-                                                <li><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf"
-                                                        target="_blank">* assignment1.docx</a></li>
+                                <div class="mb-3 p-4 border rounded text-center"
+                                    style="border-style: dashed; cursor: pointer;">
+                                    <input type="file" id="file-upload" multiple style="display:none;">
+                                    <label for="file-upload" style="cursor: pointer;">
+                                        <i class="bi bi-cloud-arrow-up" style="font-size: 2rem;"></i>
+                                        <p>Drag and drop your files here, or click to browse</p>
+                                        <small class="text-muted">Max file size: 10MB (PDF, DOCX, JPEG, PNG,
+                                            etc.)</small>
+                                    </label>
+                                </div>
 
-                                            </ul>
-                                        </td>
-                                    </tr>
+                                <!-- <div class="mb-3">
+                                    <textarea class="form-control" rows="5"
+                                        placeholder="Add any comments or descriptions for your assignment..."></textarea>
+                                </div> -->
 
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Mentor Mentee Reflection</td>
-                                        <td><span class="badge bg-warning text-dark">B+</span></td>
-                                        <td>
-                                            <button class="btn btn-primary btn-sm view-btn" data-target="doc2">
-                                                View
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr class="document-list" id="doc2">
-                                        <td colspan="4">
-                                            <ul>
-                                                <li><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf"
-                                                        target="_blank">* assignment1.docx</a></li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <div class="text-end">
+                                    <button class="btn btn-primary">Submit Assignment</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Submitted Assignments -->
+                        <div class="col-md-6">
+                            <div class="course-card shadow p-4 mb-4">
+                                <h5><strong>Submitted Assignments</strong></h5>
+                                <p class="text-muted">View your past submissions and instructor feedback.</p>
+
+                                <!-- Assignment 1 -->
+                                <div class="border-bottom pb-3 shadow p-2 mb-3">
+                                    <h6 class="mb-1">Essay: The Impact of AI on Society</h6>
+                                    <div class="d-flex justify-content-between small">
+                                        <span class="text-muted">Introduction to Artificial Intelligence</span>
+                                        <span class="badge bg-success">Graded (A+)</span>
+                                    </div>
+                                    <div class="small text-muted mb-2">2023-10-26, 14:30 PM</div>
+                                    <div class="bg-light p-2 rounded mb-1">
+                                        <strong>Uploaded Files / Links</strong><br>
+                                        <a href="#" class="text-primary">📄 AI_Impact_Essay_JohnDoe.pdf</a>
+                                    </div>
+                                    <div class="bg-light p-2 rounded">
+                                        <strong>Instructor Feedback:</strong> Excellent analysis and well-structured
+                                        arguments. Good use of examples.
+                                    </div>
+                                </div>
+                                <br>
+                                <!-- Assignment 2 -->
+                                <div class="border-bottom shadow p-4 pb-3 mb-3">
+                                    <h6 class="mb-1">Project Proposal: Sustainable Urban Farming</h6>
+                                    <div class="d-flex justify-content-between small">
+                                        <span class="text-muted">Environmental Science I</span>
+                                        <span class="badge bg-warning text-dark">Revision Requested</span>
+                                    </div>
+                                    <div class="small text-muted mb-2">2023-11-01, 23:59 PM</div>
+                                    <div class="bg-light p-2 rounded mb-1">
+                                        <strong>Uploaded Files / Links</strong><br>
+                                        <a href="#" class="text-primary">📄 Urban_Farming_Proposal.docx</a><br>
+                                        <a href="#" class="text-primary">🔗 Research Link</a>
+                                    </div>
+                                    <div class="bg-light p-2 rounded">
+                                        <strong>Instructor Feedback:</strong> The concept is strong, but refine the
+                                        methodology section. Provide more specific details on resource management.
+                                    </div>
+                                </div>
+
+                                <!-- Add more assignments as needed -->
+                            </div>
                         </div>
                     </div>
                 </div>
+
 
             </div>
         </div>
     </div>
 
     <script>
-        // Toggle documents when "View" button is clicked
-        document.querySelectorAll('.view-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const targetId = this.getAttribute('data-target');
-                const docRow = document.getElementById(targetId);
+        const fileUpload = document.getElementById('file-upload');
+        const label = fileUpload.nextElementSibling;
 
-                // Toggle visibility
-                if (docRow.style.display === 'table-row') {
-                    docRow.style.display = 'none';
-                } else {
-                    docRow.style.display = 'table-row';
-                }
-            });
+        label.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            label.classList.add('bg-light');
         });
+
+        label.addEventListener('dragleave', () => {
+            label.classList.remove('bg-light');
+        });
+
+        label.addEventListener('drop', (e) => {
+            e.preventDefault();
+            label.classList.remove('bg-light');
+            fileUpload.files = e.dataTransfer.files;
+        });
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

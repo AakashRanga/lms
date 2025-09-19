@@ -74,12 +74,57 @@ session_start();
                                         </div>
                                         <div class="card-footer bg-transparent border-0 pb-4">
                                             <a href="course-details.php"
-                                                class="btn btn-outline-secondary w-100 mx-auto d-block">View Course</a>
+                                                class="btn btn-outline-secondary w-100 mx-auto d-block">View Details</a>
                                         </div>
                                     </div>
                                 </div>
 
+                                <div class="col">
+                                    <a href="course-details.php" class="text-decoration-none text-dark">
+                                        <div class="card h-100 shadow-sm">
+                                            <img src="../images/reseacher-image.jpg" alt="Data Science"
+                                                class="card-img-top">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Data Science</h5>
+                                                <p class="card-text d-flex flex-column gap-2">
+                                                    <span>Attendance: 92%</span>
+                                                    <span>Completed: 75%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
 
+                                <div class="col">
+                                    <a href="course-details.php" class="text-decoration-none text-dark">
+                                        <div class="card h-100 shadow-sm">
+                                            <img src="../images/reseacher-image.jpg" alt="Cyber Security"
+                                                class="card-img-top">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Cyber Security</h5>
+                                                <p class="card-text d-flex flex-column gap-2">
+                                                    <span>Attendance: 80%</span>
+                                                    <span>Completed: 50%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <div class="col">
+                                    <a href="course-details.php" class="text-decoration-none text-dark">
+                                        <div class="card h-100 shadow-sm">
+                                            <img src="../images/reseacher-image.jpg" alt="AI & ML" class="card-img-top">
+                                            <div class="card-body">
+                                                <h5 class="card-title">AI & ML</h5>
+                                                <p class="card-text d-flex flex-column gap-2">
+                                                    <span>Attendance: 88%</span>
+                                                    <span>Completed: 70%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
 
                         </div>
