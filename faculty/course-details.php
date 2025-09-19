@@ -129,7 +129,7 @@ if ($lauch_course_id) {
 
                                 <!-- Attendance -->
                                 <div class="col">
-                                    <a href="attendance.php" class="text-decoration-none text-dark">
+                                    <a href="attendance.php?launch_c_id=<?php echo $lauch_course_id; ?>" class="text-decoration-none text-dark">
                                         <div class="dashboard-card text-center p-4">
                                             <div class="d-flex justify-content-center align-items-center mb-2">
                                                 <div class="icon-circle">
@@ -145,7 +145,7 @@ if ($lauch_course_id) {
 
                                 <!-- Course Materials -->
                                 <div class="col">
-                                    <form id="courseForm" action="course-materials.php" method="POST"
+                                    <form id="courseForm" action="course-materials.php?launch_c_id=<?php echo $lauch_course_id; ?>" method="POST"
                                         style="display:none;">
                                         <input type="hidden" name="course_name"
                                             value="<?php echo htmlspecialchars($course_name); ?>">
