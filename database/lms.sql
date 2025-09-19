@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 18, 2025 at 05:27 AM
+-- Generation Time: Sep 19, 2025 at 10:58 AM
 -- Server version: 8.0.41
 -- PHP Version: 8.0.30
 
@@ -72,9 +72,7 @@ INSERT INTO `course` (`c_id`, `course_name`, `course_code`, `status`, `created_a
 CREATE TABLE `course_material` (
   `cm_id` int NOT NULL,
   `course_code` varchar(255) NOT NULL,
-  `c_id` varchar(255) NOT NULL,
-  `module` text NOT NULL,
-  `practise_qst` text NOT NULL,
+  `c_id` int NOT NULL,
   `faculty_id` int NOT NULL,
   `launch_course_id` int NOT NULL,
   `created_on` timestamp NOT NULL
@@ -109,7 +107,8 @@ CREATE TABLE `launch_courses` (
 --
 
 INSERT INTO `launch_courses` (`id`, `course_name`, `course_code`, `c_id`, `seat_allotment`, `duration`, `department`, `branch`, `course_type`, `slot`, `faculty_id`, `faculty_name`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Data Structures', 'DSA02', '1', 40, '3', 'Null', 'Null', 'elective', 'A', '2', 'Dhatchayani', 'pending', '2025-09-17 10:33:06', NULL);
+(1, 'Data Structures', 'DSA02', '1', 40, '3', 'Null', 'Null', 'elective', 'A', '2', 'Dhatchayani', 'pending', '2025-09-17 10:33:06', NULL),
+(5, 'Big Data', 'CSG81', '9', 40, '3', 'Null', 'Null', 'elective', 'A', '2', 'Dhatchayani', 'pending', '2025-09-18 13:03:06', NULL);
 
 -- --------------------------------------------------------
 
@@ -164,6 +163,7 @@ CREATE TABLE `module` (
 CREATE TABLE `practise_question` (
   `p_id` int NOT NULL,
   `cm_id` int NOT NULL,
+  `module_id` int DEFAULT NULL,
   `question` text NOT NULL,
   `option1` varchar(255) NOT NULL,
   `option2` varchar(255) NOT NULL,
@@ -214,7 +214,8 @@ CREATE TABLE `student_course_approval` (
 --
 
 INSERT INTO `student_course_approval` (`stu_ap_id`, `launch_c_id`, `student_name`, `student_reg_no`, `slot`, `status`, `created_at`, `updated_at`) VALUES
-(1, '1', 'Sai Amrish', '21617', 'A', 'approved', '2025-09-17 05:22:32', '2025-09-17 05:22:39');
+(1, '1', 'Sai Amrish', '21617', 'A', 'approved', '2025-09-17 05:22:32', '2025-09-17 05:22:39'),
+(2, '5', 'Sai Amrish', '21617', 'A', 'approved', '2025-09-18 07:35:25', '2025-09-18 07:36:11');
 
 --
 -- Indexes for dumped tables
@@ -254,13 +255,15 @@ ALTER TABLE `lms_login`
 -- Indexes for table `module`
 --
 ALTER TABLE `module`
-  ADD PRIMARY KEY (`mid`);
+  ADD PRIMARY KEY (`mid`),
+  ADD KEY `fk_module_course_material` (`cm_id`);
 
 --
 -- Indexes for table `practise_question`
 --
 ALTER TABLE `practise_question`
-  ADD PRIMARY KEY (`p_id`);
+  ADD PRIMARY KEY (`p_id`),
+  ADD KEY `fk_practise_question_course_material` (`cm_id`);
 
 --
 -- Indexes for table `student_assignment`
@@ -300,7 +303,7 @@ ALTER TABLE `course_material`
 -- AUTO_INCREMENT for table `launch_courses`
 --
 ALTER TABLE `launch_courses`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `lms_login`
@@ -330,7 +333,23 @@ ALTER TABLE `student_assignment`
 -- AUTO_INCREMENT for table `student_course_approval`
 --
 ALTER TABLE `student_course_approval`
-  MODIFY `stu_ap_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `stu_ap_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `module`
+--
+ALTER TABLE `module`
+  ADD CONSTRAINT `fk_module_course_material` FOREIGN KEY (`cm_id`) REFERENCES `course_material` (`cm_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `practise_question`
+--
+ALTER TABLE `practise_question`
+  ADD CONSTRAINT `fk_practise_question_course_material` FOREIGN KEY (`cm_id`) REFERENCES `course_material` (`cm_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
