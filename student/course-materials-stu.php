@@ -1,5 +1,8 @@
 <?php
 session_start();
+$cmid = $_GET['cm_id'];
+$launchid = $_GET['launch_c'];
+
 ?>
 
 <!DOCTYPE html>
@@ -88,7 +91,7 @@ session_start();
                 <!-- Topbar -->
                 <?php include('topbar.php') ?>
 
-                <div class="p-4">
+                <!-- <div class="p-4">
                     <div class="bg-white rounded-4 shadow-sm p-4 mb-4">
                         <h2 class="fw-bold mb-2">Introduction to Web Development</h2>
                         <p class="text-muted mb-3">
@@ -108,8 +111,6 @@ session_start();
                     <h4 class="mb-3 fw-semibold">Course Chapters</h4>
                     <div class="row g-3">
 
-                        <!-- Chapter 1 -->
-                        <!-- Chapter 1 -->
                         <div class="col-md-6 col-lg-4">
                             <a href="course_materials_detail.php" class="text-decoration-none text-dark">
                                 <div class="bg-white rounded-4 shadow-sm p-3 h-100">
@@ -129,86 +130,6 @@ session_start();
                             </a>
                         </div>
 
-                        <!-- Chapter 2 -->
-                        <div class="col-md-6 col-lg-4">
-                            <a href="course_materials_detail.php" class="text-decoration-none text-dark">
-                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
-                                    <h5 class="fw-semibold">Styling with CSS</h5>
-                                    <p class="text-muted small mb-2">
-                                        Dive into Cascading Style Sheets to control layout, typography, and visual
-                                        presentation.
-                                    </p>
-                                    <div class="d-flex justify-content-between align-items-center small mb-1">
-                                        <span>Completion</span>
-                                        <span class="text-muted">80%</span>
-                                    </div>
-                                    <div class="progress rounded-pill" style="height: 6px;">
-                                        <div class="progress-bar bg-primary" style="width: 80%;"></div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
-                        <!-- Chapter 3 -->
-                        <div class="col-md-6 col-lg-4">
-                            <a href="course_materials_detail.php" class="text-decoration-none text-dark">
-                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
-                                    <h5 class="fw-semibold">JavaScript Fundamentals</h5>
-                                    <p class="text-muted small mb-2">
-                                        Understand variables, functions, DOM manipulation, and event handling for
-                                        interactive experiences.
-                                    </p>
-                                    <div class="d-flex justify-content-between align-items-center small mb-1">
-                                        <span>Completion</span>
-                                        <span class="text-muted">50%</span>
-                                    </div>
-                                    <div class="progress rounded-pill" style="height: 6px;">
-                                        <div class="progress-bar bg-primary" style="width: 50%;"></div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
-                        <!-- Chapter 4 -->
-                        <div class="col-md-6 col-lg-4">
-                            <a href="course_materials_detail.php" class="text-decoration-none text-dark">
-                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
-                                    <h5 class="fw-semibold">Responsive Design</h5>
-                                    <p class="text-muted small mb-2">
-                                        Implement techniques like Flexbox, Grid, and media queries to adapt your site to
-                                        any screen size.
-                                    </p>
-                                    <div class="d-flex justify-content-between align-items-center small mb-1">
-                                        <span>Completion</span>
-                                        <span class="text-muted">20%</span>
-                                    </div>
-                                    <div class="progress rounded-pill" style="height: 6px;">
-                                        <div class="progress-bar bg-primary" style="width: 20%;"></div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
-                        <!-- Chapter 5 -->
-                        <div class="col-md-6 col-lg-4">
-                            <a href="course_materials_detail.php" class="text-decoration-none text-dark">
-                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
-                                    <h5 class="fw-semibold">Introduction to React</h5>
-                                    <p class="text-muted small mb-2">
-                                        Explore the basics of React, components, state, and props for building dynamic
-                                        user interfaces.
-                                    </p>
-                                    <div class="d-flex justify-content-between align-items-center small mb-1">
-                                        <span>Completion</span>
-                                        <span class="text-muted">0%</span>
-                                    </div>
-                                    <div class="progress rounded-pill" style="height: 6px;">
-                                        <div class="progress-bar bg-primary" style="width: 0%;"></div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
                     </div>
 
                     <div class="mt-4 d-flex gap-2">
@@ -217,7 +138,25 @@ session_start();
                             <i class="bi bi-arrow-left me-1"></i> Back to All Courses
                         </a>
                     </div>
+                </div> -->
+                <div class="p-4">
+                    <div class="bg-white rounded-4 shadow-sm p-4 mb-4">
+                        <h2 id="courseTitle" class="fw-bold mb-2">Course Title</h2>
+                        <p id="courseDesc" class="text-muted mb-3">Course description here</p>
+
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-semibold">Overall Progress</span>
+                            <span id="overallProgressText" class="text-muted small">0%</span>
+                        </div>
+                        <div class="progress rounded-pill" style="height: 8px;">
+                            <div id="overallProgressBar" class="progress-bar bg-primary" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <h4 class="mb-3 fw-semibold">Course Chapters</h4>
+                    <div class="row g-3"></div>
                 </div>
+
 
             </div>
         </div>
@@ -227,6 +166,69 @@ session_start();
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const cm_id = new URLSearchParams(window.location.search).get("cm_id");
+            const launch_c = new URLSearchParams(window.location.search).get("launch_c");
+           
+
+            $.ajax({
+                url: "api/get_course_chapters.php",
+                type: "GET",
+                data: {
+                    cm_id,
+                    launch_c,
+            
+                },
+                dataType: "json",
+                success: function(res) {
+                    if (!res.success) {
+                        Swal.fire("Error", res.message, "error");
+                        return;
+                    }
+
+                    const course = res.course;
+                    const chapters = res.chapters;
+
+                    $("#courseTitle").text(course.course_name);
+                    $("#courseDesc").text(course.course_code);
+
+                    const container = $(".row.g-3");
+                    container.empty();
+
+                    chapters.forEach(chap => {
+                        container.append(`
+                    <div class="col-md-6 col-lg-4">
+                        <a href="course_materials_detail.php?chapter_id=${chap.mid}&cm_id=${course.cm_id}" 
+                           class="text-decoration-none text-dark">
+                            <div class="bg-white rounded-4 shadow-sm p-3 h-100">
+                                <h5 class="fw-semibold">${chap.chapter_title}</h5>
+                                <p class="text-muted small mb-2">${chap.chapter_no || "No description"}</p>
+                                <div class="d-flex justify-content-between align-items-center small mb-1">
+                                    <span>Completion</span>
+                                    <span class="text-muted">${chap.progress}%</span>
+                                </div>
+                                <div class="progress rounded-pill" style="height: 6px;">
+                                    <div class="progress-bar bg-primary" style="width: ${chap.progress}%;"></div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `);
+                    });
+
+                    // Optional: overall progress
+                    const overall = chapters.reduce((sum, c) => sum + c.progress, 0) / (chapters.length || 1);
+                    $("#overallProgressBar").css("width", overall + "%");
+                    $("#overallProgressText").text(Math.round(overall) + "%");
+                },
+                error: function(xhr) {
+                    Swal.fire("Error", xhr.responseText, "error");
+                }
+            });
+        });
     </script>
 </body>
 

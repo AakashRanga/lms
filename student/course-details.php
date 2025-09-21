@@ -1,5 +1,7 @@
 <?php
 session_start();
+$cmid = $_GET['cm_id'];
+$launchid = $_GET['launch_c'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,7 +70,7 @@ session_start();
 
                                 <!-- Course Materials -->
                                 <div class="col">
-                                    <a href="course-materials-stu.php" class="text-decoration-none text-dark">
+                                    <a href="course-materials-stu.php?cm_id=<?php echo $cmid; ?>&launch_c=<?php echo $launchid; ?>" class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <i class="bi bi-folder2-open feature-icon"></i>
                                             <h6 class="fw-semibold">Course Materials</h6>

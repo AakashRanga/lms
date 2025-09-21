@@ -3,8 +3,8 @@ header('Content-Type: application/json');
 include "../../includes/config.php";
 
 // $register_number = isset($_GET['register_number']) ? $_GET['register_number'] : null;
-$register_number=21617;
-
+// $register_number=21617;
+$register_number =  $_SESSION["userid"];   
 $sql = "SELECT lc.slot, lc.id, lc.course_code, lc.course_name, lc.faculty_name, lc.seat_allotment,
                sca.status AS student_status
         FROM launch_courses lc

@@ -65,6 +65,15 @@ session_start();
         .video-overlay.visible {
             opacity: 1;
         }
+
+        .bg-white {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .bg-white:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        }
     </style>
 </head>
 
@@ -79,225 +88,143 @@ session_start();
                 <!-- Topbar -->
                 <?php include('topbar.php') ?>
 
-                <!-- Page Content -->
                 <div class="p-4">
-                    <div class="course-card bg-white p-4">
-                        <h4 class="mb-4">📘 Course: Business Strategy and Organizational Dynamics</h4>
+                    <div class="bg-white rounded-4 shadow-sm p-4 mb-4">
+                        <h2 class="fw-bold mb-2">Introduction to Web Development</h2>
+                        <p class="text-muted mb-3">
+                            Master the fundamentals of modern web development, from HTML and CSS to JavaScript and
+                            responsive design.
+                            This course provides a solid foundation for aspiring front-end developers.
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-semibold">Overall Progress</span>
+                            <span class="text-muted small">65%</span>
+                        </div>
+                        <div class="progress rounded-pill" style="height: 8px;">
+                            <div class="progress-bar bg-primary" style="width: 65%;"></div>
+                        </div>
+                    </div>
+
+                    <h4 class="mb-3 fw-semibold">Course Chapters</h4>
+                    <div class="row g-3">
 
                         <!-- Chapter 1 -->
-                        <div class="mb-3 p-3 bg-light rounded shadow-sm">
-                            <h5 class="mb-2">Chapter 1: Introduction to Business Strategy</h5>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div><i class="bi bi-file-earmark-pdf-fill me-2"></i>Reading Material</div>
-                                <a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf" target="_blank"
-                                    class="btn btn-outline-secondary btn-sm">View</a>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div><i class="bi bi-folder2-open me-2"></i>Flipped Class</div>
-                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#chapter1Resources" aria-expanded="false"
-                                    aria-controls="chapter1Resources">
-                                    View
-                                </button>
-                            </div>
-                            <div class="collapse mt-2" id="chapter1Resources">
-                                <div class="bg-white p-2 rounded border video-container">
-                                    <video id="chapter1Video" class="w-100" src="../videos/someone.mp4" controls
-                                        controlsList="nodownload noremoteplayback"
-                                        oncontextmenu="return false;"></video>
-                                    <div id="chapter1Left" class="video-click-left"></div>
-                                    <div id="chapter1Right" class="video-click-right"></div>
-                                    <i id="chapter1Overlay" class="video-overlay bi bi-play-fill"></i>
+                        <!-- Chapter 1 -->
+                        <div class="col-md-6 col-lg-4">
+                            <a href="course_materials_detail.php" class="text-decoration-none text-dark">
+                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
+                                    <h5 class="fw-semibold">HTML Essentials</h5>
+                                    <p class="text-muted small mb-2">
+                                        Learn the core elements and structure of web pages, including semantics and
+                                        accessibility.
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center small mb-1">
+                                        <span>Completion</span>
+                                        <span class="text-muted">100%</span>
+                                    </div>
+                                    <div class="progress rounded-pill" style="height: 6px;">
+                                        <div class="progress-bar bg-primary" style="width: 100%;"></div>
+                                    </div>
                                 </div>
-                            </div>
-
-
-                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                <div><i class="bi bi-pencil-square me-2"></i>Practice Test</div>
-                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#chapter1Test" aria-expanded="false">View</button>
-                            </div>
-                            <div class="collapse mt-2" id="chapter1Test">
-                                <div class="bg-white p-2 rounded border">
-                                    <a href="https://example.com/chapter1-test" target="_blank" class="d-block mb-1">
-                                        <i class="bi bi-journal-check me-2"></i>Chapter 1 Practice Test
-                                    </a>
-                                    <a href="https://example.com/chapter1-test-2" target="_blank" class="d-block mb-1">
-                                        <i class="bi bi-journal-check me-2"></i>Chapter 1 Additional Test
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <small class="text-muted">✅ Complete this chapter to unlock the next one.</small>
-
-                        <!-- chapter 2 -->
-                        <!-- Chapter 2 (Initially Locked) -->
-                        <div id="chapter2" class="mb-3 p-3 bg-light rounded shadow-sm disabled"
-                            style="opacity: 0.5; pointer-events: none;">
-                            <h5 class="mb-2">
-                                Chapter 2: Competitive Analysis
-                                <i class="bi bi-lock-fill text-danger ms-2" id="lockIcon2"></i>
-                            </h5>
-
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div><i class="bi bi-file-earmark-pdf-fill me-2"></i>Reading Material</div>
-                                <a href="../materials/Chapter2.pdf" target="_blank"
-                                    class="btn btn-outline-secondary btn-sm">View</a>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div><i class="bi bi-folder2-open me-2"></i>Flipped Class</div>
-                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#chapter2Resources" aria-expanded="false"
-                                    aria-controls="chapter2Resources">
-                                    View
-                                </button>
-                            </div>
-
-                            <div class="collapse mt-2" id="chapter2Resources">
-                                <div class="bg-white p-2 rounded border video-container">
-                                    <video id="chapter2Video" class="w-100" src="../videos/someone.mp4" controls
-                                        controlsList="nodownload noremoteplayback"
-                                        oncontextmenu="return false;"></video>
-                                    <div id="chapter2Left" class="video-click-left"></div>
-                                    <div id="chapter2Right" class="video-click-right"></div>
-                                    <i id="chapter2Overlay" class="video-overlay bi bi-play-fill"></i>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div><i class="bi bi-pencil-square me-2"></i>Practice Test</div>
-                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#chapter2Test" aria-expanded="false">View</button>
-                            </div>
-
-                            <div class="collapse mt-2" id="chapter2Test">
-                                <div class="bg-white p-2 rounded border">
-                                    <a href="https://example.com/chapter2-test" target="_blank" class="d-block mb-1">
-                                        <i class="bi bi-journal-check me-2"></i>Chapter 2 Practice Test
-                                    </a>
-                                </div>
-                            </div>
+                            </a>
                         </div>
 
+                        <!-- Chapter 2 -->
+                        <div class="col-md-6 col-lg-4">
+                            <a href="course_materials_detail.php" class="text-decoration-none text-dark">
+                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
+                                    <h5 class="fw-semibold">Styling with CSS</h5>
+                                    <p class="text-muted small mb-2">
+                                        Dive into Cascading Style Sheets to control layout, typography, and visual
+                                        presentation.
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center small mb-1">
+                                        <span>Completion</span>
+                                        <span class="text-muted">80%</span>
+                                    </div>
+                                    <div class="progress rounded-pill" style="height: 6px;">
+                                        <div class="progress-bar bg-primary" style="width: 80%;"></div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
 
+                        <!-- Chapter 3 -->
+                        <div class="col-md-6 col-lg-4">
+                            <a href="course_materials_detail.php" class="text-decoration-none text-dark">
+                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
+                                    <h5 class="fw-semibold">JavaScript Fundamentals</h5>
+                                    <p class="text-muted small mb-2">
+                                        Understand variables, functions, DOM manipulation, and event handling for
+                                        interactive experiences.
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center small mb-1">
+                                        <span>Completion</span>
+                                        <span class="text-muted">50%</span>
+                                    </div>
+                                    <div class="progress rounded-pill" style="height: 6px;">
+                                        <div class="progress-bar bg-primary" style="width: 50%;"></div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
 
+                        <!-- Chapter 4 -->
+                        <div class="col-md-6 col-lg-4">
+                            <a href="course_materials_detail.php" class="text-decoration-none text-dark">
+                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
+                                    <h5 class="fw-semibold">Responsive Design</h5>
+                                    <p class="text-muted small mb-2">
+                                        Implement techniques like Flexbox, Grid, and media queries to adapt your site to
+                                        any screen size.
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center small mb-1">
+                                        <span>Completion</span>
+                                        <span class="text-muted">20%</span>
+                                    </div>
+                                    <div class="progress rounded-pill" style="height: 6px;">
+                                        <div class="progress-bar bg-primary" style="width: 20%;"></div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Chapter 5 -->
+                        <div class="col-md-6 col-lg-4">
+                            <a href="course_materials_detail.php" class="text-decoration-none text-dark">
+                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
+                                    <h5 class="fw-semibold">Introduction to React</h5>
+                                    <p class="text-muted small mb-2">
+                                        Explore the basics of React, components, state, and props for building dynamic
+                                        user interfaces.
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center small mb-1">
+                                        <span>Completion</span>
+                                        <span class="text-muted">0%</span>
+                                    </div>
+                                    <div class="progress rounded-pill" style="height: 6px;">
+                                        <div class="progress-bar bg-primary" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
 
                     </div>
+
+                    <div class="mt-4 d-flex gap-2">
+
+                        <a href="mycourses.php" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Back to All Courses
+                        </a>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
 
 
-    <script>
-        // Add all your chapters here
-        const chapters = [1, 2, 3, 4]; // Add more as needed
 
-        function unlockChapter(chapterId) {
-            const chapter = document.getElementById(`chapter${chapterId}`);
-            const lockIcon = document.getElementById(`lockIcon${chapterId}`);
-            if (chapter) {
-                chapter.classList.remove('disabled');
-                chapter.style.pointerEvents = 'auto';
-                chapter.style.opacity = 1;
-            }
-            if (lockIcon) {
-                lockIcon.style.display = 'none';
-            }
-        }
-
-        chapters.forEach(id => {
-            const video = document.getElementById(`chapter${id}Video`);
-            const leftArea = document.getElementById(`chapter${id}Left`);
-            const rightArea = document.getElementById(`chapter${id}Right`);
-            const overlayIcon = document.getElementById(`chapter${id}Overlay`);
-            const collapseElement = document.getElementById(`chapter${id}Resources`);
-            const progressBar = document.getElementById(`chapter${id}Progress`);
-            const progressText = document.getElementById(`chapter${id}ProgressText`);
-            const videoStateKey = `videoTime_chapter${id}`;
-            const chapterCompleteKey = `chapter${id}Completed`;
-
-            if (!video) return;
-
-            // Restore progress
-            const savedTime = localStorage.getItem(videoStateKey);
-            if (savedTime) {
-                video.currentTime = parseFloat(savedTime);
-            }
-
-            // Unlock next chapter if already completed
-            const isCompleted = localStorage.getItem(chapterCompleteKey);
-            if (isCompleted === 'true') {
-                unlockChapter(id + 1);
-            }
-
-            // Handle video end
-            video.addEventListener('ended', () => {
-                localStorage.setItem(chapterCompleteKey, 'true');
-                unlockChapter(id + 1);
-            });
-
-            function togglePlayPause() {
-                if (video.paused) video.play();
-                else video.pause();
-            }
-
-            function updateOverlayIcon() {
-                if (video.paused) {
-                    overlayIcon.classList.remove('bi-pause-fill');
-                    overlayIcon.classList.add('bi-play-fill', 'visible');
-                } else {
-                    overlayIcon.classList.remove('bi-play-fill', 'visible');
-                    overlayIcon.classList.add('bi-pause-fill');
-                }
-            }
-
-            function updateProgressBar() {
-                if (!video.duration) return;
-                const percent = (video.currentTime / video.duration) * 100;
-                if (progressBar) progressBar.style.width = `${percent}%`;
-                if (progressText) progressText.textContent = `${Math.floor(percent)}% completed`;
-            }
-
-            leftArea?.addEventListener('click', e => {
-                e.stopPropagation();
-                video.currentTime = Math.max(0, video.currentTime - 10);
-                togglePlayPause();
-            });
-
-            rightArea?.addEventListener('click', e => {
-                e.stopPropagation();
-                video.currentTime = Math.min(video.duration, video.currentTime + 10);
-                togglePlayPause();
-            });
-
-            const videoContainer = video.closest('.video-container');
-            videoContainer?.addEventListener('dblclick', togglePlayPause);
-
-            video.addEventListener('play', updateOverlayIcon);
-            video.addEventListener('pause', updateOverlayIcon);
-
-            videoContainer?.addEventListener('mouseleave', () => {
-                if (!video.paused) overlayIcon.classList.remove('visible');
-            });
-
-            videoContainer?.addEventListener('mouseenter', updateOverlayIcon);
-
-            video.addEventListener('timeupdate', () => {
-                updateProgressBar();
-                localStorage.setItem(videoStateKey, video.currentTime);
-            });
-
-            window.addEventListener('beforeunload', () => {
-                localStorage.setItem(videoStateKey, video.currentTime);
-            });
-
-            collapseElement?.addEventListener('hide.bs.collapse', () => {
-                video.pause();
-            });
-        });
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
     </script>

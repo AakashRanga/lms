@@ -7,10 +7,10 @@ try {
         throw new Exception("Invalid request method", 405);
     }
 
-    $launch_c_id    = $_POST['launch_c_id'] ?? null;
-    $student_name   = "Sai Amrish";  // For now hardcoded
-    $student_reg_no = "21617";       // For now hardcoded
-    $slot           = $_POST['slot'] ?? null;
+    $launch_c_id    =  $_POST['launch_c_id'] ?? null;
+    $student_name   =  $_SESSION["name"];  
+    $student_reg_no =  $_SESSION["userid"];   
+    $slot           =  $_POST['slot'] ?? null;
 
     if (!$launch_c_id || !$student_name || !$student_reg_no || !$slot) {
         throw new Exception("Missing required fields", 400);
@@ -58,7 +58,6 @@ try {
 
     $insertStmt->close();
     $conn->close();
-
 } catch (Exception $e) {
     http_response_code($e->getCode() ?: 500);
     echo json_encode([
@@ -66,4 +65,3 @@ try {
         "message" => $e->getMessage()
     ]);
 }
-?>

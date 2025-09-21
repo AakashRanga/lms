@@ -1,5 +1,5 @@
 <?php
-session_start();
+include "../includes/config.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,44 +54,77 @@ session_start();
                         <div class="container mt-4">
                             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                                 <!-- Course Card -->
-                                <div class="col">
-                                    <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
-                                        <img src="../images/reseacher-image.jpg" class="card-img-top"
-                                            alt="Introduction to Web Development">
-                                        <div class="card-body">
-                                            <h5 class="card-title fw-semibold">Introduction to Web Development</h5>
-                                            <p class="text-muted mb-1">CS101</p>
 
-                                            <!-- Progress -->
-                                            <div class="progress rounded-pill" style="height: 6px;">
-                                                <div class="progress-bar bg-primary" role="progressbar"
-                                                    style="width: 75%"></div>
-                                            </div>
-                                            <div class="d-flex justify-content-between mt-2 small text-muted">
-                                                <span>Progress</span>
-                                                <span>75%</span>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer bg-transparent border-0 pb-4">
-                                            <a href="course-details.php"
-                                                class="btn btn-outline-secondary w-100 mx-auto d-block">View Course</a>
-                                        </div>
-                                    </div>
-                                </div>
 
 
                             </div>
 
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
 
         <!-- Bootstrap JS Bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     
+        <script>
+            $(document).ready(function() {
+                $.ajax({
+                    url: "api/get_student_courses.php",
+                    type: "GET",
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success) {
+                            let courses = response.data;
+                            let container = $(".row-cols-1");
+                            container.empty();
+
+                            if (courses.length === 0) {
+                                container.append(`<div class="col"><p>No courses enrolled.</p></div>`);
+                            } else {
+                                courses.forEach(course => {
+                                    container.append(`
+                            <div class="col">
+                                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                                <img src="${course.thumbnail_url}" 
+                                        class="card-img-top" 
+                                        alt="${course.course_name}">
+
+
+                                    <div class="card-body">
+                                        <h5 class="card-title fw-semibold">${course.course_name}</h5>
+                                        <p class="text-muted mb-1">${course.course_code}</p>
+                                        <div class="progress rounded-pill" style="height: 6px;">
+                                            <div class="progress-bar bg-primary" role="progressbar" 
+                                                 style="width: ${course.progress}%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-2 small text-muted">
+                                            <span>Progress</span>
+                                            <span>${course.progress}%</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-0 pb-4">
+                                        <a href="course-details.php?cm_id=${course.cm_id}&launch_c=${course.id}" 
+                                           class="btn btn-outline-secondary w-100 mx-auto d-block">View Course</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                                });
+                            }
+                        } else {
+                            Swal.fire("Error", response.message, "error");
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire("Error", xhr.responseText, "error");
+                    }
+                });
+            });
+        </script>
+
 </body>
 
 </html>
