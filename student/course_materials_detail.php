@@ -14,6 +14,13 @@ session_start();
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+
+    <!-- vidoplayer.js library -->
+
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+
+
     <link rel="stylesheet" href="../stylesheet/responsive.css" />
     <link rel="stylesheet" href="../stylesheet/styles.css" />
 
@@ -24,47 +31,7 @@ session_start();
             overflow: hidden;
         }
 
-        .video-container {
-            position: relative;
-        }
 
-        .video-click-left,
-        .video-click-right {
-            position: absolute;
-            top: 0;
-            height: 50%;
-            width: 30%;
-            cursor: pointer;
-            z-index: 1;
-        }
-
-        .video-click-left {
-            left: 0;
-        }
-
-        .video-click-right {
-            right: 0;
-        }
-
-        /* Styling for the play/pause overlay icon */
-        .video-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-size: 3rem;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .video-container:hover .video-overlay,
-        .video-overlay.visible {
-            opacity: 1;
-        }
 
         .bg-white {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -75,23 +42,7 @@ session_start();
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 576px) {
 
-            .video-click-left,
-            .video-click-right {
-                width: 40% !important;
-                height: 100% !important;
-            }
-
-            .video-overlay {
-                font-size: 2.5rem;
-            }
-
-            .p-4 {
-                padding: 1.5rem !important;
-            }
-        }
 
         @media (max-width: 576px) {
             .nav-pills .nav-link {
@@ -154,6 +105,12 @@ session_start();
             border-color: #2e7d32;
             color: white;
         }
+
+        .ratio::before {
+            display: block;
+            padding-top: 0px !important;
+            content: "";
+        }
     </style>
 </head>
 
@@ -171,10 +128,12 @@ session_start();
                 <div class="p-4">
 
                     <!-- Chapter Header -->
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-3 gap-sm-0">
+                    <div
+                        class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-3 gap-sm-0">
                         <h3 class="fw-bold mb-0" id="chapter-title">Chapter Title</h3>
                         <div class="d-flex gap-2 flex-wrap">
-                            <a href="#" class="btn btn-outline-secondary btn-sm d-flex align-items-center" id="prev-chapter">
+                            <a href="#" class="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                                id="prev-chapter">
                                 <i class="bi bi-arrow-left me-1"></i> Previous Chapter
                             </a>
                             <a href="#" class="btn btn-primary btn-sm d-flex align-items-center" id="next-chapter">
@@ -197,19 +156,23 @@ session_start();
                     </div>
 
                     <!-- Tabs -->
-                    <ul class="nav nav-pills mb-3 d-flex flex-column flex-sm-row overflow-auto" id="chapterTabs" role="tablist" style="white-space: nowrap;">
+                    <ul class="nav nav-pills mb-3 d-flex flex-column flex-sm-row overflow-auto" id="chapterTabs"
+                        role="tablist" style="white-space: nowrap;">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="reading-tab" data-bs-toggle="pill" data-bs-target="#reading" type="button" role="tab">
+                            <button class="nav-link active" id="reading-tab" data-bs-toggle="pill"
+                                data-bs-target="#reading" type="button" role="tab">
                                 Reading Material
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="videos-tab" data-bs-toggle="pill" data-bs-target="#videos" type="button" role="tab">
+                            <button class="nav-link" id="videos-tab" data-bs-toggle="pill" data-bs-target="#videos"
+                                type="button" role="tab">
                                 Interactive Videos
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="test-tab" data-bs-toggle="pill" data-bs-target="#test" type="button" role="tab">
+                            <button class="nav-link" id="test-tab" data-bs-toggle="pill" data-bs-target="#test"
+                                type="button" role="tab">
                                 Practice Test
                             </button>
                         </li>
@@ -232,7 +195,8 @@ session_start();
                                         <i class="bi bi-file-earmark-pdf-fill me-2 fs-4 text-danger"></i>
                                         <span class="fw-semibold">Reading Material</span>
                                     </div>
-                                    <a id="chapter-pdf-mobile" href="" target="_blank" class="btn btn-outline-secondary btn-sm">Open PDF</a>
+                                    <a id="chapter-pdf-mobile" href="" target="_blank"
+                                        class="btn btn-outline-secondary btn-sm">Open PDF</a>
                                 </div>
                             </div>
                         </div>
@@ -241,15 +205,19 @@ session_start();
                         <div class="tab-pane fade" id="videos" role="tabpanel">
                             <div class="bg-white rounded-4 shadow-sm p-4 text-center position-relative video-container">
                                 <div class="ratio ratio-16x9">
-                                    <video id="chapter1Video" class="w-100 h-100" src="../videos/someone.mp4" controls
-                                        controlsList="nodownload noremoteplayback" oncontextmenu="return false;">
+                                    <video id="chapter1Video" playsinline controls
+                                        controlsList="nodownload noremoteplayback" oncontextmenu="return false">
+                                        <source src="../videos/someone.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
                                     </video>
                                 </div>
+
+                                <!-- Left/Right click areas for 10s skip -->
                                 <div id="chapter1Left" class="video-click-left"></div>
                                 <div id="chapter1Right" class="video-click-right"></div>
-                                <i id="chapter1Overlay" class="video-overlay bi bi-play-fill"></i>
                             </div>
                         </div>
+
 
                         <!-- Practice Test -->
                         <div class="tab-pane fade" id="test" role="tabpanel">
@@ -271,8 +239,64 @@ session_start();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        $(document).ready(function() {
+        // Initialize Plyr for all video players
+        const players = Array.from(document.querySelectorAll('video')).map(p => new Plyr(p, {
+            controls: [
+                'play-large',
+                'play',
+                'progress',
+                'current-time',
+                'mute',
+                'volume',
+                'settings',
+                'fullscreen'
+            ],
+            disableContextMenu: true
+        }));
+
+        const video = document.querySelector('#chapter1Video');
+        const videoWrapper = video.parentElement;
+        const storageKey = "chapter1VideoTime"; // unique key for this video
+
+        // ✅ Restore playback time if saved in sessionStorage
+        if (sessionStorage.getItem(storageKey)) {
+            video.currentTime = parseFloat(sessionStorage.getItem(storageKey));
+        }
+
+        // ✅ Save playback time every 2s
+        video.addEventListener("timeupdate", () => {
+            sessionStorage.setItem(storageKey, video.currentTime);
+        });
+
+        // ✅ Double-click left/right side to skip
+        videoWrapper.addEventListener('dblclick', function (e) {
+            e.preventDefault(); // stop default fullscreen
+
+            const rect = videoWrapper.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const width = rect.width;
+
+            if (x < width / 2) {
+                video.currentTime -= 10;
+            } else {
+                video.currentTime += 10;
+            }
+        });
+
+        // ✅ Keyboard shortcuts (ArrowLeft & ArrowRight)
+        document.addEventListener('keydown', function (e) {
+            if (e.key === "ArrowLeft") {
+                video.currentTime -= 10;
+            } else if (e.key === "ArrowRight") {
+                video.currentTime += 10;
+            }
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
             const params = new URLSearchParams(window.location.search);
             const chapter_id = params.get("chapter_id");
             const cm_id = params.get("cm_id");
@@ -287,7 +311,7 @@ session_start();
 
                 },
                 dataType: "json",
-                success: function(res) {
+                success: function (res) {
                     if (!res.success) {
                         Swal.fire("Error", res.message, "error");
                         return;
@@ -317,7 +341,7 @@ session_start();
                         quiz.forEach((q, i) => {
                             quizContainer.append(`
                         <div class="mb-3">
-                            <p>${i+1}. ${q.question}</p>
+                            <p>${i + 1}. ${q.question}</p>
                             <div class="row">
                                 <div class="col-6 option-wrapper">
                                     <label><input type="radio" name="q${q.p_id}" value="${q.option1}"> ${q.option1}</label>
@@ -342,14 +366,14 @@ session_start();
                 `);
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     Swal.fire("Error", xhr.responseText, "error");
                 }
             });
         });
     </script>
 
-    <script>
+    <!-- <script>
         document.addEventListener('DOMContentLoaded', () => {
             const video = document.getElementById('chapter1Video');
             const leftArea = document.getElementById('chapter1Left');
@@ -412,7 +436,7 @@ session_start();
             // Initial overlay update
             updateOverlay();
         });
-    </script>
+    </script> -->
 
 </body>
 
