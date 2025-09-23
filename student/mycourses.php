@@ -42,7 +42,7 @@ include "../includes/config.php";
             <?php include('sidebar.php') ?>
 
             <!-- Main Content -->
-            <div class="col-12 col-sm-10 col-md-10 col-lg-10 p-0">
+            <div class="col-12 col-sm-10 col-md-9 col-lg-10 p-0">
                 <!-- Topbar -->
                 <?php include('topbar.php') ?>
 
@@ -106,7 +106,7 @@ include "../includes/config.php";
                                         </div>
                                     </div>
                                     <div class="card-footer bg-transparent border-0 pb-4">
-                                        <a href="course-details.php?cm_id=${course.cm_id}&launch_c=${course.id}" 
+                                        <a href="course-details.php?cm_id=${course.cm_id}&launch_c=${course.launch_id}" 
                                            class="btn btn-outline-secondary w-100 mx-auto d-block">View Course</a>
                                     </div>
                                 </div>

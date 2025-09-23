@@ -115,13 +115,14 @@ session_start();
 </head>
 
 <body>
+    
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
             <?php include('sidebar.php') ?>
 
             <!-- Main Content -->
-            <div class="col-12 col-sm-10 col-md-10 col-lg-10 p-0">
+            <div class="col-12 col-sm-10 col-md-9 col-lg-10 p-0">
                 <!-- Topbar -->
                 <?php include('topbar.php') ?>
 
@@ -235,11 +236,11 @@ session_start();
         </div>
     </div>
 
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- video player -->
     <script>
         // Initialize Plyr for all video players
         const players = Array.from(document.querySelectorAll('video')).map(p => new Plyr(p, {
@@ -271,7 +272,7 @@ session_start();
         });
 
         // ✅ Double-click left/right side to skip
-        videoWrapper.addEventListener('dblclick', function (e) {
+        videoWrapper.addEventListener('dblclick', function(e) {
             e.preventDefault(); // stop default fullscreen
 
             const rect = videoWrapper.getBoundingClientRect();
@@ -286,7 +287,7 @@ session_start();
         });
 
         // ✅ Keyboard shortcuts (ArrowLeft & ArrowRight)
-        document.addEventListener('keydown', function (e) {
+        document.addEventListener('keydown', function(e) {
             if (e.key === "ArrowLeft") {
                 video.currentTime -= 10;
             } else if (e.key === "ArrowRight") {
@@ -295,23 +296,22 @@ session_start();
         });
     </script>
 
+    <!-- fetch detials -->
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             const params = new URLSearchParams(window.location.search);
             const chapter_id = params.get("chapter_id");
             const cm_id = params.get("cm_id");
-
 
             $.ajax({
                 url: "api/get_chapter_details.php",
                 type: "GET",
                 data: {
                     chapter_id,
-                    cm_id,
-
+                    cm_id
                 },
                 dataType: "json",
-                success: function (res) {
+                success: function(res) {
                     if (!res.success) {
                         Swal.fire("Error", res.message, "error");
                         return;
@@ -320,45 +320,46 @@ session_start();
                     const chapter = res.chapter;
                     const quiz = res.quiz;
 
-                    // Update chapter title and progress
-                    $("h3.fw-bold.mb-0").text(`Chapter ${chapter.chapter_no}: ${chapter.chapter_title}`);
+                    // --- Chapter Info ---
+                    $("h3.fw-bold.mb-0").text(`${chapter.chapter_no}: ${chapter.chapter_title}`);
                     $(".progress-bar").css("width", chapter.progress + "%");
                     $(".text-muted.small").first().text(chapter.progress + "% Complete");
 
-                    // PDF
+                    // --- PDF ---
                     const pdfPath = `../faculty/${chapter.materials}`;
                     $("#reading iframe").attr("src", pdfPath);
                     $("#reading a.btn-outline-secondary").attr("href", pdfPath);
 
-                    // Video
+                    // --- Video ---
                     $("#videos video").attr("src", `../faculty/${chapter.flipped_class}`);
 
-                    // Quiz
+                    // --- Quiz ---
                     const quizContainer = $("#quiz-form").empty();
-                    if (quiz.length === 0) {
+                    if (!quiz || quiz.length === 0) {
                         quizContainer.append("<p>No practice questions available.</p>");
                     } else {
                         quiz.forEach((q, i) => {
                             quizContainer.append(`
                         <div class="mb-3">
-                            <p>${i + 1}. ${q.question}</p>
+                            <p>${i + 1}. ${q.question} <span class="badge bg-info">${q.co_level}</span></p>
                             <div class="row">
                                 <div class="col-6 option-wrapper">
-                                    <label><input type="radio" name="q${q.p_id}" value="${q.option1}"> ${q.option1}</label>
+                                    <label><input type="radio" name="q${q.p_id}" value="A"> ${q.option1}</label>
                                 </div>
                                 <div class="col-6 option-wrapper">
-                                    <label><input type="radio" name="q${q.p_id}" value="${q.option2}"> ${q.option2}</label>
+                                    <label><input type="radio" name="q${q.p_id}" value="B"> ${q.option2}</label>
                                 </div>
                                 <div class="col-6 option-wrapper">
-                                    <label><input type="radio" name="q${q.p_id}" value="${q.option3}"> ${q.option3}</label>
+                                    <label><input type="radio" name="q${q.p_id}" value="C"> ${q.option3}</label>
                                 </div>
                                 <div class="col-6 option-wrapper">
-                                    <label><input type="radio" name="q${q.p_id}" value="${q.option4}"> ${q.option4}</label>
+                                    <label><input type="radio" name="q${q.p_id}" value="D"> ${q.option4}</label>
                                 </div>
                             </div>
                         </div>
                     `);
                         });
+
                         quizContainer.append(`
                     <div class="text-center mt-4">
                         <button type="submit" class="btn btn-secondary">Submit Answers</button>
@@ -366,7 +367,73 @@ session_start();
                 `);
                     }
                 },
-                error: function (xhr) {
+                error: function(xhr) {
+                    Swal.fire("Error", xhr.responseText, "error");
+                }
+            });
+        });
+    </script>
+
+    <!-- submit quiz -->
+    <script>
+        $(document).on("submit", "#quiz-form", function(e) {
+            e.preventDefault();
+
+            const params = new URLSearchParams(window.location.search);
+            const cm_id = params.get("cm_id");
+            const chapter_id = params.get("chapter_id");
+
+            // --- Collect answers ---
+            let answers = [];
+            $("#quiz-form div.mb-3").each(function() {
+                const questionId = $(this).find("input[type=radio]").attr("name").replace("q", "");
+                const selected = $(this).find("input[type=radio]:checked").val() || "";
+                answers.push({
+                    qust_id: questionId,
+                    answer: selected
+                });
+            });
+
+            $.ajax({
+                url: "api/submit_quiz.php",
+                type: "POST",
+                data: JSON.stringify({
+                    cm_id,
+                    chapter_id,
+                    answers
+                }),
+                contentType: "application/json",
+                dataType: "json",
+                success: function(res) {
+                    if (res.success) {
+                        Swal.fire({
+                            title: "🎯 Quiz Result",
+                            html: `
+                                        <div style="font-size: 18px; margin-bottom: 10px;">
+                                            You scored <b style="color:#007bff;">${res.correct_count}</b> 
+                                            out of <b>${res.total_questions}</b>
+                                        </div>
+                                        <div style="font-size: 18px; margin-bottom: 10px;">
+                                            Percentage: <b style="color:#28a745;">${res.percentage}%</b>
+                                        </div>
+                                        <div style="font-size: 20px; font-weight: bold; color:${res.result === "Pass" ? "#28a745" : "#dc3545"};">
+                                            ${res.result === "Pass" ? "✅ Congratulations! You Passed 🎉" : "❌ Oops! You Failed 😢"}
+                                        </div>
+                                    `,
+                            icon: res.result === "Pass" ? "success" : "error",
+                            confirmButtonText: "OK",
+                            confirmButtonColor: res.result === "Pass" ? "#28a745" : "#dc3545",
+                            });
+
+
+                        // --- Update progress dynamically ---
+                        $("#chapter-progress-bar").css("width", res.chapter_percent + "%");
+                        $("#chapter-progress-text").text(res.chapter_percent + "% Complete");
+                    } else {
+                        Swal.fire("Error", res.message, "error");
+                    }
+                },
+                error: function(xhr) {
                     Swal.fire("Error", xhr.responseText, "error");
                 }
             });

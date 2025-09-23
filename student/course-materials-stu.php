@@ -87,7 +87,7 @@ $launchid = $_GET['launch_c'];
             <?php include('sidebar.php') ?>
 
             <!-- Main Content -->
-            <div class="col-12 col-sm-10 col-md-10 col-lg-10 p-0">
+            <div class="col-12 col-sm-10 col-md-9 col-lg-10 p-0">
                 <!-- Topbar -->
                 <?php include('topbar.php') ?>
 
@@ -162,74 +162,72 @@ $launchid = $_GET['launch_c'];
         </div>
     </div>
 
-
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            const cm_id = new URLSearchParams(window.location.search).get("cm_id");
-            const launch_c = new URLSearchParams(window.location.search).get("launch_c");
-           
+            const cm_id = <?php echo $cmid; ?>;
+            const launch_c = <?php echo $launchid; ?>;
 
-            $.ajax({
-                url: "api/get_course_chapters.php",
-                type: "GET",
-                data: {
-                    cm_id,
-                    launch_c,
-            
-                },
-                dataType: "json",
-                success: function(res) {
-                    if (!res.success) {
-                        Swal.fire("Error", res.message, "error");
-                        return;
+            function loadProgress() {
+                $.ajax({
+                    url: "api/get_course_chapters.php",
+                    type: "GET",
+                    data: {
+                        cm_id,
+                        launch_c
+                    },
+                    dataType: "json",
+                    success: function(res) {
+                        if (!res.success) {
+                            Swal.fire("Error", res.message, "error");
+                            return;
+                        }
+
+                        const course = res.course;
+                        const chapters = res.chapters;
+
+                        $("#courseTitle").text(course.course_name);
+                        $("#courseDesc").text(course.course_code);
+
+                        // Overall progress
+                        $("#overallProgressBar").css("width", res.overall + "%");
+                        $("#overallProgressText").text(res.overall + "%");
+
+                        // Chapter cards
+                        const container = $(".row.g-3");
+                        container.empty();
+                        chapters.forEach(chap => {
+                            container.append(`
+                        <div class="col-md-6 col-lg-4">
+                            <a href="course_materials_detail.php?chapter_id=${chap.mid}&cm_id=${course.cm_id}" 
+                               class="text-decoration-none text-dark">
+                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
+                                    <h5 class="fw-semibold">${chap.chapter_title}</h5>
+                                    <p class="text-muted small mb-2">Chapter ${chap.chapter_no || ""}</p>
+                                    <div class="d-flex justify-content-between align-items-center small mb-1">
+                                        <span>Completion</span>
+                                        <span class="text-muted">${chap.progress}%</span>
+                                    </div>
+                                    <div class="progress rounded-pill" style="height: 6px;">
+                                        <div class="progress-bar bg-primary" style="width: ${chap.progress}%;"></div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    `);
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire("Error", xhr.responseText, "error");
                     }
+                });
+            }
 
-                    const course = res.course;
-                    const chapters = res.chapters;
-
-                    $("#courseTitle").text(course.course_name);
-                    $("#courseDesc").text(course.course_code);
-
-                    const container = $(".row.g-3");
-                    container.empty();
-
-                    chapters.forEach(chap => {
-                        container.append(`
-                    <div class="col-md-6 col-lg-4">
-                        <a href="course_materials_detail.php?chapter_id=${chap.mid}&cm_id=${course.cm_id}" 
-                           class="text-decoration-none text-dark">
-                            <div class="bg-white rounded-4 shadow-sm p-3 h-100">
-                                <h5 class="fw-semibold">${chap.chapter_title}</h5>
-                                <p class="text-muted small mb-2">${chap.chapter_no || "No description"}</p>
-                                <div class="d-flex justify-content-between align-items-center small mb-1">
-                                    <span>Completion</span>
-                                    <span class="text-muted">${chap.progress}%</span>
-                                </div>
-                                <div class="progress rounded-pill" style="height: 6px;">
-                                    <div class="progress-bar bg-primary" style="width: ${chap.progress}%;"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                `);
-                    });
-
-                    // Optional: overall progress
-                    const overall = chapters.reduce((sum, c) => sum + c.progress, 0) / (chapters.length || 1);
-                    $("#overallProgressBar").css("width", overall + "%");
-                    $("#overallProgressText").text(Math.round(overall) + "%");
-                },
-                error: function(xhr) {
-                    Swal.fire("Error", xhr.responseText, "error");
-                }
-            });
+            loadProgress();
         });
     </script>
+
 </body>
 
 

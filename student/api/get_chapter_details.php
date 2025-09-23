@@ -28,18 +28,11 @@ if (!$chapter) {
     echo json_encode(["success"=>false, "message"=>"Chapter not found"]);
     exit;
 }
+$chapter['progress'] =  0;
 
-// Fetch student progress for this chapter
-$progressSql = "SELECT progress_percent FROM student_progress 
-                WHERE student_reg_no=? AND cm_id=? AND chapter_id=? LIMIT 1";
-$stmt = $conn->prepare($progressSql);
-$stmt->bind_param("sii", $student_reg_no, $cm_id, $chapter_id);
-$stmt->execute();
-$progress = $stmt->get_result()->fetch_assoc();
-$chapter['progress'] = $progress['progress_percent'] ?? 0;
 
 // Fetch quiz questions
-$quizSql = "SELECT p_id, question, option1, option2, option3, option4, answer
+$quizSql = "SELECT p_id, question, option1, option2, option3, option4, answer, co_level
             FROM practise_question
             WHERE cm_id=? AND module_id=?";
 

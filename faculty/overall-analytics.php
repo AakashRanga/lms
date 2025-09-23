@@ -36,7 +36,7 @@ session_start();
             <?php include('sidebar.php') ?>
 
             <!-- Main Content -->
-            <div class="col-12 col-sm-10 col-md-10 col-lg-10 p-0">
+            <div class="col-12 col-sm-10 col-md-9 col-lg-10 p-0">
                 <!-- Topbar -->
                 <?php include('topbar.php') ?>
 
