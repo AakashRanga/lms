@@ -60,11 +60,11 @@ try {
     $chapProgSql = "
         SELECT chapter_id, chapter_percent
         FROM student_chapter_progress
-        WHERE student_reg_no = ? AND cm_id = ? AND launch_course_id = ?
+        WHERE student_reg_no = ? AND cm_id = ?
     ";
     $chapProgStmt = $conn->prepare($chapProgSql);
     if (!$chapProgStmt) throw new Exception("Prepare failed (chapter progress): " . $conn->error);
-    if (!$chapProgStmt->bind_param("sii", $student_reg_no, $cm_id, $launch_c)) throw new Exception("Bind failed (chapter progress): " . $chapProgStmt->error);
+    if (!$chapProgStmt->bind_param("si", $student_reg_no, $cm_id )) throw new Exception("Bind failed (chapter progress): " . $chapProgStmt->error);
     if (!$chapProgStmt->execute()) throw new Exception("Execute failed (chapter progress): " . $chapProgStmt->error);
     $studentChapterProgress = $chapProgStmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $chapProgStmt->close();
@@ -88,11 +88,11 @@ try {
     $courseProgSql = "
         SELECT course_percent
         FROM student_course_progress
-        WHERE student_reg_no = ? AND cm_id = ? AND launch_course_id = ? LIMIT 1
+        WHERE student_reg_no = ? AND cm_id = ? LIMIT 1
     ";
     $courseProgStmt = $conn->prepare($courseProgSql);
     if (!$courseProgStmt) throw new Exception("Prepare failed (course progress): " . $conn->error);
-    if (!$courseProgStmt->bind_param("sii", $student_reg_no, $cm_id, $launch_c)) throw new Exception("Bind failed (course progress): " . $courseProgStmt->error);
+    if (!$courseProgStmt->bind_param("si", $student_reg_no, $cm_id)) throw new Exception("Bind failed (course progress): " . $courseProgStmt->error);
     if (!$courseProgStmt->execute()) throw new Exception("Execute failed (course progress): " . $courseProgStmt->error);
     $courseProgRow = $courseProgStmt->get_result()->fetch_assoc();
     $courseProgStmt->close();

@@ -1,58 +1,119 @@
 <?php
-// api/get_progress.php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 include "../../includes/config.php";
 
-
 try {
-    $student = $_SESSION['reg_no'] ?? null;
-    if (!$student) throw new Exception("Unauthorized");
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$input) $input = $_GET;
 
-    $cm_id = isset($_GET['cm_id']) ? (int)$_GET['cm_id'] : 0;
-    if (!$cm_id) throw new Exception("Missing cm_id");
+    $student_reg_no =  $_SESSION['userid'];
+    $cm_id = isset($input['cm_id']) ? intval($input['cm_id']) : null;
 
-    // Get course percent
-    $stmt = $conn->prepare("SELECT course_percent FROM student_course_progress WHERE student_reg_no = ? AND cm_id = ?");
-    $stmt->bind_param("si", $student, $cm_id);
+    if (!$student_reg_no || !$cm_id) {
+        http_response_code(400);
+        echo json_encode(['status' => 400, 'message' => 'Missing required params: student_reg_no, cm_id']);
+        exit;
+    }
+
+    // Fetch all modules (chapters) for the course_material (cm_id)
+    $mstmt = $conn->prepare("SELECT mid, chapter_no, chapter_title, materials, flipped_class FROM module WHERE cm_id = ? ORDER BY chapter_no ASC, mid ASC");
+    if (!$mstmt) throw new Exception("Prepare failed (modules): " . $conn->error);
+    $mstmt->bind_param('i', $cm_id);
+    $mstmt->execute();
+    $mres = $mstmt->get_result();
+    $modules = [];
+    while ($mrow = $mres->fetch_assoc()) {
+        $modules[$mrow['mid']] = [
+            'mid' => intval($mrow['mid']),
+            'chapter_no' => $mrow['chapter_no'],
+            'chapter_title' => $mrow['chapter_title'],
+            'materials' => $mrow['materials'],
+            'flipped_class' => $mrow['flipped_class'],
+            // placeholders we'll fill from student_chapter_progress if exists
+            'phase_material' => 0,
+            'phase_video' => 0,
+            'phase_quiz' => 0,
+            'chapter_percent' => 0,
+            'unlocked' => 0
+        ];
+    }
+    $mstmt->close();
+
+    // If no modules
+    if (empty($modules)) {
+        http_response_code(404);
+        echo json_encode(['status' => 404, 'message' => 'No chapters found for this course (cm_id).']);
+        exit;
+    }
+
+    // Fetch student's progress rows for these chapters
+    $mid_list = array_keys($modules);
+    // build IN clause safely
+    $placeholders = implode(',', array_fill(0, count($mid_list), '?'));
+    $types = str_repeat('i', count($mid_list));
+    $params = $mid_list;
+
+    $sql = "SELECT * FROM student_chapter_progress WHERE student_reg_no = ? AND cm_id = ? AND chapter_id IN ($placeholders)";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) throw new Exception("Prepare failed (progress fetch): " . $conn->error);
+
+    // bind params: first student_reg_no (s), then cm_id (i), then mids...
+    $bind_types = 'si' . $types;
+    $bind_params = array_merge([$bind_types, $student_reg_no, $cm_id], $params);
+    // use call_user_func_array for dynamic bind
+    $refs = [];
+    foreach ($bind_params as $k => $v) {
+        $refs[$k] = &$bind_params[$k];
+    }
+    call_user_func_array([$stmt, 'bind_param'], $refs);
     $stmt->execute();
-    $res = $stmt->get_result();
-    $course = $res->fetch_assoc();
-    $coursePercent = $course['course_percent'] ?? 0;
-    $stmt->close();
-
-    // Get module list and student's chapter progress left-joined
-    $stmt = $conn->prepare("
-        SELECT m.chapter_id, m.chapter_no, m.chapter_title,
-               scp.phase_material, scp.phase_video, scp.phase_quiz, scp.chapter_percent, scp.unlocked
-        FROM module m
-        LEFT JOIN student_chapter_progress scp
-            ON scp.chapter_id = m.chapter_id AND scp.cm_id = m.cm_id AND scp.student_reg_no = ?
-        WHERE m.cm_id = ? ORDER BY m.chapter_no ASC
-    ");
-    $stmt->bind_param("si", $student, $cm_id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-
-    $chapters = [];
-    while ($r = $res->fetch_assoc()) {
-        // normalize nulls to zeros
-        $r['phase_material'] = (int)($r['phase_material'] ?? 0);
-        $r['phase_video'] = (int)($r['phase_video'] ?? 0);
-        $r['phase_quiz'] = (int)($r['phase_quiz'] ?? 0);
-        $r['chapter_percent'] = (int)($r['chapter_percent'] ?? 0);
-        $r['unlocked'] = (int)($r['unlocked'] ?? 0);
-        $chapters[] = $r;
+    $pres = $stmt->get_result();
+    while ($prow = $pres->fetch_assoc()) {
+        $mid = intval($prow['chapter_id']);
+        if (isset($modules[$mid])) {
+            $modules[$mid]['phase_material'] = intval($prow['phase_material']);
+            $modules[$mid]['phase_video'] = intval($prow['phase_video']);
+            $modules[$mid]['phase_quiz'] = intval($prow['phase_quiz']);
+            $modules[$mid]['chapter_percent'] = intval($prow['chapter_percent']);
+            $modules[$mid]['unlocked'] = intval($prow['unlocked']);
+        }
     }
     $stmt->close();
 
+    // Calculate overall course_percent (average of chapter_percent) if not stored
+    $sum = 0; $count = 0;
+    foreach ($modules as $mod) {
+        $sum += intval($mod['chapter_percent']);
+        $count++;
+    }
+    $course_percent = $count > 0 ? round($sum / $count) : 0;
+
+    // Also try to read student_course_progress for authoritative value (if exists)
+    $cstmt = $conn->prepare("SELECT course_percent FROM student_course_progress WHERE student_reg_no = ? AND cm_id = ?");
+    if ($cstmt) {
+        $cstmt->bind_param('si', $student_reg_no, $cm_id);
+        $cstmt->execute();
+        $cres = $cstmt->get_result();
+        if ($crow = $cres->fetch_assoc()) {
+            $course_percent = intval($crow['course_percent']);
+        }
+        $cstmt->close();
+    }
+
+    http_response_code(200);
     echo json_encode([
-        'success' => true,
-        'course_percent' => (int)$coursePercent,
-        'chapters' => $chapters
+        'status' => 200,
+        'message' => 'Progress fetched',
+        'course_percent' => $course_percent,
+        'chapters' => array_values($modules)
     ]);
     exit;
 
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    http_response_code(500);
+    echo json_encode([
+        'status' => 500,
+        'message' => 'Server error: ' . $e->getMessage()
+    ]);
     exit;
 }
