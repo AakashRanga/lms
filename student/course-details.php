@@ -70,7 +70,8 @@ $launchid = $_GET['launch_c'];
 
                                 <!-- Course Materials -->
                                 <div class="col">
-                                    <a href="course-materials-stu.php?cm_id=<?php echo $cmid; ?>&launch_c=<?php echo $launchid; ?>" class="text-decoration-none text-dark">
+                                    <a href="course-materials-stu.php?cm_id=<?php echo $cmid; ?>&launch_c=<?php echo $launchid; ?>"
+                                        class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <i class="bi bi-folder2-open feature-icon"></i>
                                             <h6 class="fw-semibold">Course Materials</h6>
@@ -94,7 +95,8 @@ $launchid = $_GET['launch_c'];
 
                                 <!-- Assignments -->
                                 <div class="col">
-                                    <a href="assignments.php" class="text-decoration-none text-dark">
+                                    <a href="assignments.php?cm_id=<?php echo $cmid; ?>&launch_c=<?php echo $launchid; ?>"
+                                        class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <i class="bi bi-journal-text feature-icon"></i>
                                             <h6 class="fw-semibold">Assignments</h6>

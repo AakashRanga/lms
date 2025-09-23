@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+// ✅ Get IDs from URL or session
+$c_id = $_GET['c_id'] ?? '';                   // optional: if you pass course id in URL
+$launch_id = $_GET['launch_c_id'] ?? '';       // fixed: URL has launch_c_id, not launch_id
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,33 +20,27 @@ session_start();
     <link rel="stylesheet" href="../stylesheet/responsive.css">
     <link rel="stylesheet" href="../stylesheet/styles.css">
 
-    <!-- styles -->
     <style>
         .card-custom-assignemt {
             border-radius: 0px;
             border: 1px solid #f0f0f0;
         }
 
-        /* Style the nav tab bar background */
         #assignmentTabs {
             background-color: #f8f9fa;
-            /* light gray background */
             border-radius: 6px 6px 0 0;
             padding: 0.5rem;
         }
 
-        /* Style each tab button */
-        #assignmentTa bs .nav-link {
+        #assignmentTabs .nav-link {
             color: #495057;
             font-weight: 500;
             border: none;
             margin-right: 5px;
         }
 
-        /* Active tab styling */
         #assignmentTabs .nav-link.active {
             background-color: #0d6efd;
-            /* Bootstrap primary */
             color: #fff;
             border-radius: 4px;
         }
@@ -85,22 +83,20 @@ session_start();
                         "course-admin.php" => "Course Admin",
                         "add-course.php" => "Add Course"
                     ];
-
-                    $currentPage = basename($_SERVER['PHP_SELF']); // e.g. add-course.php
+                    $currentPage = basename($_SERVER['PHP_SELF']);
                     ?>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="active-course.php">Active Course</a></li>
                             <li class="breadcrumb-item"><a href="course-details.php">Course Details</a></li>
-
-
                             <li class="breadcrumb-item active" aria-current="page">
                                 <?= $pageTitles[$currentPage] ?? ucfirst(pathinfo($currentPage, PATHINFO_FILENAME)) ?>
                             </li>
                         </ol>
                     </nav>
                     <br>
+
                     <!-- Nav Tabs -->
                     <ul class="nav nav-tabs" id="assignmentTabs" role="tablist">
                         <li class="nav-item" role="presentation">
@@ -109,7 +105,6 @@ session_start();
                                 Add Assignment
                             </button>
                         </li>
-
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="approval-tab" data-bs-toggle="tab"
                                 data-bs-target="#assignmentApproval" type="button" role="tab">
@@ -117,25 +112,30 @@ session_start();
                             </button>
                         </li>
                     </ul>
+
                     <div class="card-custom-assignemt p-4 border-rounded-none">
-                        <!-- Tab Contents -->
                         <div class="tab-content" id="assignmentTabsContent">
                             <!-- Add Assignment Tab -->
                             <div class="tab-pane fade show active" id="addAssignment" role="tabpanel">
                                 <div class="form-div">
-                                    <form>
+                                    <form id="assignment-approval-faculty" enctype="multipart/form-data">
+                                        <!-- ✅ Fixed hidden inputs -->
+                                        <input type="hidden" name="c_id" value="<?= htmlspecialchars($c_id) ?>">
+                                        <input type="hidden" name="launch_c_id"
+                                            value="<?= htmlspecialchars($launch_id) ?>">
+
                                         <!-- Title -->
                                         <div class="mb-3">
                                             <label class="form-label">Title</label>
-                                            <input type="text" class="form-control" placeholder="Enter assignment title"
-                                                required>
+                                            <input type="text" class="form-control" name="title"
+                                                placeholder="Enter assignment title" required>
                                         </div>
 
-                                        <!-- Instructions (Optional) -->
+                                        <!-- Instructions -->
                                         <div class="mb-3">
                                             <label class="form-label">Instructions <small
                                                     class="text-muted">(optional)</small></label>
-                                            <textarea class="form-control" rows="3"
+                                            <textarea class="form-control" name="instruction" rows="3"
                                                 placeholder="Enter instructions if any"></textarea>
                                         </div>
 
@@ -144,14 +144,15 @@ session_start();
                                                 <!-- Upload PDF -->
                                                 <div class="mb-3">
                                                     <label class="form-label">Upload File (PDF only)</label>
-                                                    <input type="file" class="form-control" accept=".pdf" required>
+                                                    <input type="file" class="form-control" name="file" accept=".pdf"
+                                                        required>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4">
-                                                <!-- Total Marks Dropdown -->
+                                                <!-- Total Marks -->
                                                 <div class="mb-3">
                                                     <label class="form-label">Total Marks</label>
-                                                    <select class="form-select" required>
+                                                    <select class="form-select" name="marks" required>
                                                         <option value="" selected disabled>Select marks</option>
                                                         <option value="10">10</option>
                                                         <option value="20">20</option>
@@ -165,21 +166,21 @@ session_start();
                                                 <!-- Due Date -->
                                                 <div class="mb-3">
                                                     <label class="form-label">Due Date</label>
-                                                    <input type="date" class="form-control" required>
+                                                    <input type="date" class="form-control" name="due_date" required>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- Submit -->
-                                        <div class="d-flex justify-content-center"> <button type="submit"
-                                                class="btn btn-secondary">Submit</button>
+                                        <div class="d-flex justify-content-center">
+                                            <button type="submit" class="btn btn-secondary">Submit</button>
                                         </div>
                                     </form>
-
                                 </div>
+
                                 <div class="form-table shadow p-3 mt-4">
                                     <h5>View Assignments</h5>
-                                    <table class="table table-bordered mt-3">
+                                    <table class="table table-bordered mt-3" id="assignmentsTable">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>Topic</th>
@@ -190,23 +191,12 @@ session_start();
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>Algebra Basics</td>
-                                                <td>2025-09-10</td>
-                                                <td>2025-09-20</td>
-                                                <td><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf"
-                                                        target="_blank">View File</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Chemistry Basics</td>
-                                                <td>2025-09-11</td>
-                                                <td>2025-09-21</td>
-                                                <td><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf"
-                                                        target="_blank">View File</a></td>
+                                                <td colspan="4" class="text-center">Loading...</td>
                                             </tr>
                                         </tbody>
                                     </table>
-
                                 </div>
+
 
                             </div>
 
@@ -216,9 +206,7 @@ session_start();
                                 <table class="table table-bordered mt-3">
                                     <thead>
                                         <tr>
-                                            <th>
-                                                <input type="checkbox" id="selectAll" class="form-check-input">
-                                            </th>
+                                            <th><input type="checkbox" id="selectAll" class="form-check-input"></th>
                                             <th>Student Name</th>
                                             <th>Register No</th>
                                             <th>Course Name</th>
@@ -228,7 +216,6 @@ session_start();
                                             <th>Enter Mark</th>
                                         </tr>
                                     </thead>
-
                                     <tbody>
                                         <tr>
                                             <td><input type="checkbox" class="form-check-input row-checkbox"></td>
@@ -243,32 +230,15 @@ session_start();
                                                     placeholder="Enter Mark in percentage">
                                             </td>
                                         </tr>
-
-                                        <tr>
-                                            <td><input type="checkbox" class="form-check-input row-checkbox"></td>
-                                            <td>Jane Smith</td>
-                                            <td>REG54321</td>
-                                            <td>Science</td>
-                                            <td>Unit 2</td>
-                                            <td>Chemistry Basics</td>
-                                            <td><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf">View File</a></td>
-                                            <td style="width: 190px;">
-                                                <input type="text" class="form-control form-control-sm"
-                                                    placeholder="Enter Mark in percentage">
-                                            </td>
-                                        </tr>
                                     </tbody>
                                 </table>
-
                                 <div class="d-flex justify-content-center">
                                     <button class="btn btn-secondary">Submit</button>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -279,15 +249,116 @@ session_start();
             const selectAll = document.getElementById('selectAll');
             if (selectAll) {
                 selectAll.addEventListener('change', function () {
-                    const checked = this.checked;
                     document.querySelectorAll('.row-checkbox').forEach(cb => {
-                        cb.checked = checked;
+                        cb.checked = this.checked;
                     });
                 });
             }
         });
     </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include SweetAlert2 CSS & JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#assignment-approval-faculty").on("submit", function (e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: 'api/submit_assignment.php',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        let res = typeof response === "string" ? JSON.parse(response) : response;
+
+                        if (res.status == 200) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Assignment submitted successfully!',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                $("#assignment-approval-faculty")[0].reset();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: res.message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong. Please try again!',
+                            confirmButtonColor: '#d33'
+                        });
+                    }
+                });
+            });
+        });
     </script>
+
+    <!-- fetch assignments -->
+    <script>
+        $(document).ready(function () {
+
+            function getUrlParam(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+
+            function fetchAssignments() {
+                const launchId = getUrlParam('launch_c_id');
+
+                if (!launchId) {
+                    $('#assignmentsTable tbody').html('<tr><td colspan="8" class="text-center">Invalid launch ID.</td></tr>');
+                    return;
+                }
+
+                $.ajax({
+                    url: 'api/fetch_assignments.php',
+                    method: 'GET',
+                    data: { launch_c_id: launchId },
+                    dataType: 'json',
+                    success: function (res) {
+                        let tbody = $('#assignmentsTable tbody');
+                        tbody.empty();
+
+                        if (res.status === 200 && res.data.length > 0) {
+                            res.data.forEach(function (a) {
+                                tbody.append(`
+                            <tr>
+                                <td>${a.title}</td>
+                                <td>${a.assigned_date}</td>
+                                <td>${a.due_date}</td>
+                                <td><a href="${a.notes}" target="_blank">View File</a></td>
+                            </tr>
+                        `);
+                            });
+                        } else {
+                            tbody.append('<tr><td colspan="6" class="text-center">No assignments found.</td></tr>');
+                        }
+                    },
+                    error: function () {
+                        $('#assignmentsTable tbody').html('<tr><td colspan="6" class="text-center">Failed to load assignments.</td></tr>');
+                    }
+                });
+            }
+
+            fetchAssignments();
+        });
+
+    </script>
+
 
 </body>
 
