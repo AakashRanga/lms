@@ -1,0 +1,58 @@
+@media (min-width:768px) {
+    .brand img{
+        display: none;
+    }
+    .sidebar h4{
+        font-size: 14px;
+    }
+    .sidebar a{
+        font-size: 14px;
+    }
+}
+
+@media (max-width:768px) {
+    .student-reg .col-md-6{
+        width: 100%;
+    }
+    
+    .sidebar h4{
+        font-size: 14px;
+    }
+    .sidebar a{
+        font-size: 14px;
+    }
+
+}
+
+@media (max-width: 576px) {
+    .sidebar h4 {
+        font-size: 14px;
+    }
+
+    .sidebar a {
+        font-size: 14px;
+    }
+
+    #course_slot {
+        width: 100% !important;
+    }
+
+    .course-item {
+        padding: 0.6rem;
+    }
+
+    .course-label {
+        font-size: 0.85rem;
+    }
+
+    .count-badge {
+        width: 24px;
+        height: 24px;
+        font-size: 0.75rem;
+    }
+
+    .student-reg .form-floating {
+        width: 100% !important;
+        display: block;
+    }
+}

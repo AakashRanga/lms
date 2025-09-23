@@ -14,6 +14,13 @@ session_start();
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+
+    <!-- vidoplayer.js library -->
+
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+
+
     <link rel="stylesheet" href="../stylesheet/responsive.css" />
     <link rel="stylesheet" href="../stylesheet/styles.css" />
 
@@ -24,47 +31,7 @@ session_start();
             overflow: hidden;
         }
 
-        .video-container {
-            position: relative;
-        }
 
-        .video-click-left,
-        .video-click-right {
-            position: absolute;
-            top: 0;
-            height: 50%;
-            width: 30%;
-            cursor: pointer;
-            z-index: 1;
-        }
-
-        .video-click-left {
-            left: 0;
-        }
-
-        .video-click-right {
-            right: 0;
-        }
-
-        /* Styling for the play/pause overlay icon */
-        .video-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-size: 3rem;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .video-container:hover .video-overlay,
-        .video-overlay.visible {
-            opacity: 1;
-        }
 
         .bg-white {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -75,23 +42,7 @@ session_start();
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 576px) {
 
-            .video-click-left,
-            .video-click-right {
-                width: 40% !important;
-                height: 100% !important;
-            }
-
-            .video-overlay {
-                font-size: 2.5rem;
-            }
-
-            .p-4 {
-                padding: 1.5rem !important;
-            }
-        }
 
         @media (max-width: 576px) {
             .nav-pills .nav-link {
@@ -154,6 +105,12 @@ session_start();
             border-color: #2e7d32;
             color: white;
         }
+
+        .ratio::before {
+            display: block;
+            padding-top: 0px !important;
+            content: "";
+        }
     </style>
 </head>
 
@@ -164,33 +121,37 @@ session_start();
             <?php include('sidebar.php') ?>
 
             <!-- Main Content -->
-            <div class="col-12 col-sm-10 col-md-10 col-lg-10 p-0">
+            <div class="col-12 col-sm-10 col-md-9 col-lg-10 p-0">
                 <!-- Topbar -->
                 <?php include('topbar.php') ?>
 
                 <div class="p-4">
+
+                    <!-- Chapter Header -->
                     <div
                         class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-3 gap-sm-0">
-                        <h3 class="fw-bold mb-0">Chapter 1: Html Essentials</h3>
+                        <h3 class="fw-bold mb-0" id="chapter-title">Chapter Title</h3>
                         <div class="d-flex gap-2 flex-wrap">
-                            <a href="#" class="btn btn-outline-secondary btn-sm d-flex align-items-center">
+                            <a href="#" class="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                                id="prev-chapter">
                                 <i class="bi bi-arrow-left me-1"></i> Previous Chapter
                             </a>
-                            <a href="#" class="btn btn-primary btn-sm d-flex align-items-center">
+                            <a href="#" class="btn btn-primary btn-sm d-flex align-items-center" id="next-chapter">
                                 Next Chapter <i class="bi bi-arrow-right ms-1"></i>
                             </a>
                         </div>
                     </div>
 
+                    <!-- Chapter Progress -->
                     <div class="bg-white rounded-4 shadow-sm p-4 mb-4">
                         <h6 class="fw-semibold mb-2">Chapter Progress</h6>
                         <p class="text-muted small mb-2">Keep up the great work!</p>
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="fw-semibold small">Progress</span>
-                            <span class="text-muted small">60% Complete</span>
+                            <span class="text-muted small" id="chapter-progress-text">0% Complete</span>
                         </div>
                         <div class="progress rounded-pill" style="height: 8px;">
-                            <div class="progress-bar bg-primary" style="width: 60%;"></div>
+                            <div class="progress-bar bg-primary" id="chapter-progress-bar" style="width: 0%;"></div>
                         </div>
                     </div>
 
@@ -217,308 +178,334 @@ session_start();
                         </li>
                     </ul>
 
-
+                    <!-- Tab Content -->
                     <div class="tab-content" id="chapterTabContent">
+
                         <!-- Reading Material -->
                         <div class="tab-pane fade show active" id="reading" role="tabpanel">
                             <div class="bg-white rounded-4 shadow-sm p-4">
-
-                                <!-- Desktop: iframe visible only on md and up -->
                                 <div class="d-none d-md-block">
-                                    <iframe src="../materials/LARAVEL BASICS FOM SCRATCH.pdf" width="100%"
-                                        height="600px" style="border:none;">
+                                    <iframe id="chapter-pdf" width="100%" height="600px" style="border:none;">
                                         This browser does not support PDFs. Please download the PDF to view it:
-                                        <a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf" target="_blank">Download
-                                            PDF</a>.
+                                        <a id="chapter-pdf-link" href="" target="_blank">Download PDF</a>.
                                     </iframe>
                                 </div>
-
-                                <!-- Mobile: button visible only below md -->
                                 <div class="d-block d-md-none">
                                     <div class="d-flex align-items-center mb-3">
                                         <i class="bi bi-file-earmark-pdf-fill me-2 fs-4 text-danger"></i>
                                         <span class="fw-semibold">Reading Material</span>
                                     </div>
-                                    <a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf" target="_blank"
-                                        class="btn btn-outline-secondary btn-sm">
-                                        Open PDF
-                                    </a>
+                                    <a id="chapter-pdf-mobile" href="" target="_blank"
+                                        class="btn btn-outline-secondary btn-sm">Open PDF</a>
                                 </div>
-
                             </div>
-
                         </div>
 
                         <!-- Videos -->
                         <div class="tab-pane fade" id="videos" role="tabpanel">
                             <div class="bg-white rounded-4 shadow-sm p-4 text-center position-relative video-container">
                                 <div class="ratio ratio-16x9">
-                                    <video id="chapter1Video" class="w-100 h-100" src="../videos/someone.mp4" controls
-                                        controlsList="nodownload noremoteplayback" oncontextmenu="return false;">
+                                    <video id="chapter1Video" playsinline controls
+                                        controlsList="nodownload noremoteplayback" oncontextmenu="return false">
+                                        <source src="../videos/someone.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
                                     </video>
                                 </div>
+
+                                <!-- Left/Right click areas for 10s skip -->
                                 <div id="chapter1Left" class="video-click-left"></div>
                                 <div id="chapter1Right" class="video-click-right"></div>
-                                <i id="chapter1Overlay" class="video-overlay bi bi-play-fill"></i>
                             </div>
                         </div>
+
 
                         <!-- Practice Test -->
                         <div class="tab-pane fade" id="test" role="tabpanel">
                             <div class="bg-white rounded-4 shadow-sm p-4">
-                                <h4 class="mb-4 text-center text-test">Practice Test: Web Development Fundamentals</h4>
-
-                                <form id="quiz-form">
-                                    <!-- Question 1 -->
-                                    <div class="mb-3">
-                                        <p>1. Which programming language is known for its use in web development and
-                                            often described as "the language of the web"?</p>
-                                        <div class="row">
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q1a"><strong> <input type="radio" id="q1a" name="q1"
-                                                            value="Python">
-                                                        Python</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q1b"><strong><input type="radio" id="q1b" name="q1"
-                                                            value="Java"> Java</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q1c"><strong><input type="radio" id="q1c" name="q1"
-                                                            value="JavaScript"> JavaScript</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q1d"><strong><input type="radio" id="q1d" name="q1"
-                                                            value="C++"> C++</strong></label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Question 2 -->
-                                    <div class="mb-3">
-                                        <p>2. What does CSS stand for?</p>
-                                        <div class="row">
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q2a"><strong><input type="radio" id="q2a" name="q2"
-                                                            value="Cascading Style Sheets"> Cascading Style
-                                                        Sheets</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q2b"><strong><input type="radio" id="q2b" name="q2"
-                                                            value="Creative Style Solutions"> Creative Style
-                                                        Solutions</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q2c"><strong><input type="radio" id="q2c" name="q2"
-                                                            value="Computer Science Syntax"> Computer Science
-                                                        Syntax</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q2d"><strong><input type="radio" id="q2d" name="q2"
-                                                            value="Colorful Styling System"> Colorful Styling
-                                                        System</strong></label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Question 3 -->
-                                    <div class="mb-3">
-                                        <p>3. Which of the following is a popular library for building user interfaces
-                                            in React?</p>
-                                        <div class="row">
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q3a"><strong><input type="radio" id="q3a" name="q3"
-                                                            value="Express.js"> Express.js</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q3b"><strong><input type="radio" id="q3b" name="q3"
-                                                            value="Next.js"> Next.js</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q3c"><strong><input type="radio" id="q3c" name="q3"
-                                                            value="Redux"> Redux</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q3d"><strong><input type="radio" id="q3d" name="q3"
-                                                            value="Material-UI"> Material-UI</strong></label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Question 4 -->
-                                    <div class="mb-3">
-                                        <p>4. What is the primary purpose of a "git commit" command?</p>
-                                        <div class="row">
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q4a"><strong><input type="radio" id="q4a" name="q4"
-                                                            value="push"> To push changes to a remote
-                                                        repository</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q4b"><strong><input type="radio" id="q4b" name="q4"
-                                                            value="merge"> To merge branches in the local
-                                                        repository</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q4c"><strong><input type="radio" id="q4c" name="q4"
-                                                            value="save"> To save changes to the local repository
-                                                        history</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q4d"><strong><input type="radio" id="q4d" name="q4"
-                                                            value="branch"> To create a new branch</strong></label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Question 5 -->
-                                    <div class="mb-3">
-                                        <p>5. In object-oriented programming, what concept allows objects of different
-                                            classes to be treated as objects of a common base class?</p>
-                                        <div class="row">
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q5a"><strong><input type="radio" id="q5a" name="q5"
-                                                            value="Encapsulation"> Encapsulation</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q5b"><strong><input type="radio" id="q5b" name="q5"
-                                                            value="Inheritance"> Inheritance</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q5c"><strong><input type="radio" id="q5c" name="q5"
-                                                            value="Polymorphism"> Polymorphism</strong></label>
-                                            </div>
-                                            <div class="col-6 option-wrapper">
-                                                <label for="q5d"><strong><input type="radio" id="q5d" name="q5"
-                                                            value="Abstraction"> Abstraction</strong></label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="text-center mt-4">
-                                        <button type="submit" class="btn btn-secondary">Submit Answers</button>
-                                    </div>
-                                </form>
-
+                                <h4 class="mb-4 text-center text-test" id="quiz-title">Practice Test</h4>
+                                <form id="quiz-form"></form>
                             </div>
                         </div>
 
                     </div>
+
                 </div>
+
             </div>
         </div>
     </div>
 
-    <script>
-        // Add all your chapters here
-        const chapters = [1, 2, 3, 4]; // Add more as needed
 
-        function unlockChapter(chapterId) {
-            const chapter = document.getElementById(`chapter${chapterId}`);
-            const lockIcon = document.getElementById(`lockIcon${chapterId}`);
-            if (chapter) {
-                chapter.classList.remove('disabled');
-                chapter.style.pointerEvents = 'auto';
-                chapter.style.opacity = 1;
-            }
-            if (lockIcon) {
-                lockIcon.style.display = 'none';
-            }
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- video player -->
+    <script>
+        // Initialize Plyr for all video players
+        const players = Array.from(document.querySelectorAll('video')).map(p => new Plyr(p, {
+            controls: [
+                'play-large',
+                'play',
+                'progress',
+                'current-time',
+                'mute',
+                'volume',
+                'settings',
+                'fullscreen'
+            ],
+            disableContextMenu: true
+        }));
+
+        const video = document.querySelector('#chapter1Video');
+        const videoWrapper = video.parentElement;
+        const storageKey = "chapter1VideoTime"; // unique key for this video
+
+        // ✅ Restore playback time if saved in sessionStorage
+        if (sessionStorage.getItem(storageKey)) {
+            video.currentTime = parseFloat(sessionStorage.getItem(storageKey));
         }
 
-        chapters.forEach(id => {
-            const video = document.getElementById(`chapter${id}Video`);
-            const leftArea = document.getElementById(`chapter${id}Left`);
-            const rightArea = document.getElementById(`chapter${id}Right`);
-            const overlayIcon = document.getElementById(`chapter${id}Overlay`);
-            const collapseElement = document.getElementById(`chapter${id}Resources`);
-            const progressBar = document.getElementById(`chapter${id}Progress`);
-            const progressText = document.getElementById(`chapter${id}ProgressText`);
-            const videoStateKey = `videoTime_chapter${id}`;
-            const chapterCompleteKey = `chapter${id}Completed`;
+        // ✅ Save playback time every 2s
+        video.addEventListener("timeupdate", () => {
+            sessionStorage.setItem(storageKey, video.currentTime);
+        });
 
-            if (!video) return;
+        // ✅ Double-click left/right side to skip
+        videoWrapper.addEventListener('dblclick', function(e) {
+            e.preventDefault(); // stop default fullscreen
 
-            // Restore progress
-            const savedTime = localStorage.getItem(videoStateKey);
-            if (savedTime) {
-                video.currentTime = parseFloat(savedTime);
+            const rect = videoWrapper.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const width = rect.width;
+
+            if (x < width / 2) {
+                video.currentTime -= 10;
+            } else {
+                video.currentTime += 10;
             }
+        });
 
-            // Unlock next chapter if already completed
-            const isCompleted = localStorage.getItem(chapterCompleteKey);
-            if (isCompleted === 'true') {
-                unlockChapter(id + 1);
+        // ✅ Keyboard shortcuts (ArrowLeft & ArrowRight)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "ArrowLeft") {
+                video.currentTime -= 10;
+            } else if (e.key === "ArrowRight") {
+                video.currentTime += 10;
             }
+        });
+    </script>
 
-            // Handle video end
-            video.addEventListener('ended', () => {
-                localStorage.setItem(chapterCompleteKey, 'true');
-                unlockChapter(id + 1);
-            });
+    <!-- fetch detials -->
+    <script>
+        $(document).ready(function() {
+            const params = new URLSearchParams(window.location.search);
+            const chapter_id = params.get("chapter_id");
+            const cm_id = params.get("cm_id");
 
-            function togglePlayPause() {
-                if (video.paused) video.play();
-                else video.pause();
-            }
+            $.ajax({
+                url: "api/get_chapter_details.php",
+                type: "GET",
+                data: {
+                    chapter_id,
+                    cm_id
+                },
+                dataType: "json",
+                success: function(res) {
+                    if (!res.success) {
+                        Swal.fire("Error", res.message, "error");
+                        return;
+                    }
 
-            function updateOverlayIcon() {
-                if (video.paused) {
-                    overlayIcon.classList.remove('bi-pause-fill');
-                    overlayIcon.classList.add('bi-play-fill', 'visible');
-                } else {
-                    overlayIcon.classList.remove('bi-play-fill', 'visible');
-                    overlayIcon.classList.add('bi-pause-fill');
+                    const chapter = res.chapter;
+                    const quiz = res.quiz;
+
+                    // --- Chapter Info ---
+                    $("h3.fw-bold.mb-0").text(`${chapter.chapter_no}: ${chapter.chapter_title}`);
+                    $(".progress-bar").css("width", chapter.progress + "%");
+                    $(".text-muted.small").first().text(chapter.progress + "% Complete");
+
+                    // --- PDF ---
+                    const pdfPath = `../faculty/${chapter.materials}`;
+                    $("#reading iframe").attr("src", pdfPath);
+                    $("#reading a.btn-outline-secondary").attr("href", pdfPath);
+
+                    // --- Video ---
+                    $("#videos video").attr("src", `../faculty/${chapter.flipped_class}`);
+
+                    // --- Quiz ---
+                    const quizContainer = $("#quiz-form").empty();
+                    if (!quiz || quiz.length === 0) {
+                        quizContainer.append("<p>No practice questions available.</p>");
+                    } else {
+                        quiz.forEach((q, i) => {
+                            quizContainer.append(`
+                        <div class="mb-3">
+                            <p>${i + 1}. ${q.question} <span class="badge bg-info">${q.co_level}</span></p>
+                            <div class="row">
+                                <div class="col-6 option-wrapper">
+                                    <label><input type="radio" name="q${q.p_id}" value="A"> ${q.option1}</label>
+                                </div>
+                                <div class="col-6 option-wrapper">
+                                    <label><input type="radio" name="q${q.p_id}" value="B"> ${q.option2}</label>
+                                </div>
+                                <div class="col-6 option-wrapper">
+                                    <label><input type="radio" name="q${q.p_id}" value="C"> ${q.option3}</label>
+                                </div>
+                                <div class="col-6 option-wrapper">
+                                    <label><input type="radio" name="q${q.p_id}" value="D"> ${q.option4}</label>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                        });
+
+                        quizContainer.append(`
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-secondary">Submit Answers</button>
+                    </div>
+                `);
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire("Error", xhr.responseText, "error");
                 }
-            }
-
-            function updateProgressBar() {
-                if (!video.duration) return;
-                const percent = (video.currentTime / video.duration) * 100;
-                if (progressBar) progressBar.style.width = `${percent}%`;
-                if (progressText) progressText.textContent = `${Math.floor(percent)}% completed`;
-            }
-
-            leftArea?.addEventListener('click', e => {
-                e.stopPropagation();
-                video.currentTime = Math.max(0, video.currentTime - 10);
-                togglePlayPause();
-            });
-
-            rightArea?.addEventListener('click', e => {
-                e.stopPropagation();
-                video.currentTime = Math.min(video.duration, video.currentTime + 10);
-                togglePlayPause();
-            });
-
-            const videoContainer = video.closest('.video-container');
-            videoContainer?.addEventListener('dblclick', togglePlayPause);
-
-            video.addEventListener('play', updateOverlayIcon);
-            video.addEventListener('pause', updateOverlayIcon);
-
-            videoContainer?.addEventListener('mouseleave', () => {
-                if (!video.paused) overlayIcon.classList.remove('visible');
-            });
-
-            videoContainer?.addEventListener('mouseenter', updateOverlayIcon);
-
-            video.addEventListener('timeupdate', () => {
-                updateProgressBar();
-                localStorage.setItem(videoStateKey, video.currentTime);
-            });
-
-            window.addEventListener('beforeunload', () => {
-                localStorage.setItem(videoStateKey, video.currentTime);
-            });
-
-            collapseElement?.addEventListener('hide.bs.collapse', () => {
-                video.pause();
             });
         });
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- submit quiz -->
+    <script>
+        $(document).on("submit", "#quiz-form", function(e) {
+            e.preventDefault();
+
+            const params = new URLSearchParams(window.location.search);
+            const cm_id = params.get("cm_id");
+            const chapter_id = params.get("chapter_id");
+
+            // --- Collect answers ---
+            let answers = [];
+            $("#quiz-form div.mb-3").each(function() {
+                const questionId = $(this).find("input[type=radio]").attr("name").replace("q", "");
+                const selected = $(this).find("input[type=radio]:checked").val() || "";
+                answers.push({
+                    qust_id: questionId,
+                    answer: selected
+                });
+            });
+
+            $.ajax({
+                url: "api/submit_quiz.php",
+                type: "POST",
+                data: JSON.stringify({
+                    cm_id,
+                    chapter_id,
+                    answers
+                }),
+                contentType: "application/json",
+                dataType: "json",
+                success: function(res) {
+                    if (res.success) {
+                        Swal.fire({
+                            title: "🎯 Quiz Result",
+                            html: `
+                                        <div style="font-size: 18px; margin-bottom: 10px;">
+                                            You scored <b style="color:#007bff;">${res.correct_count}</b> 
+                                            out of <b>${res.total_questions}</b>
+                                        </div>
+                                        <div style="font-size: 18px; margin-bottom: 10px;">
+                                            Percentage: <b style="color:#28a745;">${res.percentage}%</b>
+                                        </div>
+                                        <div style="font-size: 20px; font-weight: bold; color:${res.result === "Pass" ? "#28a745" : "#dc3545"};">
+                                            ${res.result === "Pass" ? "✅ Congratulations! You Passed 🎉" : "❌ Oops! You Failed 😢"}
+                                        </div>
+                                    `,
+                            icon: res.result === "Pass" ? "success" : "error",
+                            confirmButtonText: "OK",
+                            confirmButtonColor: res.result === "Pass" ? "#28a745" : "#dc3545",
+                            });
+
+
+                        // --- Update progress dynamically ---
+                        $("#chapter-progress-bar").css("width", res.chapter_percent + "%");
+                        $("#chapter-progress-text").text(res.chapter_percent + "% Complete");
+                    } else {
+                        Swal.fire("Error", res.message, "error");
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire("Error", xhr.responseText, "error");
+                }
+            });
+        });
+    </script>
+
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('chapter1Video');
+            const leftArea = document.getElementById('chapter1Left');
+            const rightArea = document.getElementById('chapter1Right');
+            const overlayIcon = document.getElementById('chapter1Overlay');
+            const videoContainer = video.closest('.video-container');
+            const progressKey = 'chapter1VideoTime';
+
+            // Restore saved time
+            const savedTime = localStorage.getItem(progressKey);
+            if (savedTime) video.currentTime = parseFloat(savedTime);
+
+            // Update overlay icon
+            const updateOverlay = () => {
+                overlayIcon.classList.toggle('bi-play-fill', video.paused);
+                overlayIcon.classList.toggle('bi-pause-fill', !video.paused);
+                overlayIcon.classList.toggle('visible', video.paused);
+            }
+
+            // Play/pause toggle
+            const togglePlay = () => video.paused ? video.play() : video.pause();
+
+            // Left/right click 10s
+            leftArea.addEventListener('click', e => {
+                e.stopPropagation();
+                video.currentTime = Math.max(0, video.currentTime - 10);
+            });
+            rightArea.addEventListener('click', e => {
+                e.stopPropagation();
+                video.currentTime = Math.min(video.duration, video.currentTime + 10);
+            });
+
+            // Double-click toggle
+            videoContainer.addEventListener('dblclick', togglePlay);
+
+            // Update overlay icon on play/pause
+            video.addEventListener('play', updateOverlay);
+            video.addEventListener('pause', updateOverlay);
+
+            // Hide overlay on mouse leave
+            videoContainer.addEventListener('mouseleave', () => {
+                if (!video.paused) overlayIcon.classList.remove('visible');
+            });
+            videoContainer.addEventListener('mouseenter', updateOverlay);
+
+            // Save progress in localStorage
+            video.addEventListener('timeupdate', () => {
+                localStorage.setItem(progressKey, video.currentTime);
+            });
+            window.addEventListener('beforeunload', () => {
+                localStorage.setItem(progressKey, video.currentTime);
+            });
+
+            // Video ended
+            video.addEventListener('ended', () => {
+                localStorage.setItem('chapter1Completed', 'true');
+                // Optional: unlock next chapter logic here
+            });
+
+            // Initial overlay update
+            updateOverlay();
+        });
+    </script> -->
+
 </body>
 
 </html>

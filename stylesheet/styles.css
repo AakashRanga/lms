@@ -126,7 +126,7 @@
 }
 
 .content-scroll {
-    height: calc(100vh - 60px);
+    height: calc(100vh - 74px);
     /* adjust 80px if your topbar height is different */
     overflow-y: auto;
     padding-right: 10px;
