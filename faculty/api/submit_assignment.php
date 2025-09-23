@@ -28,7 +28,6 @@ try {
     }
 
     // Only launch_c_id is passed
-    $c_id = 0; // will be fetched later from launch_courses
     $launch_c_id = intval($_POST['launch_c_id'] ?? ($_GET['launch_c_id'] ?? 0));
     $title = trim($_POST['title'] ?? '');
     $instruction = !empty($_POST['instruction']) ? trim($_POST['instruction']) : null;
@@ -55,8 +54,13 @@ try {
         exit();
     }
 
-    // Fetch c_id based on launch_c_id
-    $courseQuery = $conn->prepare("SELECT c_id FROM launch_courses WHERE id = ?");
+    // Fetch cm_id (instead of c_id) based on launch_c_id
+    $courseQuery = $conn->prepare("
+        SELECT lc.c_id, cm.cm_id 
+        FROM launch_courses lc
+        INNER JOIN course_material cm ON cm.c_id = lc.c_id
+        WHERE lc.id = ?
+    ");
     $courseQuery->bind_param("i", $launch_c_id);
     $courseQuery->execute();
     $courseResult = $courseQuery->get_result();
@@ -68,7 +72,7 @@ try {
     }
 
     $row = $courseResult->fetch_assoc();
-    $c_id = intval($row['c_id']);
+    $cm_id = intval($row['cm_id']);  // ✅ store this in assignment table
     $courseQuery->close();
 
     // File upload
@@ -104,7 +108,7 @@ try {
 
     $dbFilePath = "uploads/assignments/" . $newFileName;
 
-    // Insert into DB (make sure assignments table has launch_c_id column!)
+    // Insert into DB (c_id column will now store cm_id)
     $stmt = $conn->prepare("INSERT INTO assignment
         (c_id, launch_id, faculty_id, title, instruction, notes, marks, due_date, created_at) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
@@ -115,7 +119,7 @@ try {
 
     $stmt->bind_param(
         "iiisssss",
-        $c_id,
+        $cm_id,             // ✅ use cm_id from course_materials
         $launch_c_id,
         $faculty_id,
         $title,

@@ -1,5 +1,5 @@
 <!-- Sidebar for Small, Medium, and Large Screens (≥576px) -->
-<div class="col-sm-2 col-md-3 col-lg-2 d-none d-sm-block sidebar shadow bg-light p-3">
+<div class="col-sm-2 col-md-2 col-lg-2 d-none d-sm-block sidebar shadow bg-light p-3">
     <!-- Sidebar Header -->
     <div class="d-flex align-items-center mb-4">
         <img src="../images/logo1.png" alt="College Logo" class="me-2" style="width:40px; height:40px;">
@@ -11,9 +11,12 @@
         <i class="bi bi-people me-2"></i> Enroll Courses
     </a>
 
-
     <a href="mycourses.php" class="d-block mb-2">
         <i class="bi bi-journal-bookmark me-2"></i> My Courses
+    </a>
+
+    <a href="overall_assignments.php" class="d-block mb-2">
+        <i class="bi bi-journal-bookmark me-2"></i> Overall Assignments
     </a>
 
     <a href="index.php" class="d-block">

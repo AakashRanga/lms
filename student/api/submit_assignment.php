@@ -16,7 +16,7 @@ if (!$assignment_id || !$student_id) {
 // Handle file upload
 $uploaded_files = [];
 if (!empty($_FILES['files']['name'][0])) {
-    $uploadDir = "../uploads/assignments/";
+    $uploadDir = "uploads/assignments/";
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }

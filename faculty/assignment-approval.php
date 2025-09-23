@@ -216,21 +216,10 @@ $launch_id = $_GET['launch_c_id'] ?? '';       // fixed: URL has launch_c_id, no
                                             <th>Enter Mark</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><input type="checkbox" class="form-check-input row-checkbox"></td>
-                                            <td>John Doe</td>
-                                            <td>REG12345</td>
-                                            <td>Mathematics</td>
-                                            <td>Unit 1</td>
-                                            <td>Algebra Basics</td>
-                                            <td><a href="../materials/LARAVEL BASICS FOM SCRATCH.pdf">View File</a></td>
-                                            <td style="width: 190px;">
-                                                <input type="text" class="form-control form-control-sm"
-                                                    placeholder="Enter Mark in percentage">
-                                            </td>
-                                        </tr>
+                                    <tbody id="assignmentTableBody">
+                                        <!-- Rows will be populated by AJAX -->
                                     </tbody>
+
                                 </table>
                                 <div class="d-flex justify-content-center">
                                     <button class="btn btn-secondary">Submit</button>
@@ -357,6 +346,75 @@ $launch_id = $_GET['launch_c_id'] ?? '';       // fixed: URL has launch_c_id, no
             fetchAssignments();
         });
 
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Get launch_c_id from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            var launch_c_id = urlParams.get('launch_c_id'); // e.g., ?launch_c_id=6
+
+            if (!launch_c_id) {
+                console.error("launch_c_id not provided in URL");
+                return;
+            }
+
+            function fetchAssignments() {
+                $.ajax({
+                    url: 'api/fetch_assignments_faculty_evaluvation.php', // Your PHP file to fetch assignments
+                    type: 'GET',
+                    data: { launch_c_id: launch_c_id },
+                    dataType: 'json',
+                    success: function (response) {
+                        var tbody = $('#assignmentTableBody');
+                        tbody.empty(); // Clear existing rows
+
+                        if (response.status === 200 && response.data.length > 0) {
+                            response.data.forEach(function (assignment) {
+
+                                // Process multiple files in notes
+                                let filesHtml = '-';
+                                if (assignment.notes) {
+                                    filesHtml = assignment.notes
+                                        .split(',') // Split multiple files
+                                        .map(filePath => {
+                                            let fileName = filePath.split('/').pop();       // get filename
+                                            // Remove timestamp prefix like 1758620908_
+                                            fileName = fileName.replace(/^\d+_/, '');
+                                            return `<a href="/lms/student/${filePath}" target="_blank">${fileName}</a>`;
+                                        })
+                                        .join(', '); // Join links with comma
+                                }
+
+                                var row = `<tr>
+            <td><input type="checkbox" class="form-check-input row-checkbox"></td>
+            <td>${assignment.student_name || '-'}</td>
+            <td>${assignment.student_reg_no || '-'}</td>
+            <td>${assignment.course_name || '-'}</td>
+            <td>${assignment.chapter_titles || '-'}</td>
+            <td>${assignment.title}</td>
+            <td>${filesHtml}</td>
+            <td style="width: 190px;">
+                <input type="text" class="form-control form-control-sm" placeholder="Enter Mark in percentage">
+            </td>
+        </tr>`;
+                                tbody.append(row);
+                            });
+                        } else {
+                            tbody.append('<tr><td colspan="8" class="text-center">No assignments found</td></tr>');
+                        }
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+
+            // Fetch assignments on page load
+            fetchAssignments();
+        });
     </script>
 
 

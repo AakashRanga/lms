@@ -15,7 +15,7 @@ if (!isset($_SESSION['userid'])) {
 
 $user_id = $_SESSION['userid'];
 
-// Get cm_id and launch_c (launch_id) from URL
+// Get cm_id and launch_c from URL
 $cm_id = isset($_GET['cm_id']) ? intval($_GET['cm_id']) : 0;
 $launch_id = isset($_GET['launch_c']) ? intval($_GET['launch_c']) : 0;
 
@@ -28,36 +28,36 @@ if ($cm_id <= 0 || $launch_id <= 0) {
     exit;
 }
 
-// Fetch submitted assignments
+// Fetch assignments directly from assignment table
 $stmt = $conn->prepare("
-    SELECT a.title, a.notes, a.due_date, a.created_at, s.marks,s.due_date
-    FROM assignment s
-    INNER JOIN assignment a ON s.ass_id = a.c_id
-    INNER JOIN course_material cm ON cm.cm_id = a.c_id
-    WHERE s.c_id = ? AND a.launch_id = ? AND cm.cm_id = ?
-    ORDER BY s.created_at DESC
+    SELECT a.ass_id, a.title, a.notes, a.marks, a.instruction, a.due_date, c.course_name,a.created_at
+    FROM assignment a
+    INNER JOIN course c ON a.c_id = c.c_id
+    WHERE a.launch_id = ? AND a.c_id = ?
+    ORDER BY a.due_date DESC
 ");
-$stmt->bind_param("iii", $user_id, $launch_id, $cm_id);
+$stmt->bind_param("ii", $launch_id, $cm_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$submissions = [];
+$assignments = [];
 while ($row = $result->fetch_assoc()) {
-    $submissions[] = [
+    $assignments[] = [
         'title' => $row['title'],
-        'uploaded_files' => $row['notes'], // can be comma-separated links
+        'course' => $row['course_name'],
+        'uploaded_files' => $row['notes'], // assuming notes contains file links
         'marks' => $row['marks'],
-        'feedback' => $row['feedback'] ?? '',
-        'due_date' => $row['due_date'],
-        'submitted_at' => date('Y-m-d', strtotime($row['created_at']))
+        'instruction' => $row['instruction'],
+        'due_date' => date('Y-m-d', strtotime($row['due_date'])),
+        'submission_date' => date('Y-m-d', strtotime($row['created_at'])),
+
     ];
 }
 
 $stmt->close();
 
-// JSON response
 echo json_encode([
     'status' => 200,
-    'message' => 'Submitted assignments fetched successfully',
-    'data' => $submissions
+    'message' => 'Assignments fetched successfully',
+    'data' => $assignments
 ]);
