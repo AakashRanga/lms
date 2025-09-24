@@ -6,9 +6,9 @@ try {
     $input = json_decode(file_get_contents('php://input'), true);
 
     $student_reg_no = $_SESSION['userid'] ?? null;
-    $cm_id          = $input['cm_id'] ?? null;
-    $chapter_id     = $input['chapter_id'] ?? null;
-    $answers        = $input['answers'] ?? [];
+    $cm_id = $input['cm_id'] ?? null;
+    $chapter_id = $input['chapter_id'] ?? null;
+    $answers = $input['answers'] ?? [];
 
     if (!$student_reg_no || !$cm_id || !$chapter_id || empty($answers)) {
         throw new Exception("Missing parameters or answers");
@@ -24,13 +24,14 @@ try {
     $res = $stmt->get_result();
 
     $correctMap = [];
-    $coMap      = [];
+    $coMap = [];
     while ($row = $res->fetch_assoc()) {
         $correctMap[$row['p_id']] = $row['answer'];
-        $coMap[$row['p_id']]      = $row['co_level'];
+        $coMap[$row['p_id']] = $row['co_level'];
     }
     $totalQuestions = count($correctMap);
-    if ($totalQuestions === 0) throw new Exception("No questions found for this chapter");
+    if ($totalQuestions === 0)
+        throw new Exception("No questions found for this chapter");
 
     // --- 2. Insert/Update student answers ---
     $stmtInsert = $conn->prepare("
@@ -45,21 +46,22 @@ try {
     $answers_detail = [];
 
     foreach ($answers as $ans) {
-        $qid    = (int)$ans['qust_id'];
+        $qid = (int) $ans['qust_id'];
         $answer = trim($ans['answer']);
-        $co     = $coMap[$qid] ?? null;
+        $co = $coMap[$qid] ?? null;
 
         $stmtInsert->bind_param("isiiis", $cm_id, $student_reg_no, $chapter_id, $co, $qid, $answer);
         $stmtInsert->execute();
 
         $isCorrect = isset($correctMap[$qid]) && $correctMap[$qid] === $answer;
-        if ($isCorrect) $correctCount++;
+        if ($isCorrect)
+            $correctCount++;
 
         $answers_detail[] = [
-            "question_id"     => $qid,
-            "submitted_answer"=> $answer,
-            "correct_answer"  => $correctMap[$qid] ?? null,
-            "is_correct"      => $isCorrect
+            "question_id" => $qid,
+            "submitted_answer" => $answer,
+            "correct_answer" => $correctMap[$qid] ?? null,
+            "is_correct" => $isCorrect
         ];
     }
 
@@ -122,14 +124,14 @@ try {
 
     // --- 7. Response ---
     echo json_encode([
-        "success"         => true,
-        "correct_count"   => $correctCount,
+        "success" => true,
+        "correct_count" => $correctCount,
         "total_questions" => $totalQuestions,
-        "percentage"      => $percentage,
-        "result"          => $result,
-        "answers_detail"  => $answers_detail,
+        "percentage" => $percentage,
+        "result" => $result,
+        "answers_detail" => $answers_detail,
         "chapter_percent" => $chapter_percent,
-        "course_percent"  => $coursePercent
+        "course_percent" => $coursePercent
     ]);
 
 } catch (Exception $e) {

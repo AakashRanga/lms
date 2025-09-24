@@ -3,6 +3,7 @@ include '../../includes/config.php'; // DB connection
 
 header('Content-Type: application/json');
 
+
 // Check if user is logged in
 if (!isset($_SESSION['userid'])) {
     echo json_encode([
@@ -28,15 +29,25 @@ if ($cm_id <= 0 || $launch_id <= 0) {
     exit;
 }
 
-// Fetch assignments directly from assignment table
+// Fetch assignments along with evaluated marks for the logged-in student
 $stmt = $conn->prepare("
-    SELECT a.ass_id, a.title, a.notes, a.marks, a.instruction, a.due_date, c.course_name,a.created_at
+    SELECT 
+        a.ass_id, 
+        a.title, 
+        a.notes, 
+        a.instruction, 
+        a.due_date, 
+        c.course_name, 
+        a.created_at,
+        sa.marks AS obtained_marks
     FROM assignment a
     INNER JOIN course c ON a.c_id = c.c_id
+    LEFT JOIN student_assignment sa 
+        ON sa.ass_id = a.ass_id AND sa.student_id = ?
     WHERE a.launch_id = ? AND a.c_id = ?
     ORDER BY a.due_date DESC
 ");
-$stmt->bind_param("ii", $launch_id, $cm_id);
+$stmt->bind_param("iii", $user_id, $launch_id, $cm_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -46,11 +57,10 @@ while ($row = $result->fetch_assoc()) {
         'title' => $row['title'],
         'course' => $row['course_name'],
         'uploaded_files' => $row['notes'], // assuming notes contains file links
-        'marks' => $row['marks'],
+        'obtained_marks' => $row['obtained_marks'], // marks assigned to student
         'instruction' => $row['instruction'],
         'due_date' => date('Y-m-d', strtotime($row['due_date'])),
         'submission_date' => date('Y-m-d', strtotime($row['created_at'])),
-
     ];
 }
 

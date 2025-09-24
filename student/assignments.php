@@ -385,7 +385,18 @@ $launch_id = $_GET['launch_c'] ?? null;
 
                         res.data.forEach(sub => {
                             html += '<div class="border-bottom pb-3 shadow p-4 mb-3">';
-                            html += `<h6 class="mb-1">${sub.title}</h6>`;
+                            html += `<div class="d-flex gap-2 align-items-center justify-content-between">
+                                <h6 class="mb-1">${sub.title}</h6>`;
+
+                            if (sub.obtained_marks || sub.grade) {
+                                let displayValue = sub.grade ? sub.grade : sub.obtained_marks;
+                                html += `<div class="bg-light p-2 rounded"><strong>Grade:</strong> ${displayValue}</div>`;
+                            } else {
+                                html += `<div class="bg-light p-2 rounded"><strong>Grade:</strong> Not Graded.</div>`;
+                            }
+
+                            html += `</div>`; // close d-flex div
+
 
                             html += `<div class="small text-muted mb-2">Assigned Date : ${sub.submission_date}</div>`;
                             html += `<div class="small text-muted mb-2">Dues Date : ${sub.due_date}</div>`;
@@ -437,7 +448,9 @@ $launch_id = $_GET['launch_c'] ?? null;
 
 
                             // Feedback
-                            html += `<div class="bg-light p-2 rounded"><strong>Instructor Feedback:</strong> ${sub.feedback || 'No feedback yet.'}</div>`;
+                            html += `<div class="bg-light p-2 rounded"><strong>Instructor Instruction:</strong> ${sub.instruction || 'No instruction yet.'}</div>`;
+
+
                             html += '</div>';
                         });
 

@@ -16,21 +16,30 @@ if (!$assignment_id || !$student_id) {
 // Handle file upload
 $uploaded_files = [];
 if (!empty($_FILES['files']['name'][0])) {
-    $uploadDir = "uploads/assignments/";
+    $uploadDir = "../uploads/assignments/"; // Actual server folder
+    $dbPathPrefix = "uploads/assignments/"; // What you save in DB
+
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
 
     foreach ($_FILES['files']['name'] as $key => $name) {
-        $tmpName = $_FILES['files']['tmp_name'][$key];
-        $fileName = time() . "_" . basename($name);
-        $filePath = $uploadDir . $fileName;
+        if ($_FILES['files']['error'][$key] === UPLOAD_ERR_OK && !empty($name)) {
+            $tmpName = $_FILES['files']['tmp_name'][$key];
+            $fileName = time() . "_" . basename($name);
+            $filePath = $uploadDir . $fileName;   // Physical path
+            $dbPath = $dbPathPrefix . $fileName; // DB-friendly path
 
-        if (move_uploaded_file($tmpName, $filePath)) {
-            $uploaded_files[] = $filePath;
+            if (move_uploaded_file($tmpName, $filePath)) {
+                if (!in_array($dbPath, $uploaded_files)) { // 👈 Prevent duplicates
+                    $uploaded_files[] = $dbPath;
+                }
+            }
         }
     }
 }
+    
+
 
 // Convert array to string for DB
 $uploaded_files_str = implode(",", $uploaded_files);

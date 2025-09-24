@@ -202,17 +202,18 @@ $launch_id = $_GET['launch_c_id'] ?? '';       // fixed: URL has launch_c_id, no
 
                             <!-- Assignment Approval Tab -->
                             <div class="tab-pane fade" id="assignmentApproval" role="tabpanel">
-                                <h4>Assignment Approval</h4>
+                                <h4>Evaluvation</h4>
                                 <table class="table table-bordered mt-3">
                                     <thead>
                                         <tr>
-                                            <th><input type="checkbox" id="selectAll" class="form-check-input"></th>
+                                            <!-- <th><input type="checkbox" id="selectAll" class="form-check-input"></th> -->
                                             <th>Student Name</th>
-                                            <th>Register No</th>
+                                            <th>Reg No</th>
                                             <th>Course Name</th>
-                                            <th>Module/Unit</th>
+                                            <th>Chapter </th>
                                             <th>Title</th>
                                             <th>File/Link</th>
+                                            <th>Total Marks</th>
                                             <th>Enter Mark</th>
                                         </tr>
                                     </thead>
@@ -222,9 +223,27 @@ $launch_id = $_GET['launch_c_id'] ?? '';       // fixed: URL has launch_c_id, no
 
                                 </table>
                                 <div class="d-flex justify-content-center">
-                                    <button class="btn btn-secondary">Submit</button>
+                                    <button class="btn btn-secondary" id="saveMarks">Submit</button>
                                 </div>
                             </div>
+
+
+                            <!-- pdf viewr -->
+                            <div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">PDF Viewer</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <iframe id="pdfFrame" width="100%" height="600px"
+                                                style="border:none;"></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -249,7 +268,7 @@ $launch_id = $_GET['launch_c_id'] ?? '';       // fixed: URL has launch_c_id, no
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include SweetAlert2 CSS & JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <!-- submit assignment -->
     <script>
         $(document).ready(function () {
             $("#assignment-approval-faculty").on("submit", function (e) {
@@ -348,7 +367,6 @@ $launch_id = $_GET['launch_c_id'] ?? '';       // fixed: URL has launch_c_id, no
 
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
             // Get launch_c_id from URL
@@ -377,28 +395,65 @@ $launch_id = $_GET['launch_c_id'] ?? '';       // fixed: URL has launch_c_id, no
                                 let filesHtml = '-';
                                 if (assignment.notes) {
                                     filesHtml = assignment.notes
-                                        .split(',') // Split multiple files
+                                        .split(',')
                                         .map(filePath => {
-                                            let fileName = filePath.split('/').pop();       // get filename
-                                            // Remove timestamp prefix like 1758620908_
+                                            let fileName = filePath.split('/').pop();
                                             fileName = fileName.replace(/^\d+_/, '');
-                                            return `<a href="/lms/student/${filePath}" target="_blank">${fileName}</a>`;
+
+                                            return `
+                                                <a href="javascript:void(0);" 
+                                                class="pdf-link" 
+                                                data-file="/lms/student/${filePath}">
+                                                ${fileName}
+                                                </a>`;
                                         })
-                                        .join(', '); // Join links with comma
+                                        .join(', ');
                                 }
 
+                                // Attach click event (after rendering)
+                                $(document).on("click", ".pdf-link", function () {
+                                    let fileUrl = $(this).data("file");
+                                    $("#pdfFrame").attr("src", fileUrl); // Load PDF inside iframe
+                                    $("#pdfModal").modal("show");        // Open modal
+                                });
+                                // <td><input type="checkbox" class="form-check-input row-checkbox"></td>
+
+
                                 var row = `<tr>
-            <td><input type="checkbox" class="form-check-input row-checkbox"></td>
-            <td>${assignment.student_name || '-'}</td>
-            <td>${assignment.student_reg_no || '-'}</td>
-            <td>${assignment.course_name || '-'}</td>
-            <td>${assignment.chapter_titles || '-'}</td>
-            <td>${assignment.title}</td>
-            <td>${filesHtml}</td>
-            <td style="width: 190px;">
-                <input type="text" class="form-control form-control-sm" placeholder="Enter Mark in percentage">
-            </td>
-        </tr>`;
+                                    <td>${assignment.student_name || '-'}</td>
+                                    <td>${assignment.student_reg_no || '-'}</td>
+                                    <td>${assignment.course_name || '-'}</td>
+                                    <td>${assignment.chapter_titles || '-'}</td>
+                                    <td>${assignment.title}</td>
+                                    <td>${filesHtml}</td>
+                                    <td>${assignment.total_marks}
+                                    <td style="width: 220px;">
+    <div class="d-flex gap-2">
+        <!-- Grade Dropdown -->
+        <select class="form-select form-select-sm grade-input" data-id="${assignment.s_ass_id}">
+            <option value="">Select Grade</option>
+            <option value="A">A</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B">B</option>
+            <option value="B-">B-</option>
+            <option value="C+">C+</option>
+            <option value="C">C</option>
+            <option value="C-">C-</option>
+            <option value="D">D</option>
+            <option value="F">F</option>
+        </select>
+OR
+        <!-- Marks Input -->
+        <input type="text" 
+               class="form-control form-control-sm mark-input" 
+               data-id="${assignment.s_ass_id}" 
+               placeholder="Enter %" 
+               value="${assignment.marks || ''}">
+    </div>
+</td>
+                                 
+                                </tr>`;
                                 tbody.append(row);
                             });
                         } else {
@@ -412,11 +467,68 @@ $launch_id = $_GET['launch_c_id'] ?? '';       // fixed: URL has launch_c_id, no
                 });
             }
 
+
+
+
             // Fetch assignments on page load
             fetchAssignments();
         });
     </script>
 
+    <!-- Evaluvation -->
+
+    <script>
+        $("#saveMarks").on("click", function () {
+            const inputs = $(".mark-input");
+            let requests = 0; // number of AJAX requests sent
+            let responses = 0; // number of AJAX responses received
+
+            inputs.each(function () {
+                let s_ass_id = $(this).data("id");
+                let marks = $(this).val();
+                let grade = $(`.grade-input[data-id="${s_ass_id}"]`).val();
+
+                // Only send if value is entered
+                if (marks !== "" || grade !== "") {
+                    requests++; // count this AJAX request
+                    let valueToSave = grade !== "" ? grade : marks;
+
+                    $.post("api/update_remarks.php",
+                        { s_ass_id: s_ass_id, value: valueToSave },
+                        function (response) {
+                            responses++; // increment on response
+                            if (response.status !== 200) {
+                                console.error("Error: " + response.message);
+                            }
+
+                            // Show SweetAlert when all requests have finished
+                            if (responses === requests) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Saved!',
+                                    text: 'Marks/Grades updated successfully.',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        },
+                        "json"
+                    );
+                }
+            });
+
+            // If no values were entered at all
+            if (requests === 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No input!',
+                    text: 'Please enter marks or select grades before saving.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        });
+    </script>
 
 </body>
 

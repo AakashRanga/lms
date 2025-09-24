@@ -5,7 +5,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Student Portal - Assignments</title>
+    <title>Overall Assignments</title>
+    <link rel="icon" type="image/png" href="../images/logo1.png">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="../stylesheet/responsive.css" />
@@ -162,7 +164,7 @@
                                 } catch (e) {
                                     files = [assignment.notes];
                                 }
-                                filesHtml = `<div class="bg-light p-2 rounded mb-2"><strong>Uploaded Files / Links</strong><br>`;
+                                // filesHtml = `<div class="bg-light p-2 rounded mb-2"><strong>Uploaded Files / Links</strong><br>`;
                                 files.forEach(f => {
                                     let icon = '📄';
                                     if (f.endsWith('.doc') || f.endsWith('.docx')) icon = '📝';
@@ -174,7 +176,7 @@
                                     let filename = parts[parts.length - 1];
                                     let cleanName = filename.includes('_') ? filename.split('_').slice(1).join('_') : filename;
 
-                                    filesHtml += `<a href="${f}" target="_blank" class="text-dark text-decoration-none">${icon} ${cleanName}</a><br>`;
+                                    filesHtml += `<a href="/lms/faculty/${f}" target="_blank" class="text-dark text-decoration-none">${icon} ${cleanName}</a><br>`;
                                 });
                                 filesHtml += `</div>`;
                             }
@@ -188,13 +190,10 @@
                                 <h6 class="mb-1">${assignment.assignment_title}</h6>
                                 <div class="d-flex justify-content-between small">
                                     <span class="text-muted">Course Name : ${assignment.course_name || ''}</span>
-                                    <span class="badge ${statusClass}">${statusText}</span>
                                 </div>
                                 <div class="small text-muted mb-2">Due Date : ${assignment.due_date || ''}</div>
                                 ${filesHtml}
-                                <div class="bg-light p-2 rounded">
-                                    <strong>Instructor Instruction:</strong> ${assignment.instruction || 'No Instruction Provided.'}
-                                </div>
+                                
                             </div>
                         </div>
                     `;
