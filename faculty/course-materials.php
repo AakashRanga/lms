@@ -129,6 +129,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     value="<?php echo $launch_c_id; ?>" placeholder="Launch Course Code" readonly>
                             </div>
 
+                            <!-- course type -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="file" class="form-control" id="thumbnail" name="thumbnail"
+                                        placeholder="Thumbnail" readonly>
+                                    <label for="unit">Thumbnail Image</label>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select name="learning_type" id="learningtype" class="form-select">
+                                        <option value=""selected disabled>Select Learning Type</option>
+                                        <option value="sequential">Sequential Learning</option>
+                                        <option value="flexible">Flexible Learning</option>
+                                    </select>
+                                    <label for="unit">Learning Type </label>
+                                </div>
+                            </div>
+
                             <!-- Dynamic Modules Container -->
                             <div id="modulesContainer" class="col-12">
                                 <!-- First Module Block -->

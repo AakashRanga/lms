@@ -365,12 +365,15 @@ session_start();
                     dataType: "json",
                     success: function(res) {
                         if (res.status === 200) {
-                            const chapter = res.chapters.find(ch => ch.mid == chapter_id);
-                            if (chapter) {
+                            const chapters = res.chapters;
+                            const currentIndex = chapters.findIndex(ch => ch.mid == chapter_id);
+
+                            if (currentIndex >= 0) {
+                                const chapter = chapters[currentIndex];
                                 $("#chapter-progress-bar").css("width", chapter.chapter_percent + "%");
                                 $("#chapter-progress-text").text(chapter.chapter_percent + "% Complete");
 
-                                // Restore video time if saved
+                                // Restore video progress
                                 const video = document.querySelector("#chapter1Video");
                                 if (video && chapter.phase_video > 0) {
                                     video.addEventListener("loadedmetadata", function() {
@@ -379,12 +382,42 @@ session_start();
                                         once: true
                                     });
                                 }
+
+                                // 🔹 Handle Prev/Next Chapter
+                                const learningType = res.learning_type; // sequential or flexible
+                                const prevChapter = chapters[currentIndex - 1];
+                                const nextChapter = chapters[currentIndex + 1];
+
+                                // Previous always enabled if exists
+                                if (prevChapter) {
+                                    $("#prev-chapter")
+                                        .removeClass("disabled")
+                                        .attr("href", `course_materials_detail.php?cm_id=${cm_id}&chapter_id=${prevChapter.mid}`);
+                                } else {
+                                    $("#prev-chapter").addClass("disabled").attr("href", "#");
+                                }
+
+                                // Next: depends on type
+                                if (nextChapter) {
+                                    if (learningType === "flexible" || chapter.chapter_percent == 100) {
+                                        $("#next-chapter")
+                                            .removeClass("disabled")
+                                            .attr("href", `course_materials_detail.php?cm_id=${cm_id}&chapter_id=${nextChapter.mid}`);
+                                    } else {
+                                        $("#next-chapter").addClass("disabled").attr("href", "#");
+                                    }
+                                } else {
+                                    $("#next-chapter").addClass("disabled").attr("href", "#");
+                                }
                             }
+
+                            // Update overall course progress
                             $("#course-progress-text").text(res.course_percent + "% Complete");
                         }
                     }
                 });
             }
+
 
             // Initial refresh + interval to keep progress live
             refreshProgress();
