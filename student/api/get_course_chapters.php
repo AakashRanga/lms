@@ -25,7 +25,7 @@ if (!$cm_id || !$launch_c || !$student_reg_no) {
 try {
     // --- 1) Course info ---
     $courseSql = "
-        SELECT cm.c_id, cm.cm_id, lc.course_name, lc.course_code
+        SELECT cm.c_id, cm.cm_id, cm.learning_type, lc.course_name, lc.course_code
         FROM course_material cm
         JOIN launch_courses lc ON cm.launch_course_id = lc.id
         WHERE cm.cm_id = ? AND cm.launch_course_id = ? LIMIT 1
@@ -64,7 +64,7 @@ try {
     ";
     $chapProgStmt = $conn->prepare($chapProgSql);
     if (!$chapProgStmt) throw new Exception("Prepare failed (chapter progress): " . $conn->error);
-    if (!$chapProgStmt->bind_param("si", $student_reg_no, $cm_id )) throw new Exception("Bind failed (chapter progress): " . $chapProgStmt->error);
+    if (!$chapProgStmt->bind_param("si", $student_reg_no, $cm_id)) throw new Exception("Bind failed (chapter progress): " . $chapProgStmt->error);
     if (!$chapProgStmt->execute()) throw new Exception("Execute failed (chapter progress): " . $chapProgStmt->error);
     $studentChapterProgress = $chapProgStmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $chapProgStmt->close();
@@ -75,12 +75,29 @@ try {
     }
 
     // Attach progress to chapters and compute total
+    // Attach progress + access rules
     $totalProgress = 0;
-    foreach ($chapters as &$chap) {
-        $chapId = (int)$chap['mid'];
-        $chap['progress'] = $progressMap[$chapId] ?? 0;
-        $totalProgress += $chap['progress'];
+    $learningType = $course['learning_type'];
+
+    for ($i = 0; $i < count($chapters); $i++) {
+        $chapId = (int)$chapters[$i]['mid'];
+        $chapters[$i]['progress'] = $progressMap[$chapId] ?? 0;
+
+        // Default access (flexible = always accessible)
+        $chapters[$i]['accessible'] = true;
+
+        if ($learningType === 'sequential') {
+            if ($i === 0) {
+                $chapters[$i]['accessible'] = true; // first chapter always open
+            } else {
+                $prevId = (int)$chapters[$i - 1]['mid'];
+                $chapters[$i]['accessible'] = isset($progressMap[$prevId]) && $progressMap[$prevId] == 100;
+            }
+        }
+
+        $totalProgress += $chapters[$i]['progress'];
     }
+
     unset($chap); // break reference
 
     // --- 4) Overall course progress: try student_course_progress.course_percent first ---

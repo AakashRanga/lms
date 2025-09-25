@@ -128,7 +128,7 @@ if ($lauch_course_id) {
                             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
 
                                 <!-- Attendance -->
-                                <div class="col">
+                                <!-- <div class="col">
                                     <a href="attendance.php?launch_c_id=<?php echo $lauch_course_id; ?>"
                                         class="text-decoration-none text-dark">
                                         <div class="dashboard-card text-center p-4">
@@ -142,7 +142,7 @@ if ($lauch_course_id) {
                                             <p class="text-muted small mb-0">Start a new course creation process.</p>
                                         </div>
                                     </a>
-                                </div>
+                                </div> -->
 
                                 <!-- Course Materials -->
                                 <div class="col">

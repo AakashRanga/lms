@@ -44,9 +44,9 @@
             <i class="bi bi-journal-bookmark me-2"></i> My Courses
         </a>
 
-        <a href="index.php" class="d-block">
+        <!-- <a href="index.php" class="d-block">
             <i class="bi bi-box-arrow-right me-2"></i> Logout
-        </a>
+        </a> -->
     </div>
 </div>
 

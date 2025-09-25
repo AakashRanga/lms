@@ -198,25 +198,31 @@ $launchid = $_GET['launch_c'];
                         const container = $(".row.g-3");
                         container.empty();
                         chapters.forEach(chap => {
+                            const lockedClass = chap.accessible ? "" : "disabled opacity-50";
+                            const href = chap.accessible ?
+                                `course_materials_detail.php?chapter_id=${chap.mid}&cm_id=${course.cm_id}` :
+                                "#";
+
                             container.append(`
-                        <div class="col-md-6 col-lg-4">
-                            <a href="course_materials_detail.php?chapter_id=${chap.mid}&cm_id=${course.cm_id}" 
-                               class="text-decoration-none text-dark">
-                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
-                                    <h5 class="fw-semibold">${chap.chapter_title}</h5>
-                                    <p class="text-muted small mb-2">Chapter ${chap.chapter_no || ""}</p>
-                                    <div class="d-flex justify-content-between align-items-center small mb-1">
-                                        <span>Completion</span>
-                                        <span class="text-muted">${chap.progress}%</span>
+                                    <div class="col-md-6 col-lg-4">
+                                        <a href="${href}" class="text-decoration-none text-dark ${lockedClass}">
+                                            <div class="bg-white rounded-4 shadow-sm p-3 h-100">
+                                                <h5 class="fw-semibold">${chap.chapter_title}</h5>
+                                                <p class="text-muted small mb-2">Chapter ${chap.chapter_no || ""}</p>
+                                                <div class="d-flex justify-content-between align-items-center small mb-1">
+                                                    <span>Completion</span>
+                                                    <span class="text-muted">${chap.progress}%</span>
+                                                </div>
+                                                <div class="progress rounded-pill" style="height: 6px;">
+                                                    <div class="progress-bar bg-primary" style="width: ${chap.progress}%;"></div>
+                                                </div>
+                                                ${!chap.accessible ? `<div class="text-danger small mt-2">🔒 Locked</div>` : ""}
+                                            </div>
+                                        </a>
                                     </div>
-                                    <div class="progress rounded-pill" style="height: 6px;">
-                                        <div class="progress-bar bg-primary" style="width: ${chap.progress}%;"></div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    `);
+                                `);
                         });
+
                     },
                     error: function(xhr) {
                         Swal.fire("Error", xhr.responseText, "error");

@@ -16,7 +16,7 @@ try {
     }
 
     // Fetch all modules (chapters) for the course_material (cm_id)
-    $mstmt = $conn->prepare("SELECT mid, chapter_no, chapter_title, materials, flipped_class FROM module WHERE cm_id = ? ORDER BY chapter_no ASC, mid ASC");
+    $mstmt = $conn->prepare("SELECT mid, chapter_no, chapter_title, materials, flipped_class FROM module WHERE cm_id = ? ORDER BY mid ASC");
     if (!$mstmt) throw new Exception("Prepare failed (modules): " . $conn->error);
     $mstmt->bind_param('i', $cm_id);
     $mstmt->execute();
