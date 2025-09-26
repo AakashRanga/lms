@@ -2,6 +2,19 @@
 session_start();
 $c_id = $_GET['cm_id'] ?? null;
 $launch_id = $_GET['launch_c'] ?? null;
+
+if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
+    // Not logged in → redirect to login
+    header("Location: ../index.php");
+    exit;
+}
+
+if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
+    // Logged in but not Faculty → force logout
+    session_destroy();
+    header("Location: ../index.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

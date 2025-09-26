@@ -1,26 +1,43 @@
 <?php
-$lauch_course_id = $_GET['launch_c_id'] ?? null;
-$course_name = 'Null';
-$course_code = 'Null';
-$course_id = 'Null';
-$faculty_id = 'Null';
 
-if ($lauch_course_id) {
     include "../includes/config.php";
 
-    // JOIN query to fetch course_name and course_code directly
-    $stmt = $conn->prepare("
-        SELECT c.course_name, c.course_code, c.c_id, lc.faculty_id, lc.id
-        FROM launch_courses lc
-        INNER JOIN course c ON lc.c_id = c.c_id
-        WHERE lc.id = ?
-    ");
-    $stmt->bind_param("s", $lauch_course_id);
-    $stmt->execute();
-    $stmt->bind_result($course_name, $course_code, $course_id, $faculty_id, $launch_c_id);
-    $stmt->fetch();
-    $stmt->close();
-}
+    if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
+        // Not logged in → redirect to login
+        header("Location: ../index.php");
+        exit;
+    }
+
+    if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
+        // Logged in but not Faculty → force logout
+        session_destroy();
+        header("Location: ../index.php");
+        exit;
+    }
+
+    $lauch_course_id = $_GET['launch_c_id'] ?? null;
+
+    $course_name = 'Null';
+    $course_code = 'Null';
+    $course_id = 'Null';
+    $faculty_id = 'Null';
+
+    if ($lauch_course_id) {
+    
+
+        // JOIN query to fetch course_name and course_code directly
+        $stmt = $conn->prepare("
+            SELECT c.course_name, c.course_code, c.c_id, lc.faculty_id, lc.id
+            FROM launch_courses lc
+            INNER JOIN course c ON lc.c_id = c.c_id
+            WHERE lc.id = ?
+        ");
+        $stmt->bind_param("s", $lauch_course_id);
+        $stmt->execute();
+        $stmt->bind_result($course_name, $course_code, $course_id, $faculty_id, $launch_c_id);
+        $stmt->fetch();
+        $stmt->close();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -191,7 +208,7 @@ if ($lauch_course_id) {
 
                                 <!-- Course Analytics -->
                                 <div class="col">
-                                    <a href="course-analytics.php" class="text-decoration-none text-dark">
+                                    <a href="course-analytics.php?launch_c_id=<?php echo $lauch_course_id; ?>" class="text-decoration-none text-dark">
                                         <div class="dashboard-card text-center p-4">
                                             <div class="icon-circle mb-2">
                                                 <i class="bi bi-bar-chart-line"></i>

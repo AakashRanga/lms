@@ -2,7 +2,18 @@
 session_start();
 $cmid = $_GET['cm_id'];
 $launchid = $_GET['launch_c'];
+if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
+    // Not logged in → redirect to login
+    header("Location: ../index.php");
+    exit;
+}
 
+if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
+    // Logged in but not Faculty → force logout
+    session_destroy();
+    header("Location: ../index.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -208,7 +219,7 @@ $launchid = $_GET['launch_c'];
                                         <a href="${href}" class="text-decoration-none text-dark ${lockedClass}">
                                             <div class="bg-white rounded-4 shadow-sm p-3 h-100">
                                                 <h5 class="fw-semibold">${chap.chapter_title}</h5>
-                                                <p class="text-muted small mb-2">Chapter ${chap.chapter_no || ""}</p>
+                                                <p class="text-muted small mb-2"> ${chap.chapter_no || ""}</p>
                                                 <div class="d-flex justify-content-between align-items-center small mb-1">
                                                     <span>Completion</span>
                                                     <span class="text-muted">${chap.progress}%</span>

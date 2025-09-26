@@ -31,12 +31,12 @@
         </div>
     </div>
 
-    <a href="overall-analytics.php" class="d-block mb-2">
+    <a href="course-analytics.php" class="d-block mb-2">
         <i class="bi bi-bar-chart-line me-2"></i> Analytics
     </a>
-    <a href="notifications.php" class="d-block mb-2">
+    <!-- <a href="notifications.php" class="d-block mb-2">
         <i class="bi bi-bell me-2"></i> Notifications
-    </a>
+    </a> -->
 </div>
 
 <!-- Offcanvas Sidebar for Extra-Small Screens (<576px) -->
@@ -74,11 +74,11 @@
                 </ul>
             </div>
         </div>
-        <a href="analytics.php" class="d-block mb-2">
+        <a href="course-analytics.php" class="d-block mb-2">
             <i class="bi bi-bar-chart-line me-2"></i> Analytics
         </a>
-        <a href="notifications.php" class="d-block mb-2">
+        <!-- <a href="notifications.php" class="d-block mb-2">
             <i class="bi bi-bell me-2"></i> Notifications
-        </a>
+        </a> -->
     </div>
 </div>

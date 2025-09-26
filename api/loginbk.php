@@ -80,6 +80,8 @@ try {
             $_SESSION["userid"] = $record["u_id"];
             $_SESSION["name"] = $record["name"];
             $_SESSION["email"] = $record["email"];
+            $_SESSION["user_type"] = $AccountType; 
+
 
             $Data = [
                 'status' => 200,
