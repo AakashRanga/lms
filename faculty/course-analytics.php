@@ -1,5 +1,21 @@
 <?php
 session_start();
+
+if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
+    // Not logged in → redirect to login
+    header("Location: ../index.php");
+    exit;
+}
+
+if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
+    // Logged in but not Faculty → force logout
+    session_destroy();
+    header("Location: ../index.php");
+    exit;
+}
+
+$c_id = $_GET['c_id'] ?? '';                  
+$launch_id = $_GET['launch_c_id'] ?? '';      
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -89,7 +105,7 @@ session_start();
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="active-course.php">Active Course</a></li>
-                            <li class="breadcrumb-item"><a href="course-details.php">Course Details</a></li>
+                            <li class="breadcrumb-item"><a href="course-details.php?launch_c_id=<?php echo $launch_id; ?>">Course Details</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
                                 <?= $pageTitles[$currentPage] ?? ucfirst(pathinfo($currentPage, PATHINFO_FILENAME)) ?>
                             </li>

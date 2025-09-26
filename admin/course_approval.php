@@ -1,4 +1,17 @@
-<?php session_start() ?>
+<?php session_start();
+if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
+    // Not logged in → redirect to login
+    header("Location: ../index.php");
+    exit;
+}
+
+if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Admin") {
+    // Logged in but not Faculty → force logout
+    session_destroy();
+    header("Location: ../index.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 

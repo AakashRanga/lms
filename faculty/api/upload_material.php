@@ -1,17 +1,14 @@
-<?php 
+<?php
 // api/upload_material.php
 header("Content-Type: application/json");
-
 include "../../includes/config.php";
 
 // ---------- Helper: safe filename with auto-rename ----------
 function getSafeFileName($uploadDir, $originalName) {
     $safeName = preg_replace("/[^A-Za-z0-9_\.-]/", "_", strtolower($originalName));
-
     $pathInfo = pathinfo($safeName);
     $base = $pathInfo['filename'];
     $ext  = isset($pathInfo['extension']) ? '.' . $pathInfo['extension'] : '';
-
     $counter = 1;
     $finalName = $safeName;
 
@@ -19,8 +16,30 @@ function getSafeFileName($uploadDir, $originalName) {
         $finalName = $base . "(" . $counter . ")" . $ext;
         $counter++;
     }
-
     return $finalName;
+}
+
+// ---------- Helper: translate PHP upload errors ----------
+function checkFileError($fileError, $fieldName = 'file') {
+    switch ($fileError) {
+        case UPLOAD_ERR_OK:
+            return; // no error
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+            throw new Exception("Upload failed: {$fieldName} is too large. The server rejected it.");
+        case UPLOAD_ERR_PARTIAL:
+            throw new Exception("Upload failed: {$fieldName} was only partially uploaded.");
+        case UPLOAD_ERR_NO_FILE:
+            return; // no file uploaded (optional)
+        case UPLOAD_ERR_NO_TMP_DIR:
+            throw new Exception("Upload failed: Missing temporary folder on server.");
+        case UPLOAD_ERR_CANT_WRITE:
+            throw new Exception("Upload failed: Server cannot write {$fieldName} to disk.");
+        case UPLOAD_ERR_EXTENSION:
+            throw new Exception("Upload failed: A PHP extension stopped the {$fieldName} upload.");
+        default:
+            throw new Exception("Upload failed: Unknown error occurred while uploading {$fieldName}.");
+    }
 }
 
 try {
@@ -46,20 +65,21 @@ try {
 
     // ---------- Handle thumbnail upload ----------
     $thumbnailPath = null;
-    if ($thumbnail && $thumbnail['tmp_name']) {
-        $uploadDir = __DIR__ . "/../uploads/course_materials/thumbnail/";
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+    if ($thumbnail && isset($thumbnail['error'])) {
+        checkFileError($thumbnail['error'], "Thumbnail");
+
+        if ($thumbnail['error'] === UPLOAD_ERR_OK && $thumbnail['tmp_name']) {
+            $uploadDir = __DIR__ . "/../uploads/course_materials/thumbnail/";
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+            $finalName  = getSafeFileName($uploadDir, $thumbnail['name']);
+            $targetPath = $uploadDir . $finalName;
+
+            if (!move_uploaded_file($thumbnail['tmp_name'], $targetPath)) {
+                throw new Exception("Upload failed: Thumbnail could not be saved. Possibly too large.");
+            }
+            $thumbnailPath = $finalName;
         }
-
-        $finalName  = getSafeFileName($uploadDir, $thumbnail['name']);
-        $targetPath = $uploadDir . $finalName;
-
-        if (!move_uploaded_file($thumbnail['tmp_name'], $targetPath)) {
-            throw new Exception("Failed to upload thumbnail");
-        }
-
-        $thumbnailPath = $finalName;
     }
 
     // ---------- Start DB transaction ----------
@@ -117,29 +137,40 @@ try {
 
     foreach ($_POST['chapter_number'] as $i => $chapNo) {
         $chapTitle = $_POST['chapter_title'][$i] ?? '';
-
         $readingPath = $videoPath = null;
 
         // ---------- Reading Material ----------
         if (!empty($_FILES['reading_material']['name'][$i])) {
-            $uploadDir = __DIR__ . "/../uploads/course_materials/pdf/";
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            checkFileError($_FILES['reading_material']['error'][$i], "Reading Material");
 
-            $finalPdf = getSafeFileName($uploadDir, $_FILES['reading_material']['name'][$i]);
-            $readingPath = "uploads/course_materials/pdf/" . $finalPdf;
+            if ($_FILES['reading_material']['error'][$i] === UPLOAD_ERR_OK) {
+                $uploadDir = __DIR__ . "/../uploads/course_materials/pdf/";
+                if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
-            move_uploaded_file($_FILES['reading_material']['tmp_name'][$i], $uploadDir . $finalPdf);
+                $finalPdf = getSafeFileName($uploadDir, $_FILES['reading_material']['name'][$i]);
+                $readingPath = "uploads/course_materials/pdf/" . $finalPdf;
+
+                if (!move_uploaded_file($_FILES['reading_material']['tmp_name'][$i], $uploadDir . $finalPdf)) {
+                    throw new Exception("Upload failed: Reading Material could not be saved. Possibly too large.");
+                }
+            }
         }
 
         // ---------- Video Material ----------
         if (!empty($_FILES['video_material']['name'][$i])) {
-            $uploadDir = __DIR__ . "/../uploads/course_materials/video/";
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            checkFileError($_FILES['video_material']['error'][$i], "Video Material");
 
-            $finalVideo = getSafeFileName($uploadDir, $_FILES['video_material']['name'][$i]);
-            $videoPath = "uploads/course_materials/video/" . $finalVideo;
+            if ($_FILES['video_material']['error'][$i] === UPLOAD_ERR_OK) {
+                $uploadDir = __DIR__ . "/../uploads/course_materials/video/";
+                if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
-            move_uploaded_file($_FILES['video_material']['tmp_name'][$i], $uploadDir . $finalVideo);
+                $finalVideo = getSafeFileName($uploadDir, $_FILES['video_material']['name'][$i]);
+                $videoPath = "uploads/course_materials/video/" . $finalVideo;
+
+                if (!move_uploaded_file($_FILES['video_material']['tmp_name'][$i], $uploadDir . $finalVideo)) {
+                    throw new Exception("Upload failed: Video Material could not be saved. Possibly too large.");
+                }
+            }
         }
 
         // Insert module
@@ -191,3 +222,4 @@ try {
         "message" => $e->getMessage()
     ]);
 }
+?>

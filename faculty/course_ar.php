@@ -1,5 +1,18 @@
 <?php
 session_start();
+
+if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
+    // Not logged in → redirect to login
+    header("Location: ../index.php");
+    exit;
+}
+
+if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
+    // Logged in but not Faculty → force logout
+    session_destroy();
+    header("Location: ../index.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -117,13 +130,13 @@ session_start();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             function loadCourses() {
                 $.ajax({
                     url: 'api/get_course_approval.php',
                     type: 'GET',
                     dataType: 'json',
-                    success: function (courses) {
+                    success: function(courses) {
                         let tbody = '';
                         courses.forEach((course, index) => {
                             let statusBadge = course.status === 'approved' ? 'bg-success' :
@@ -149,7 +162,7 @@ session_start();
                         });
                         $('#coursesApproveReject').html(tbody);
                     },
-                    error: function (err) {
+                    error: function(err) {
                         console.error('Error fetching courses:', err);
                     }
                 });
@@ -158,7 +171,7 @@ session_start();
             loadCourses();
 
             // Approve/Reject buttons with AJAX call
-            $('#coursesApproveReject').on('click', '.approveBtn, .rejectBtn', function () {
+            $('#coursesApproveReject').on('click', '.approveBtn, .rejectBtn', function() {
                 let row = $(this).closest('tr');
                 let approvalId = row.data('approval-id');
                 let newStatus = $(this).hasClass('approveBtn') ? 'approved' : 'rejected';
@@ -170,26 +183,28 @@ session_start();
                         approval_id: approvalId,
                         status: newStatus
                     },
-                    success: function (res) {
+                    success: function(res) {
                         if (res.status === 'success') {
                             let badge = row.find('td:nth-child(10) span'); // badge column
                             if (newStatus === 'approved') {
                                 badge.removeClass('bg-warning bg-danger').addClass('bg-success').text('Approved');
+                                
                             } else {
                                 badge.removeClass('bg-warning bg-success').addClass('bg-danger').text('Rejected');
                             }
+                            loadCourses();
                         } else {
                             alert(res.message || 'Failed to update');
                         }
                     },
-                    error: function (err) {
+                    error: function(err) {
                         console.error('Error updating status:', err);
                     }
                 });
             });
         });
     </script>
-    </script>
+
 
 </body>
 
