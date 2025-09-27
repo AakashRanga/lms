@@ -19,9 +19,9 @@
         <i class="bi bi-journal-bookmark me-2"></i> Overall Assignments
     </a>
 
-    <a href="index.php" class="d-block">
+    <!-- <a href="index.php" class="d-block">
         <i class="bi bi-box-arrow-right me-2"></i> Logout
-    </a>
+    </a> -->
 </div>
 
 <!-- Offcanvas Sidebar for Extra-Small Screens (<576px) -->

@@ -1,7 +1,8 @@
 <?php
-session_start();
+include "../includes/config.php";
 $cmid = $_GET['cm_id'];
 $launchid = $_GET['launch_c'];
+
 if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
     // Not logged in → redirect to login
     header("Location: ../index.php");
@@ -14,6 +15,13 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
     header("Location: ../index.php");
     exit;
 }
+
+$query = "SELECT ass_id FROM assignment WHERE c_id = ? AND launch_id=? ";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("ii", $cmid, $launchid);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +41,9 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
     <link rel="stylesheet" href="../stylesheet/responsive.css">
     <link rel="stylesheet" href="../stylesheet/styles.css">
     <style>
+        a{
+            text-decoration:none;
+        }
         .feature-card {
             border: 1px solid #e5e7eb;
             border-radius: 1rem;
@@ -74,7 +85,15 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
 
                 <!-- Page Content -->
                 <div class="p-4 content-scroll">
+                     <nav aria-label="breadcrumb" >
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="mycourses.php">Dashboard</a></li>
+                            <!-- <li class="breadcrumb-item"><a href="course-admin.php">Course Admin</a></li> -->
+                            <li class="breadcrumb-item active" aria-current="page">Course Details</li>
+                        </ol>
+                    </nav>
                     <div class="card-custom mt-4 p-4">
+                        
                         <h5 class="mb-4">Courses Details</h5>
 
                         <div class="container mt-4">
@@ -94,7 +113,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                                 </div>
 
                                 <!-- Attendance -->
-                                <div class="col">
+                                <!-- <div class="col">
                                     <a href="attendance.php" class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <i class="bi bi-people feature-icon"></i>
@@ -103,11 +122,11 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                                                 courses.</p>
                                         </div>
                                     </a>
-                                </div>
+                                </div> -->
 
                                 <!-- Assignments -->
                                 <div class="col">
-                                    <a href="assignments.php?cm_id=<?php echo $cmid; ?>&launch_c=<?php echo $launchid; ?>"
+                                    <a href="assignments.php?cm_id=<?php echo $cmid; ?>&launch_c=<?php echo $launchid; ?>&ass_id=<?php echo $user['ass_id']?>"
                                         class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <i class="bi bi-journal-text feature-icon"></i>
@@ -119,7 +138,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                                 </div>
 
                                 <!-- Grading -->
-                                <div class="col">
+                                <!-- <div class="col">
                                     <a href="grading.php" class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <i class="bi bi-award feature-icon"></i>
@@ -128,7 +147,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                                                 grades.</p>
                                         </div>
                                     </a>
-                                </div>
+                                </div> -->
 
                             </div>
 

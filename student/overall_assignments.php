@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
     // Not logged in → redirect to login
@@ -57,6 +57,20 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
             box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
             margin-bottom: 20px;
             padding: 20px;
+        }
+
+        .status {
+            padding: 6px 10px;
+            color: #fff;
+            border-radius: 6px;
+        }
+
+        .bg-warning {
+            background: orange;
+        }
+
+        .bg-success {
+            background: green;
         }
     </style>
 </head>
@@ -136,13 +150,13 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             function fetchAssignments() {
                 $.ajax({
                     url: 'api/overall_assignments.php', // your API endpoint
                     type: 'GET',
                     dataType: 'json',
-                    success: function (data) {
+                    success: function(data) {
                         const container = $('#assignment-container');
                         container.empty();
 
@@ -151,25 +165,12 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                             return;
                         }
 
-                        data.forEach(function (assignment) {
-                            // Determine status badge
-                            let statusClass = '';
-                            let statusText = 'Pending';
-                            if (assignment.status?.toLowerCase().includes('graded')) {
-                                statusClass = 'bg-success';
-                                statusText = 'Graded';
-                            } else if (assignment.status?.toLowerCase().includes('revision')) {
-                                statusClass = 'bg-warning text-dark';
-                                statusText = 'Revision Requested';
-                            } else if (assignment.status?.toLowerCase().includes('late')) {
-                                statusClass = 'bg-danger';
-                                statusText = 'Late Submission';
-                            } else {
-                                statusClass = 'bg-secondary text-white';
-                                statusText = 'Pending';
-                            }
+                        data.forEach(function(assignment) {
+                            // Status badge
+                            let statusClass = assignment.submission_status === 'Submitted' ? 'bg-success' : 'bg-warning';
+                            let statusText = assignment.submission_status;
 
-                            // Uploaded files (if any)
+                            // Uploaded files
                             let filesHtml = '';
                             if (assignment.notes) {
                                 let files = [];
@@ -178,43 +179,44 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                                 } catch (e) {
                                     files = [assignment.notes];
                                 }
-                                // filesHtml = `<div class="bg-light p-2 rounded mb-2"><strong>Uploaded Files / Links</strong><br>`;
+
                                 files.forEach(f => {
                                     let icon = '📄';
                                     if (f.endsWith('.doc') || f.endsWith('.docx')) icon = '📝';
                                     else if (f.endsWith('.pdf')) icon = '📄';
                                     else if (f.startsWith('http')) icon = '🔗';
 
-                                    // Extract filename only (remove path & timestamp)
                                     let parts = f.split('/');
                                     let filename = parts[parts.length - 1];
                                     let cleanName = filename.includes('_') ? filename.split('_').slice(1).join('_') : filename;
 
-                                    filesHtml += `<a href="/lms/faculty/${f}" target="_blank" class="text-dark text-decoration-none">${icon} ${cleanName}</a><br>`;
+                                    filesHtml += `<a href="/workingproject/lms/faculty/${f}" target="_blank" class="text-dark text-decoration-none">${icon} ${cleanName}</a><br>`;
                                 });
-                                filesHtml += `</div>`;
                             }
 
-                            // Build card HTML with data attributes
                             const cardHtml = `
-                        <div class="col-12 col-md-6">
-                            <div class="border-bottom pb-3 shadow p-3 rounded mb-3 h-100 assignment-card" 
-                                 data-cmid="${assignment.cm_id}" 
-                                 data-launchcourseid="${assignment.launch_id}">
-                                <h6 class="mb-1">${assignment.assignment_title}</h6>
-                                <div class="d-flex justify-content-between small">
-                                    <span class="text-muted">Course Name : ${assignment.course_name || ''}</span>
-                                </div>
-                                <div class="small text-muted mb-2">Due Date : ${assignment.due_date || ''}</div>
-                                ${filesHtml}
-                                
-                            </div>
-                        </div>
-                    `;
+                                <div class="col-12 col-md-6">
+                                    <div class="border-bottom pb-3 shadow p-3 rounded mb-3 h-100 assignment-card" 
+                                        data-cmid="${assignment.cm_id}" 
+                                        data-launchcourseid="${assignment.launch_id}"
+                                        data-assid="${assignment.ass_id}">
+                                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start">
+                                            <h6 class="mb-1">${assignment.assignment_title}</h6>
+                                            <h6 class="mb-1 status ${statusClass}">${statusText}</h6>
+                                        </div>
+                                        <div class="d-flex justify-content-between small">
+                                            <span class="text-muted">Course Name : ${assignment.course_name || ''}</span>
+                                        </div>
+                                        <div class="small text-muted mb-2">Due Date : ${assignment.due_date || ''}</div>
+                                        ${filesHtml}
+                                    </div>
+                                </div>`;
+
                             container.append(cardHtml);
                         });
+
                     },
-                    error: function (xhr, status, error) {
+                    error: function(xhr, status, error) {
                         $('#assignment-container').html('<p class="text-danger text-center">Error loading assignments.</p>');
                         console.error(error);
                     }
@@ -225,12 +227,13 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
             fetchAssignments();
 
             // Handle card click using delegated event
-            $(document).on('click', '.assignment-card', function () {
+            $(document).on('click', '.assignment-card', function() {
                 const cId = $(this).data('cmid');
                 const launchId = $(this).data('launchcourseid');
+                const assid = $(this).data('assid');
 
                 // Redirect to view page with query params
-                window.location.href = `assignments.php?cm_id=${cId}&launch_c=${launchId}`;
+                window.location.href = `assignments.php?cm_id=${cId}&launch_c=${launchId}&ass_id=${assid}`;
             });
         });
     </script>

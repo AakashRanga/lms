@@ -32,6 +32,10 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
     <link rel="stylesheet" href="../stylesheet/styles.css">
 
     <style>
+        a {
+            text-decoration: none;
+        }
+
         .course-card {
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -151,6 +155,13 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                     </div>
                 </div> -->
                 <div class="p-4">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="mycourses.php">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="course-details.php?cm_id=<?php echo $cmid; ?>&launch_c=<?php echo $launchid; ?>">Course Details</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Course Materials</li>
+                        </ol>
+                    </nav>
                     <div class="bg-white rounded-4 shadow-sm p-4 mb-4">
                         <h2 id="courseTitle" class="fw-bold mb-2">Course Title</h2>
                         <p id="courseDesc" class="text-muted mb-3">Course description here</p>
