@@ -1,43 +1,43 @@
 <?php
 
-    include "../includes/config.php";
+include "../includes/config.php";
 
-    if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
-        // Not logged in → redirect to login
-        header("Location: ../index.php");
-        exit;
-    }
+if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
+    // Not logged in → redirect to login
+    header("Location: ../index.php");
+    exit;
+}
 
-    if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
-        // Logged in but not Faculty → force logout
-        session_destroy();
-        header("Location: ../index.php");
-        exit;
-    }
+if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
+    // Logged in but not Faculty → force logout
+    session_destroy();
+    header("Location: ../index.php");
+    exit;
+}
 
-    $lauch_course_id = $_GET['launch_c_id'] ?? null;
+$lauch_course_id = $_GET['launch_c_id'] ?? null;
 
-    $course_name = 'Null';
-    $course_code = 'Null';
-    $course_id = 'Null';
-    $faculty_id = 'Null';
+$course_name = 'Null';
+$course_code = 'Null';
+$course_id = 'Null';
+$faculty_id = 'Null';
 
-    if ($lauch_course_id) {
-    
+if ($lauch_course_id) {
 
-        // JOIN query to fetch course_name and course_code directly
-        $stmt = $conn->prepare("
+
+    // JOIN query to fetch course_name and course_code directly
+    $stmt = $conn->prepare("
             SELECT c.course_name, c.course_code, c.c_id, lc.faculty_id, lc.id
             FROM launch_courses lc
             INNER JOIN course c ON lc.c_id = c.c_id
             WHERE lc.id = ?
         ");
-        $stmt->bind_param("s", $lauch_course_id);
-        $stmt->execute();
-        $stmt->bind_result($course_name, $course_code, $course_id, $faculty_id, $launch_c_id);
-        $stmt->fetch();
-        $stmt->close();
-    }
+    $stmt->bind_param("s", $lauch_course_id);
+    $stmt->execute();
+    $stmt->bind_result($course_name, $course_code, $course_id, $faculty_id, $launch_c_id);
+    $stmt->fetch();
+    $stmt->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -139,27 +139,24 @@
                     </nav>
 
                     <div class="card-custom mt-4 p-4">
-                        <h6 class="mb-3">Anatomy</h6>
+                        <h6 class="mb-3"><?php echo $course_name; ?></h6>
 
                         <div class="container mt-4">
                             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
 
-                                <!-- Attendance -->
-                                <!-- <div class="col">
-                                    <a href="attendance.php?launch_c_id=<?php echo $lauch_course_id; ?>"
+                                <div class="col">
+                                    <a href="manage_co.php?launch_c_id=<?php echo $lauch_course_id; ?>"
                                         class="text-decoration-none text-dark">
                                         <div class="dashboard-card text-center p-4">
-                                            <div class="d-flex justify-content-center align-items-center mb-2">
-                                                <div class="icon-circle">
-                                                    <i class="bi bi-rocket-takeoff"></i>
-                                                </div>
-                                                <span class="badge badge-new ms-2">New</span>
+                                            <div class="icon-circle mb-2">
+                                                <i class="bi bi-check-circle"></i>
                                             </div>
-                                            <h6 class="fw-semibold mb-1">Attendance</h6>
-                                            <p class="text-muted small mb-0">Start a new course creation process.</p>
+                                            <h6 class="fw-semibold mb-1">Manage Course Outcome</h6>
+                                            <p class="text-muted small mb-0">Add / View CO Level for individual subject.
+                                            </p>
                                         </div>
                                     </a>
-                                </div> -->
+                                </div>
 
                                 <!-- Course Materials -->
                                 <div class="col">
@@ -177,6 +174,8 @@
                                         <input type="hidden" name="launch_c_id"
                                             value="<?php echo htmlspecialchars($launch_c_id); ?>">
                                     </form>
+
+
 
                                     <a href="javascript:void(0);" class="text-decoration-none text-dark"
                                         onclick="document.getElementById('courseForm').submit();">
