@@ -94,10 +94,9 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Admin") {
                                         <th>S no</th>
                                         <th>Course Name</th>
                                         <th>Course Code</th>
-                                        <th>Department</th>
-                                        <th>Branch</th>
+                                      
                                         <th>Course Type</th>
-                                        <th>Duration</th>
+                      
                                         <th>Seats</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -136,10 +135,9 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Admin") {
                             <td>${index + 1}</td>
                             <td>${course.course_name}</td>
                             <td>${course.course_code}</td>
-                            <td>${course.department}</td>
-                            <td>${course.branch}</td>
+                           
                             <td>${course.course_type}</td>
-                            <td>${course.duration}</td>
+                         
                             <td>${course.seat_allotment}</td>
                             <td><span class="badge ${statusBadge}">${statusText}</span></td>
                             <td>

@@ -10,7 +10,7 @@
     </div>
 
     <!-- Sidebar Links -->
-    <a href="dashboard.php" class="d-block mb-2">
+    <a href="#" class="d-block mb-2">
         <i class="bi bi-house-door me-2"></i> Home
     </a>
     <div class="mb-2">
@@ -27,6 +27,9 @@
                 <li class="mb-1">
                     <a href="add_courses.php" class="text-decoration-none d-block">Add Course</a>
                 </li>
+                <li class="mb-1">
+                    <a href="launch-course.php" class="text-decoration-none d-block">Launch Course</a>
+                </li>
                 <li>
                     <a href="course_approval.php" class="text-decoration-none d-block">Course Approval</a>
                 </li>
@@ -35,7 +38,7 @@
     </div>
 
 
-    <a href="notifications.php" class="d-block mb-2">
+    <a href="#" class="d-block mb-2">
         <i class="bi bi-bell me-2"></i> Notifications
     </a>
 </div>

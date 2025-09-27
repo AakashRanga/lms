@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="form-floating">
                                                 <input type="text" class="form-control" name="chapter_number[]"
                                                     placeholder="Chapter Number" required>
-                                                <label>Chapter Number</label>
+                                                <label>Module Number</label>
                                             </div>
                                         </div>
 
@@ -180,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="form-floating">
                                                 <input type="text" class="form-control" name="chapter_title[]"
                                                     placeholder="Chapter Title" required>
-                                                <label>Chapter Title</label>
+                                                <label>Module Title</label>
                                             </div>
                                         </div>
 
@@ -507,135 +507,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     </script>
 
-    <!-- old is gold -->
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const modulesContainer = document.getElementById('modulesContainer');
-            const addModuleBtn = document.getElementById('addModuleBtn');
-
-            function createQuestionBlock(num) {
-                const block = document.createElement('div');
-                block.classList.add('question-block', 'border', 'p-3', 'mt-3', 'rounded');
-                block.innerHTML = `
-                <div class="d-flex justify-content-between mb-2">
-                    <h5>CO Level</h5>
-                    <i class="bi bi-x-circle removeQuestionBtn" style="color:red;"></i>
-                </div>
-                <div class="d-flex justify-content-between align-items-center question-index mb-2">
-                    <h6 class="mb-0">Q${num}</h6>
-                    <input type="text" class="form-control" name="question_text[]" placeholder="Enter Question ${num}" required>
-                </div>
-                <div class="row g-2">
-                    ${['A', 'B', 'C', 'D'].map(opt => `
-                        <div class="col-md-6 d-flex align-items-center">
-                            <div class="form-check me-2">
-                                <input class="form-check-input" type="radio" name="correct_answer_${num}" value="${opt}" required>
-                            </div>
-                            <input type="text" class="form-control" name="option_${opt.toLowerCase()}[]" placeholder="Option ${opt}" required>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-                return block;
-            }
-
-            function attachQuestionLogic(moduleBlock) {
-                const questionsContainer = moduleBlock.querySelector('.questions-container');
-                const addQuestionBtn = moduleBlock.querySelector('.addQuestionBtn');
-                const questionCount = moduleBlock.querySelector('.question-count');
-
-                function updateQuestionNumbers() {
-                    const blocks = questionsContainer.querySelectorAll('.question-block');
-                    blocks.forEach((block, idx) => {
-                        const num = idx + 1;
-                        block.querySelector('h6').textContent = `Q${num}`;
-                        block.querySelector('input[name="question_text[]"]').setAttribute('placeholder', `Enter Question ${num}`);
-                        const radios = block.querySelectorAll('.form-check-input');
-                        radios.forEach(r => r.setAttribute('name', `correct_answer_${num}`));
-                    });
-                    questionCount.textContent = blocks.length; 
-                }
-
-                addQuestionBtn.addEventListener('click', () => {
-                    for (let i = 1; i <= 10; i++) {
-                        const currentIndex = questionsContainer.querySelectorAll('.question-block').length + 1;
-                        const block = createQuestionBlock(currentIndex);
-                        questionsContainer.appendChild(block);
-                        block.querySelector('.removeQuestionBtn').addEventListener('click', () => {
-                            block.remove();
-                            updateQuestionNumbers();
-                        });
-                    }
-                    updateQuestionNumbers();
-                });
-            }
-
-            document.querySelectorAll('.module-block').forEach(attachQuestionLogic);
-
-            addModuleBtn.addEventListener('click', () => {
-                const moduleBlock = document.createElement('div');
-                moduleBlock.classList.add('module-block', 'border', 'rounded', 'p-3', 'mb-3');
-                moduleBlock.innerHTML = `
-                <div class="row g-3">
-                    <div class="col-12 text-end">
-                       
-                        <i class="bi bi-x-circle removeModuleBtn" style="color:red;"></i>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" name="chapter_number[]" placeholder="Chapter Number" required>
-                            <label>Chapter Number</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" name="chapter_title[]" placeholder="Chapter Title" required>
-                            <label>Chapter Title</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Reading Material (PDF)</label>
-                        <input type="file" class="form-control" name="reading_material[]" accept=".pdf">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Video Material</label>
-                        <input type="file" class="form-control" name="video_material[]" accept="video/*">
-                    </div>
-                    <div class="col-12">
-                        <hr>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5>Practice Questions</h5>
-                            <span class="badge bg-primary">Total: <span class="question-count">0</span></span>
-                        </div>
-                        <div class="questions-container"></div>
-                        <div class="col-12 text-center mt-3 d-flex justify-content-start gap-2">
-                                          
-                                            <button type="button" class="btn btn-primary btn-sm mt-2 addQuestionBtn">
-                                                + Add 10 Questions
-                                            </button>
-
-                                            
-                                            <select class="form-select form-select-sm mt-2" style="width: auto;" id="coLevelSelect">
-                                                <option selected disabled>Select CO Level</option>
-                                                <option value="CO1">CO1</option>
-                                                <option value="CO2">CO2</option>
-                                                <option value="CO3">CO3</option>
-                                                <option value="CO4">CO4</option>
-                                                <option value="CO5">CO5</option>
-                                                <option value="CO6">CO6</option>
-                                            </select>
-                                        </div>
-                    </div>
-                </div>
-            `;
-                modulesContainer.appendChild(moduleBlock);
-                moduleBlock.querySelector('.removeModuleBtn').addEventListener('click', () => {
-                    moduleBlock.remove();
-                });
-                attachQuestionLogic(moduleBlock);
-            });
-        });
-    </script> -->
+  
 
 </body>
 

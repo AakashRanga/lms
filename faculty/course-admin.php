@@ -170,7 +170,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
 
                                 <!-- Add Course -->
-                                <div class="col">
+                                <!-- <div class="col">
                                     <a href="launch-course.php" class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <i class="bi bi-plus-circle feature-icon"></i>
@@ -178,7 +178,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                                             <p class="text-muted small mb-0">Create and launch a new course.</p>
                                         </div>
                                     </a>
-                                </div>
+                                </div> -->
 
                                 <!-- View Courses -->
                                 <!-- <div class="col">
@@ -196,8 +196,8 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                                     <a href="course_ar.php" class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <i class="bi bi-check2-square feature-icon"></i>
-                                            <h6 class="fw-semibold">Course Approval</h6>
-                                            <p class="text-muted small mb-0">Approve or reject newly submitted courses.
+                                            <h6 class="fw-semibold">Student Enrollment Requests</h6>
+                                            <p class="text-muted small mb-0">Approve or reject enrolled requests.
                                             </p>
                                         </div>
                                     </a>
