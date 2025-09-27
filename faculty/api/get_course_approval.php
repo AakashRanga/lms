@@ -8,20 +8,23 @@ $sql = "SELECT
     sca.stu_ap_id AS approval_id,
     sca.student_name,
     sca.student_reg_no,
+    l.reg_no AS login_register_number, -- ✅ from login table
     sca.slot,
     sca.status,
     sca.created_at,
     lc.course_name,
     lc.course_code,
     lc.seat_allotment,
-    lc.duration,
     lc.course_type,
     lc.faculty_name
 FROM student_course_approval sca
 INNER JOIN launch_courses lc 
     ON sca.launch_c_id = lc.id
-where faculty_id = $facultyid
-ORDER BY sca.created_at ASC";
+INNER JOIN lms_login l 
+    ON sca.student_reg_no = l.u_id   -- ✅ join with login
+WHERE lc.faculty_id = $facultyid
+ORDER BY sca.created_at ASC;;
+";
 $result = $conn->query($sql);
 
 $courses = [];

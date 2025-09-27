@@ -108,7 +108,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                                         <th>Name</th>
                                         <th>Register Number</th>
                                         <th>Course Type</th>
-                                        <th>Duration</th>
+                                      
                                         <th>Seats</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -149,9 +149,9 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                         <td>${course.course_code}</td>
                         <td>${course.slot}</td>
                         <td>${course.student_name}</td>
-                        <td>${course.student_reg_no}</td>
+                        <td>${course.login_register_number}</td>
                         <td>${course.course_type}</td>
-                        <td>${course.duration}</td>
+                    
                         <td>${course.seat_allotment}</td>
                         <td><span class="badge ${statusBadge}">${statusText}</span></td>
                         <td>
