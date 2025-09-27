@@ -96,7 +96,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                     <!-- Courses Table -->
                     <div class="card-custom shadow mt-4 p-4">
 
-                        <h5 class="mb-4">Courses List</h5>
+                        <h5 class="mb-4">Student Enrollment Requests</h5>
                         <div class="table-responsive">
                             <table class="table table-bordered align-middle" id="coursesTable">
                                 <thead class="table-light">

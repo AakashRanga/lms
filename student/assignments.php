@@ -2,6 +2,7 @@
 session_start();
 $c_id = $_GET['cm_id'] ?? null;
 $launch_id = $_GET['launch_c'] ?? null;
+$as_id = $_GET['ass_id'];
 
 if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
     // Not logged in → redirect to login
@@ -32,13 +33,16 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
     <link rel="stylesheet" href="../stylesheet/styles.css">
 
     <style>
+        a{
+            text-decoration: none;
+        }
         .course-card {
             /* border-radius: 12px; */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             height: 100%;
             max-height: 400px;
-            overflow-y: scroll;
+            /* overflow-y: scroll; */
         }
 
         .document-list {
@@ -67,6 +71,19 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
             width: 60px;
             text-align: center;
         }
+        .status {
+            padding: 6px 10px;
+            color: #fff;
+            border-radius: 6px;
+        }
+
+        .bg-warning {
+            background: orange;
+        }
+
+        .bg-success {
+            background: green;
+        }
     </style>
 </head>
 
@@ -83,20 +100,29 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
 
                 <!-- Page Content -->
                 <div class="p-4">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="mycourses.php">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="course-details.php?cm_id=<?php echo $c_id; ?>&launch_c=<?php echo $launch_id; ?>">Course Details</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Assignment</li>
+                        </ol>
+                    </nav>
                     <div class="row">
+                        <!-- Right Column: Submitted Assignments -->
+                        <div id="submittedAssignments" class="col-md-6"></div>
+
                         <!-- Left Column: Submit Assignment -->
                         <div class="col-md-6 shadow p-2 rounded">
                             <form id="submit_assignment" method="POST" enctype="multipart/form-data" class="p-1">
-                                <input type="hidden" name="c_id" id="c_id">
-                                <input type="hidden" name="launch_id" id="launch_id">
+                                <input type="hidden" name="c_id" id="c_id" value=<?php echo $c_id; ?>>
+                                <input type="hidden" name="launch_id" id="launch_id" value="<?php echo $launch_id; ?>" >
                                 <input type="hidden" name="title" id="title">
 
                                 <!-- Assignment Dropdown -->
                                 <div class="mb-3">
-                                    <label for="assignmentSelect" class="form-label">Select Assignment</label>
-                                    <select class="form-control" id="assignmentSelect" name="assignment_id" required>
-                                        <option value="" selected disabled>Select Assignment</option>
-                                    </select>
+                                    <label for="assignmentSelect" class="form-label">Submit Assignment</label>
+                                    <input type="hidden" class="form-control" id="assignmentSelect" name="assignment_id" value="<?php echo $as_id; ?>">
+                                   
                                 </div>
 
                                 <!-- File Upload -->
@@ -124,30 +150,32 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                             </form>
                         </div>
 
-                        <!-- Right Column: Submitted Assignments -->
-                        <div id="submittedAssignments" class="col-md-6"></div>
+
                     </div>
 
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="mt-5 shadow p-4 ">
                                 <h5>Your Submitted Assignments</h5>
-                                <table class="table table-bordered table-striped" id="submittedTable">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>S No</th>
-                                            <th>Course</th>
-                                            <th>Assignment</th>
-                                            <th>Instruction</th>
-                                            <th>Files</th>
-                                            <th>Submitted On</th>
-                                            <th>Marks</th>
-                                            <!-- <th>Course ID</th>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped" id="submittedTable">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>S No</th>
+                                                <th>Course</th>
+                                                <th>Title</th>
+                                                <!-- <th>Instruction</th> -->
+                                                <th>Files</th>
+                                                <th>Submitted On</th>
+                                                <th>Marks</th>
+                                                <!-- <th>Course ID</th>
                                             <th>Launch Id</th> -->
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -181,7 +209,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
         const fileUpload = document.getElementById('file-upload');
         const label = fileUpload.nextElementSibling;
 
-        fileUpload.addEventListener("change", function () {
+        fileUpload.addEventListener("change", function() {
             const fileList = document.getElementById("file-list");
             fileList.innerHTML = "";
             for (let i = 0; i < this.files.length; i++) {
@@ -189,60 +217,39 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
             }
         });
 
-        label.addEventListener('dragover', (e) => { e.preventDefault(); label.classList.add('bg-light'); });
-        label.addEventListener('dragleave', () => { label.classList.remove('bg-light'); });
+        label.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            label.classList.add('bg-light');
+        });
+        label.addEventListener('dragleave', () => {
+            label.classList.remove('bg-light');
+        });
         label.addEventListener('drop', (e) => {
-            e.preventDefault(); label.classList.remove('bg-light'); fileUpload.files = e.dataTransfer.files;
+            e.preventDefault();
+            label.classList.remove('bg-light');
+            fileUpload.files = e.dataTransfer.files;
         });
     </script>
 
     <!-- Load Assignments Dynamically -->
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             const urlParams = new URLSearchParams(window.location.search);
             const cm_id = urlParams.get('cm_id');
             const launch_c = urlParams.get('launch_c');
 
             if (!cm_id || !launch_c) return;
 
-            // Fetch Assignments
-            $.ajax({
-                url: 'api/fetch_assignments.php',
-                method: 'GET',
-                data: { cm_id: cm_id, launch_c: launch_c },
-                dataType: 'json',
-                success: function (res) {
-                    if (res.status === 200 && res.data.length > 0) {
-                        res.data.forEach(function (assignment) {
-                            $('#assignmentSelect').append(`<option 
-                                value="${assignment.ass_id}" 
-                                data-cid="${assignment.c_id}" 
-                                data-launchid="${assignment.launch_id}" 
-                                data-title="${assignment.title}">
-                                ${assignment.title}
-                            </option>`);
-                        });
-                    } else {
-                        $('#assignmentSelect').append('<option value="">No assignments available</option>');
-                    }
-                }
-            });
-
-            $('#assignmentSelect').on('change', function () {
-                const selected = $(this).find(':selected');
-                $('#c_id').val(selected.data('cid'));
-                $('#launch_id').val(selected.data('launchid'));
-                $('#title').val(selected.data('title'));
-            });
-
+            
             // Load Submissions Table
             function loadSubmissions(courseId, launchId) {
                 $.ajax({
                     url: `api/fetch_submissions.php?cm_id=${courseId}&launch_c=${launchId}`,
                     type: "GET",
                     dataType: "json",
-                    success: function (res) {
-                        let tbody = $("#submittedTable tbody"); tbody.empty();
+                    success: function(res) {
+                        let tbody = $("#submittedTable tbody");
+                        tbody.empty();
                         if (res.status === 200 && res.data.length > 0) {
                             res.data.forEach((item, index) => {
                                 let files = "";
@@ -257,7 +264,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                                     <td>${index + 1}</td>
                                     <td>${item.course_name}</td>
                                     <td>${item.title}</td>
-                                    <td>${item.instruction || '-'}</td>
+                                    
                                     <td>${files || '-'}</td>
                                     <td>${item.submission_date}</td>
                                     <td>${item.marks}</td>
@@ -266,10 +273,12 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                                 </tr>`);
                             });
                         } else {
-                            tbody.append('<tr><td colspan="8" class="text-center">No submissions for this course/launch</td></tr>');
+                            tbody.append('<tr><td colspan="8" class="text-center">No Submissions Found</td></tr>');
                         }
                     },
-                    error: function () { alert("Failed to load submissions."); }
+                    error: function() {
+                        alert("Failed to load submissions.");
+                    }
                 });
             }
 
@@ -280,7 +289,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
 
     <!-- Submit Assignment -->
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             // Load assignments dynamically into the dropdown
             const launch_c_id = new URLSearchParams(window.location.search).get('launch_c_id');
@@ -291,9 +300,11 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                 $.ajax({
                     url: 'api/fetch_assignments_faculty_evaluvation.php',
                     type: 'GET',
-                    data: { launch_c_id: launch_c_id },
+                    data: {
+                        launch_c_id: launch_c_id
+                    },
                     dataType: 'json',
-                    success: function (response) {
+                    success: function(response) {
                         let select = $("#assignmentSelect");
                         select.empty().append('<option value="" selected disabled>Select Assignment</option>');
 
@@ -306,14 +317,16 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                             });
                         }
                     },
-                    error: function (err) { console.error(err); }
+                    error: function(err) {
+                        console.error(err);
+                    }
                 });
             }
 
             loadAssignments();
 
             // Update hidden fields when assignment is selected
-            $("#assignmentSelect").on("change", function () {
+            $("#assignmentSelect").on("change", function() {
                 const selected = $(this).find('option:selected');
                 $("#title").val(selected.data('title'));
                 $("#c_id").val(selected.data('cid'));
@@ -321,7 +334,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
             });
 
             // Show selected files
-            $("#file-upload").on("change", function () {
+            $("#file-upload").on("change", function() {
                 let fileList = $("#file-list");
                 fileList.empty();
                 let files = this.files;
@@ -330,8 +343,8 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                 }
             });
 
-            // Submit assignment via AJAX
-            $("#submit_assignment").on("submit", function (e) {
+            // Student Submit assignment via AJAX
+            $("#submit_assignment").on("submit", function(e) {
                 e.preventDefault();
                 let formData = new FormData(this);
 
@@ -347,18 +360,21 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                     data: formData,
                     contentType: false,
                     processData: false,
-                    success: function (response) {
+                    success: function(response) {
                         let res = typeof response === 'string' ? JSON.parse(response) : response;
                         if (res.status === 200) {
                             alert("✅ Assignment submitted successfully!");
                             $("#submit_assignment")[0].reset();
                             $("#file-list").empty();
                             loadAssignments(); // Optional: reload assignments
+                            
                         } else {
                             alert("⚠️ " + res.message);
                         }
                     },
-                    error: function () { alert("❌ Error submitting assignment."); }
+                    error: function() {
+                        alert("❌ Error submitting assignment.");
+                    }
                 });
             });
         });
@@ -367,7 +383,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
 
     <!-- PDF Modal -->
     <script>
-        $(document).on('click', '.pdf-btn', function () {
+        $(document).on('click', '.pdf-btn', function() {
             const pdfPath = $(this).data('pdf');
             $('#pdfFrame').attr('src', pdfPath);
             const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'));
@@ -376,12 +392,13 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
     </script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             const urlParams = new URLSearchParams(window.location.search);
             const cm_id = urlParams.get('cm_id');
             const launch_c = urlParams.get('launch_c');
+            const assid = urlParams.get('ass_id');
 
-            if (!cm_id || !launch_c) {
+            if (!cm_id || !launch_c || !assid) {
                 $('#submittedAssignments').html('<p class="text-danger">Invalid course material or launch ID.</p>');
                 return;
             }
@@ -389,106 +406,103 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
             $.ajax({
                 url: 'api/fetch_submitted_assignments.php',
                 method: 'GET',
-                data: { cm_id: cm_id, launch_c: launch_c },
+                data: {
+                    cm_id: cm_id,
+                    launch_c: launch_c,
+                    ass_id: assid
+                },
                 dataType: 'json',
-                success: function (res) {
+                success: function(res) {
                     if (res.status === 200 && res.data.length > 0) {
-                        let html = '<div class="course-card shadow rounded p-4 ">';
-                        html += '<h5><strong>Assignment Updates</strong></h5>';
+                        const sub = res.data[0]; // ✅ take the first (and only) assignment
 
-                        res.data.forEach(sub => {
-                            html += '<div class="border-bottom pb-3 shadow p-4 mb-3">';
-                            html += `<div class="d-flex gap-2 align-items-center justify-content-between">
-                                <h6 class="mb-1">${sub.title}</h6>`;
+                        let html = '<div class="course-card shadow rounded p-4">';
+                        html += `<h5><strong>${sub.course}</strong></h5>`;
+                        html += '<div class="border-bottom pb-3 shadow p-4 mb-3">';
 
-                            if (sub.obtained_marks || sub.grade) {
-                                let displayValue = sub.grade ? sub.grade : sub.obtained_marks;
-                                html += `<div class="bg-light p-2 rounded"><strong>Grade:</strong> ${displayValue}</div>`;
-                            } else {
-                                html += `<div class="bg-light p-2 rounded"><strong>Grade:</strong> Not Graded.</div>`;
-                            }
+                        html += `<div class="d-flex gap-2 align-items-center justify-content-between">
+                            <h6 class="mb-1">${sub.title}</h6>`;
 
-                            html += `</div>`; // close d-flex div
+                        if (sub.obtained_marks || sub.grade) {
+                            let displayValue = sub.grade ? sub.grade : sub.obtained_marks;
+                            html += `<div class="bg-success p-2 rounded status">${sub.status}</div>`;
+                        } else {
+                            html += `<div class="bg-warning text-light p-2 rounded"> ${sub.status}</div>`;
+                        }
 
+                        html += `</div>`; // close d-flex
 
-                            html += `<div class="small text-muted mb-2">Assigned Date : ${sub.submission_date}</div>`;
-                            html += `<div class="small text-muted mb-2">Dues Date : ${sub.due_date}</div>`;
+                        html += `<div class="small text-muted mb-2">Assigned Date : ${sub.submission_date}</div>`;
+                        html += `<div class="small text-muted mb-2">Due Date : ${sub.due_date}</div>`;
 
-                            // Uploaded files
-                            html += '<div class="bg-light p-2 rounded mb-1"><strong>Uploaded Files</strong><br>';
-                            if (sub.uploaded_files) {
-                                sub.uploaded_files.split(',').forEach(file => {
-                                    const filePath = file.trim(); // full path from your DB
-                                    const fileName = filePath.split('/').pop(); // get filename
+                        // Uploaded files
+                        html += '<div class="bg-light p-2 rounded mb-1"><strong>Uploaded Files</strong><br>';
+                        if (sub.uploaded_files) {
+                            sub.uploaded_files.split(',').forEach(file => {
+                                const filePath = file.trim();
+                                const fileName = filePath.split('/').pop();
 
-                                    if (filePath.endsWith('.pdf')) {
-                                        const cleanName = fileName.split('_').slice(1).join('_'); // remove prefix
+                                if (filePath.endsWith('.pdf')) {
+                                    const cleanName = fileName.split('_').slice(1).join('_');
 
-                                        // Mobile view: simple link
-                                        html += `
-                                            <div class="d-block d-md-none mb-2">
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <i class="bi bi-file-earmark-pdf-fill me-2 fs-4 text-danger"></i>
-                                                     <a href="../faculty/${filePath}" target="_blank" class="btn btn-outline-secondary btn-sm">
-                                                    ${cleanName}
-                                                </a>
-                                                </div>
-                                               
-                                            </div>
-                                            `;
+                                    // Mobile view
+                                    html += `
+                                <div class="d-block d-md-none mb-2">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-file-earmark-pdf-fill me-2 fs-4 text-danger"></i>
+                                        <a href="../faculty/${filePath}" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                            ${cleanName}
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
 
-                                        // Desktop view: button with modal
-                                        html += `
-                                            <div class="d-none d-md-block mb-2">
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <i class="bi bi-file-earmark-pdf-fill me-2 fs-4 text-danger"></i>
-                                                     <button class="btn btn-outline-secondary btn-sm pdf-btn" data-pdf="../faculty/${filePath}">
-                                                    ${cleanName}
-                                                </button>
-                                                </div>
-                                               
-                                            </div>
-                                        `;
-
-                                    } else {
-                                        // Non-PDF files: just display the filename
-                                        html += `📄 ${fileName}<br>`;
-                                    }
-                                });
-                            }
-
-                            html += '</div>';
-
-
-                            // Feedback
-                            html += `<div class="bg-light p-2 rounded"><strong>Instructor Instruction:</strong> ${sub.instruction || 'No instruction yet.'}</div>`;
-
-
-                            html += '</div>';
-                        });
-
+                                    // Desktop view
+                                    html += `
+                                <div class="d-none d-md-block mb-2">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-file-earmark-pdf-fill me-2 fs-4 text-danger"></i>
+                                        <button class="btn btn-outline-secondary btn-sm pdf-btn" data-pdf="../faculty/${filePath}">
+                                            ${cleanName}
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                                } else {
+                                    html += `📄 ${fileName}<br>`;
+                                }
+                            });
+                        }
                         html += '</div>';
+
+                        // Feedback
+                        html += `<div class="bg-light p-2 rounded"><strong>Instructor Instruction:</strong> ${sub.instruction || 'No instruction yet.'}</div>`;
+
+                        html += '</div>'; // close inner box
+                        html += '</div>'; // close course-card
+
                         $('#submittedAssignments').html(html);
                     } else {
-                        $('#submittedAssignments').html('<p class="text-center">No submitted assignments found.</p>');
+                        $('#submittedAssignments').html('<p class="text-center">Assignment not found.</p>');
                     }
                 },
-                error: function () {
-                    $('#submittedAssignments').html('<p class="text-danger text-center">Failed to load submissions.</p>');
+                error: function() {
+                    $('#submittedAssignments').html('<p class="text-danger text-center">Failed to load submission.</p>');
                 }
             });
         });
-        document.addEventListener('click', function (e) {
+
+        document.addEventListener('click', function(e) {
             if (e.target.classList.contains('pdf-btn')) {
-                e.preventDefault(); // prevent default link behavior
+                e.preventDefault();
                 const pdfPath = e.target.dataset.pdf;
                 document.getElementById('pdfFrame').src = pdfPath;
                 var pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'));
                 pdfModal.show();
             }
         });
-
     </script>
+
 </body>
 
 </html>
