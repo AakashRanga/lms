@@ -98,7 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="active-course.php">Active Course</a></li>
-                            <li class="breadcrumb-item"><a href="course-details.php?launch_c_id=<?php echo $lauch_course_id; ?>">Course Details </a></li>
+                            <li class="breadcrumb-item"><a
+                                    href="course-details.php?launch_c_id=<?php echo $lauch_course_id; ?>">Course Details
+                                </a></li>
 
                             <li class="breadcrumb-item active" aria-current="page">
                                 <?= $pageTitles[$currentPage] ?? ucfirst(pathinfo($currentPage, PATHINFO_FILENAME)) ?>
@@ -155,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <select name="learning_type" id="learningtype" class="form-select">
-                                        <option value=""selected disabled>Select Learning Type</option>
+                                        <option value="" selected disabled>Select Learning Type</option>
                                         <option value="sequential">Sequential Learning</option>
                                         <option value="flexible">Flexible Learning</option>
                                     </select>
@@ -206,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div class="col-12 text-center mt-3 d-flex justify-content-start gap-2">
 
                                             <!-- CO Level Select -->
-                                            <select class="form-select form-select-sm mt-2" style="width: auto;" id="coLevelSelect">
+                                            <!-- <select class="form-select form-select-sm mt-2" style="width: auto;" id="coLevelSelect">
                                                 <option selected disabled>Select CO Level</option>
                                                 <option value="CO1">CO1</option>
                                                 <option value="CO2">CO2</option>
@@ -214,6 +216,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <option value="CO4">CO4</option>
                                                 <option value="CO5">CO5</option>
                                                 <option value="CO6">CO6</option>
+                                            </select> -->
+                                            <select class="form-select form-select-sm mt-2" style="width: auto;"
+                                                id="coLevelSelect">
+                                                <option selected disabled>Loading CO Levels...</option>
                                             </select>
 
                                             <!-- Add Question Button -->
@@ -230,7 +236,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                             <!-- Submit -->
                             <div class="col-12 text-center mt-3 d-flex justify-content-center gap-2">
-                                <button type="submit" id="submitBtn" class="btn btn-secondary btn-small">Submit Modules</button>
+                                <button type="submit" id="submitBtn" class="btn btn-secondary btn-small">Submit
+                                    Modules</button>
                             </div>
                         </form>
                     </div>
@@ -265,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="hidden" name="co_level[${moduleIndex}][]" value="${coLevel}">
             </div>
             <div class="row g-2">
-                ${['A','B','C','D'].map(opt => `
+                ${['A', 'B', 'C', 'D'].map(opt => `
                     <div class="col-md-6 d-flex align-items-center">
                         <div class="form-check me-2">
                             <input class="form-check-input" type="radio" tabindex="-1" name="correct_answer_${moduleIndex}_${num}" value="${opt}">
@@ -326,53 +333,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 const moduleBlock = document.createElement('div');
                 moduleBlock.classList.add('module-block', 'border', 'rounded', 'p-3', 'mb-3');
                 moduleBlock.innerHTML = `
-            <div class="row g-3">
-                <div class="col-12 text-end">
-                    <i class="bi bi-x-circle removeModuleBtn" style="color:red;cursor:pointer;"></i>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="chapter_number[]" placeholder="Chapter Number" required>
-                        <label>Chapter Number</label>
+                    <div class="row g-3">
+                        <div class="col-12 text-end">
+                            <i class="bi bi-x-circle removeModuleBtn" style="color:red;cursor:pointer;"></i>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" name="chapter_number[]" placeholder="Chapter Number" required>
+                                <label>Chapter Number</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" name="chapter_title[]" placeholder="Chapter Title" required>
+                                <label>Chapter Title</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Reading Material (PDF)</label>
+                            <input type="file" class="form-control" name="reading_material[]" accept=".pdf">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Video Material</label>
+                            <input type="file" class="form-control" name="video_material[]" accept="video/*">
+                        </div>
+                        <div class="col-12">
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5>Practice Questions</h5>
+                                <span class="badge bg-primary">Total: <span class="question-count">0</span></span>
+                            </div>
+                            <div class="questions-container"></div>
+                            <div class="col-12 text-center mt-3 d-flex justify-content-start gap-2">
+                                <select class="form-select form-select-sm mt-2" style="width: auto;"
+                                                        id="coLevelSelect">
+                                                        <option selected disabled>Loading CO Levels...</option>
+                                                    </select>
+                                <button type="button" class="btn btn-primary btn-sm mt-2 addQuestionBtn">+ Add 10 Questions</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="chapter_title[]" placeholder="Chapter Title" required>
-                        <label>Chapter Title</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Reading Material (PDF)</label>
-                    <input type="file" class="form-control" name="reading_material[]" accept=".pdf">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Video Material</label>
-                    <input type="file" class="form-control" name="video_material[]" accept="video/*">
-                </div>
-                <div class="col-12">
-                    <hr>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5>Practice Questions</h5>
-                        <span class="badge bg-primary">Total: <span class="question-count">0</span></span>
-                    </div>
-                    <div class="questions-container"></div>
-                    <div class="col-12 text-center mt-3 d-flex justify-content-start gap-2">
-                        <select class="form-select form-select-sm mt-2" style="width:auto;" id="coLevelSelect">
-                            <option selected disabled>Select CO Level</option>
-                            <option value="CO1">CO1</option>
-                            <option value="CO2">CO2</option>
-                            <option value="CO3">CO3</option>
-                            <option value="CO4">CO4</option>
-                            <option value="CO5">CO5</option>
-                            <option value="CO6">CO6</option>
-                        </select>
-                        <button type="button" class="btn btn-primary btn-sm mt-2 addQuestionBtn">+ Add 10 Questions</button>
-                    </div>
-                </div>
-            </div>
-        `;
+                `;
                 modulesContainer.appendChild(moduleBlock);
+                // Fetch CO levels for the newly added select
+                const newSelect = moduleBlock.querySelector('.coLevelSelect');
+                $.ajax({
+                    url: 'api/get_co_levels.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        $(newSelect).empty().append('<option selected disabled>Select CO Level</option>');
+                        $.each(data, function (index, co) {
+                            $(newSelect).append('<option value="' + co.co_level + '">' + co.co_level + ' - ' + co.course_description + '</option>');
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        $(newSelect).html('<option disabled>Error loading CO Levels</option>');
+                    }
+                });
                 moduleBlock.querySelector('.removeModuleBtn').addEventListener('click', () => moduleBlock.remove());
                 attachQuestionLogic(moduleBlock, moduleIndex);
             });
@@ -452,8 +471,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </script>
 
+    <!-- submit module -->
     <script>
-        document.getElementById('submitBtn').addEventListener('click', function(e) {
+        document.getElementById('submitBtn').addEventListener('click', function (e) {
             e.preventDefault();
 
             // ✅ Step 1: Validate modules
@@ -474,9 +494,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
 
             fetch("api/upload_material.php", {
-                    method: "POST",
-                    body: formData
-                })
+                method: "POST",
+                body: formData
+            })
                 .then(response => response.json())
                 .then(data => {
                     Swal.close();
@@ -507,7 +527,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     </script>
 
-  
+    <!-- fetch co level -->
+    <script>
+        $(document).ready(function () {
+            // Fetch CO levels from backend
+            $.ajax({
+                url: 'api/get_co_levels.php', // PHP file to fetch CO levels
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $('#coLevelSelect').empty().append('<option selected disabled>Select CO Level</option>');
+                    $.each(data, function (index, co) {
+                        $('#coLevelSelect').append('<option value="' + co.co_level + '">' + co.co_level + ' - ' + co.course_description + '</option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                    $('#coLevelSelect').html('<option disabled>Error loading CO Levels</option>');
+                }
+            });
+
+
+        });
+    </script>
 
 </body>
 

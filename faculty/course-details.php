@@ -149,7 +149,7 @@ if ($lauch_course_id) {
                                         class="text-decoration-none text-dark">
                                         <div class="dashboard-card text-center p-4">
                                             <div class="icon-circle mb-2">
-                                                <i class="bi bi-check-circle"></i>
+                                                <i class="bi bi-gear"></i>
                                             </div>
                                             <h6 class="fw-semibold mb-1">Manage Course Outcome</h6>
                                             <p class="text-muted small mb-0">Add / View CO Level for individual subject.

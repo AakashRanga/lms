@@ -10,26 +10,9 @@
     <a href="dashboard.php" class="d-block mb-2">
         <i class="bi bi-house-door me-2"></i> Home
     </a>
-    <div class="mb-2">
-        <!-- Main clickable toggle -->
-        <a class="d-flex justify-content-between align-items-center text-decoration-none" href="#"
-            data-bs-toggle="collapse" data-bs-target="#coursesMenu" aria-expanded="false">
-            <span><i class="bi bi-book me-2"></i> Courses</span>
-            <i class="bi bi-chevron-down"></i>
-        </a>
-
-        <!-- Collapsible submenu -->
-        <div class="collapse ps-4 mt-1" id="coursesMenu">
-            <ul class="list-styled mb-0">
-                <li class="mb-1">
-                    <a href="launch-course.php" class="text-decoration-none d-block">Add Course</a>
-                </li>
-                <li>
-                    <a href="course_ar.php" class="text-decoration-none d-block">Course Approval</a>
-                </li>
-            </ul>
-        </div>
-    </div>
+    <a href="course_ar.php" class="d-block mb-2">
+        <i class="bi bi-people me-2"></i> Student Enrollment
+    </a>
 
     <a href="course-analytics.php" class="d-block mb-2">
         <i class="bi bi-bar-chart-line me-2"></i> Analytics
@@ -54,26 +37,9 @@
         <a href="dashboard.php" class="d-block mb-2">
             <i class="bi bi-house-door me-2"></i> Home
         </a>
-        <div class="mb-2">
-            <!-- Main clickable toggle -->
-            <a class="d-flex justify-content-between align-items-center text-decoration-none" href="#"
-                data-bs-toggle="collapse" data-bs-target="#coursesMenu" aria-expanded="false">
-                <span><i class="bi bi-book me-2"></i> Courses</span>
-                <i class="bi bi-chevron-down"></i>
-            </a>
-
-            <!-- Collapsible submenu -->
-            <div class="collapse ps-4 mt-1" id="coursesMenu">
-                <ul class="list-styled mb-0">
-                    <li class="mb-1">
-                        <a href="add_courses.php" class="text-decoration-none d-block">Add Course</a>
-                    </li>
-                    <li>
-                        <a href="course_approval.php" class="text-decoration-none d-block">Course Approval</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <a href="course_ar.php" class="d-block mb-2">
+            <i class="bi bi-people me-2"></i> Student Enrollment
+        </a>
         <a href="course-analytics.php" class="d-block mb-2">
             <i class="bi bi-bar-chart-line me-2"></i> Analytics
         </a>
