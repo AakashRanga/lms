@@ -148,7 +148,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                                                                     <i class="bi bi-book"></i>
                                                                 </div>
                                                                 <h6 class="fw-semibold mb-1">${course.course_name}</h6>
-                                                                <p class="text-muted small mb-0">Code: ${course.course_code}</p>
+                                                                <p class="text-muted small mb-0">Code : ${course.course_code} / Slot - ${course.slot}</p>
                                                             </div>
                                                         </a>
                                                     </div>

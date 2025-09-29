@@ -28,6 +28,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../stylesheet/responsive.css">
     <link rel="stylesheet" href="../stylesheet/styles.css">
@@ -182,7 +183,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                 </div>
 
                 <!-- PDF Viewer Modal -->
-                <div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
+                <div class="modal fade" id="pdfModal" tabindex="-1" data-bs-backdrop="false" aria-hidden="true">
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">

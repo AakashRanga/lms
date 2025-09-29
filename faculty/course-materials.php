@@ -376,7 +376,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 `;
                 modulesContainer.appendChild(moduleBlock);
                 // Fetch CO levels for the newly added select
-                const newSelect = moduleBlock.querySelector('.coLevelSelect');
+                const newSelect = moduleBlock.querySelector('#coLevelSelect');
                 $.ajax({
                     url: 'api/get_co_levels.php',
                     type: 'GET',

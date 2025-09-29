@@ -18,7 +18,7 @@ if (!$co_level || !$course_description || !$launch_id) {
     exit;
 }
 
-$stmt = mysqli_prepare($conn, "INSERT INTO course_outcome (co_level, course_description, launch_id) VALUES (?, ?, ?)");
+$stmt = mysqli_prepare($conn, "INSERT INTO course_outcome (co_level, course_description, launch_id, created_at) VALUES (?, ?, ?, Now())");
 if (!$stmt) {
     http_response_code(500);
     $response = [
