@@ -71,7 +71,7 @@ try {
             $redirectPage = "admin/add_courses.php";
         } 
         elseif ($AccountType === "Faculty") {
-            $redirectPage = "faculty/dashboard.php";
+            $redirectPage = "faculty/active-course.php";
         } else {
             $redirectPage = "";
         }

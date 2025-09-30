@@ -94,7 +94,7 @@ $launch_id = $_GET['launch_c_id'] ?? '';
                 <div class="p-4 content-scroll">
                     <?php
                     $pageTitles = [
-                        "dashboard.php" => "Dashboard",
+                      
                         "course-admin.php" => "Course Admin",
                         "add-course.php" => "Add Course"
                     ];
@@ -103,7 +103,7 @@ $launch_id = $_GET['launch_c_id'] ?? '';
                     ?>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
+                            <!-- <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li> -->
                             <li class="breadcrumb-item"><a href="active-course.php">Active Course</a></li>
                             <li class="breadcrumb-item"><a href="course-details.php?launch_c_id=<?php echo $launch_id; ?>">Course Details</a></li>
                             <li class="breadcrumb-item active" aria-current="page">

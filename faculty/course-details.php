@@ -119,7 +119,7 @@ if ($lauch_course_id) {
                 <div class="p-4 content-scroll">
                     <?php
                     $pageTitles = [
-                        "dashboard.php" => "Dashboard",
+                       
                         "course-admin.php" => "Course Admin",
                         "add-course.php" => "Add Course"
                     ];
@@ -128,7 +128,7 @@ if ($lauch_course_id) {
                     ?>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
+                      
                             <li class="breadcrumb-item"><a href="active-course.php">Active Course</a></li>
                             <!-- <li class="breadcrumb-item"><a href="course-details.php">Course Details</a></li> -->
 
@@ -206,7 +206,7 @@ if ($lauch_course_id) {
                                 </div>
 
                                 <!-- Course Analytics -->
-                                <div class="col">
+                                <!-- <div class="col">
                                     <a href="course-analytics.php?launch_c_id=<?php echo $lauch_course_id; ?>" class="text-decoration-none text-dark">
                                         <div class="dashboard-card text-center p-4">
                                             <div class="icon-circle mb-2">
@@ -217,7 +217,7 @@ if ($lauch_course_id) {
                                             </p>
                                         </div>
                                     </a>
-                                </div>
+                                </div> -->
 
                             </div>
                         </div>

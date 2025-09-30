@@ -92,28 +92,20 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                 <div class="p-4 content-scroll">
                     <?php
                     $pageTitles = [
-                        "dashboard.php" => "Dashboard",
+                       
                         "course-admin.php" => "Course Admin",
                         "add-course.php" => "Add Course"
                     ];
 
                     $currentPage = basename($_SERVER['PHP_SELF']); // e.g. add-course.php
                     ?>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
-                            <!-- <li class="breadcrumb-item"><a href="course-admin.php">Course Admin</a></li> -->
-                            <li class="breadcrumb-item active" aria-current="page">
-                                <?= $pageTitles[$currentPage] ?? ucfirst(pathinfo($currentPage, PATHINFO_FILENAME)) ?>
-                            </li>
-                        </ol>
-                    </nav>
+                    
 
                     <div class="card-custom mt-4 p-4">
                         <h6 class="mb-3">Active Course</h6>
 
                         <div class="container mt-4">
-                            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="courseList">
+                            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4"  id="courseList">
                                 <!-- Courses will load here -->
                             </div>
                         </div>
@@ -132,38 +124,42 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
 
     <script>
         $(document).ready(function () {
-            $.ajax({
+           $.ajax({ 
                 url: "api/faculty_courses.php",
                 type: "GET",
                 dataType: "json",
                 success: function (response) {
                     if (response.status === 200) {
-                        let html = "";
-                        response.data.forEach(function (course) {
-                            html += `
-                                                    <div class="col">
-                                                        <a href="course-details.php?launch_c_id=${course.id}" class="text-decoration-none text-dark">
-                                                            <div class="course-card text-center p-4">
-                                                                <div class="icon-circle mb-3">
-                                                                    <i class="bi bi-book"></i>
-                                                                </div>
-                                                                <h6 class="fw-semibold mb-1">${course.course_name}</h6>
-                                                                <p class="text-muted small mb-0">Code : ${course.course_code} / Slot - ${course.slot}</p>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                `;
-                        });
-
-                        $("#courseList").html(html);
+                        if (response.data && response.data.length > 0) {
+                            let html = "";
+                            response.data.forEach(function (course) {
+                                html += `
+                                    <div class="col">
+                                        <a href="course-details.php?launch_c_id=${course.id}" class="text-decoration-none text-dark">
+                                            <div class="course-card text-center p-4">
+                                                <div class="icon-circle mb-3">
+                                                    <i class="bi bi-book"></i>
+                                                </div>
+                                                <h6 class="fw-semibold mb-1">${course.course_name}</h6>
+                                                <p class="text-muted small mb-0">Code : ${course.course_code} / Slot - ${course.slot}</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                `;
+                            });
+                            $("#courseList").html(html);
+                        } else {
+                            $("#courseList").html("<p class='text-muted text-center' style:'text-align:center'>No active courses found.</p>");
+                        }
                     } else {
-                        $("#courseList").html("<p class='text-muted'>No active courses found.</p>");
+                        $("#courseList").html("<p class='text-muted text-center'>No active courses found.</p>");
                     }
                 },
                 error: function () {
-                    $("#courseList").html("<p class='text-danger'>Error loading courses.</p>");
+                    $("#courseList").html("<p class='text-danger text-center'>Error loading courses.</p>");
                 }
             });
+
         });
     </script>
 </body>

@@ -10,7 +10,7 @@ if (!isset($_SESSION['userid'])) {
 
 $faculty_id = $_SESSION['userid'];
 
-$sql = "SELECT *
+$sql = "SELECT * 
         FROM launch_courses 
         WHERE faculty_id = ?";
 $stmt = $conn->prepare($sql);

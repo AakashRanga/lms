@@ -85,13 +85,13 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                 <div class="p-4 content-scroll">
 
                     <!-- Breadcrumb -->
-                    <nav aria-label="breadcrumb">
+                    <!-- <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="course-admin.php">Course Admin</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Course Approval</li>
                         </ol>
-                    </nav>
+                    </nav> -->
 
                     <!-- Courses Table -->
                     <div class="card-custom shadow mt-4 p-4">
@@ -138,32 +138,44 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                     dataType: 'json',
                     success: function(courses) {
                         let tbody = '';
-                        courses.forEach((course, index) => {
-                            let statusBadge = course.status === 'approved' ? 'bg-success' :
-                                course.status === 'rejected' ? 'bg-danger' : 'bg-warning';
-                            let statusText = course.status ? course.status.charAt(0).toUpperCase() + course.status.slice(1) : 'Pending';
 
-                            tbody += `<tr data-approval-id="${course.approval_id}">
-                        <td>${index + 1}</td>
-                        <td>${course.course_name}</td>
-                        <td>${course.course_code}</td>
-                        <td>${course.slot}</td>
-                        <td>${course.student_name}</td>
-                        <td>${course.login_register_number}</td>
-                        <td>${course.course_type}</td>
-                    
-                        <td>${course.seat_allotment}</td>
-                        <td><span class="badge ${statusBadge}">${statusText}</span></td>
-                        <td>
-                            <button class="btn btn-success btn-sm me-1 approveBtn">Approve</button>
-                            <button class="btn btn-danger btn-sm rejectBtn">Reject</button>
-                        </td>
-                    </tr>`;
-                        });
+                        if (!courses || courses.length === 0) {
+                            tbody = `<tr>
+                                        <td colspan="10" class="text-center text-muted">No Request found.</td>
+                                    </tr>`;
+                        } else {
+                            courses.forEach((course, index) => {
+                                let statusBadge = course.status === 'approved' ? 'bg-success' :
+                                    course.status === 'rejected' ? 'bg-danger' : 'bg-warning';
+                                let statusText = course.status 
+                                    ? course.status.charAt(0).toUpperCase() + course.status.slice(1) 
+                                    : 'Pending';
+
+                                tbody += `<tr data-approval-id="${course.approval_id}">
+                                    <td>${index + 1}</td>
+                                    <td>${course.course_name}</td>
+                                    <td>${course.course_code}</td>
+                                    <td>${course.slot}</td>
+                                    <td>${course.student_name}</td>
+                                    <td>${course.login_register_number}</td>
+                                    <td>${course.course_type}</td>
+                                    <td>${course.seat_allotment}</td>
+                                    <td><span class="badge ${statusBadge}">${statusText}</span></td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm me-1 approveBtn">Approve</button>
+                                        <button class="btn btn-danger btn-sm rejectBtn">Reject</button>
+                                    </td>
+                                </tr>`;
+                            });
+                        }
+
                         $('#coursesApproveReject').html(tbody);
                     },
                     error: function(err) {
                         console.error('Error fetching courses:', err);
+                        $('#coursesApproveReject').html(
+                            `<tr><td colspan="10" class="text-center text-danger">Error loading courses.</td></tr>`
+                        );
                     }
                 });
             }

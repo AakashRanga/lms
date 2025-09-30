@@ -162,7 +162,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
 
                                 <!-- Course Admin -->
-                                <div class="col">
+                                <!-- <div class="col">
                                     <a href="course-admin.php" class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <div class="d-flex justify-content-center align-items-center mb-2">
@@ -173,7 +173,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Faculty") {
                                             <p class="text-muted small mb-0">Start a new course creation process.</p>
                                         </div>
                                     </a>
-                                </div>
+                                </div> -->
 
                                 <!-- Active Courses -->
                                 <div class="col">

@@ -378,7 +378,7 @@
                 
                     if (data.user_type === "Admin") window.location.href = "admin/add_courses.php";
                     else if (data.user_type === "Student") window.location.href = data.redirect;
-                    else if (data.user_type === "Faculty") window.location.href = "faculty/dashboard.php";
+                    else if (data.user_type === "Faculty") window.location.href = "faculty/active-course.php";
                     else alert("Unknown role. Please contact support.");
                 } else {
                     alert(data.message);

@@ -7,16 +7,16 @@
     </div>
 
     <!-- Sidebar Links -->
-    <a href="dashboard.php" class="d-block mb-2">
+    <a href="active-course.php" class="d-block mb-2">
         <i class="bi bi-house-door me-2"></i> Home
     </a>
     <a href="course_ar.php" class="d-block mb-2">
         <i class="bi bi-people me-2"></i> Student Enrollment
     </a>
 
-    <a href="course-analytics.php" class="d-block mb-2">
+    <!-- <a href="course-analytics.php" class="d-block mb-2">
         <i class="bi bi-bar-chart-line me-2"></i> Analytics
-    </a>
+    </a> -->
     <!-- <a href="notifications.php" class="d-block mb-2">
         <i class="bi bi-bell me-2"></i> Notifications
     </a> -->
