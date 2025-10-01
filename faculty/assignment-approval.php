@@ -440,30 +440,30 @@ $launch_id = $_GET['launch_c_id'] ?? '';
                                     <td>${filesHtml}</td>
                                     <td>${assignment.total_marks}
                                     <td style="width: 220px;">
-    <div class="d-flex gap-2">
-        <!-- Grade Dropdown -->
-        <select class="form-select form-select-sm grade-input" data-id="${assignment.s_ass_id}">
-            <option value="">Select Grade</option>
-            <option value="A">A</option>
-            <option value="A-">A-</option>
-            <option value="B+">B+</option>
-            <option value="B">B</option>
-            <option value="B-">B-</option>
-            <option value="C+">C+</option>
-            <option value="C">C</option>
-            <option value="C-">C-</option>
-            <option value="D">D</option>
-            <option value="F">F</option>
-        </select>
-OR
-        <!-- Marks Input -->
-        <input type="text" 
-               class="form-control form-control-sm mark-input" 
-               data-id="${assignment.s_ass_id}" 
-               placeholder="Enter %" 
-               value="${assignment.marks || ''}">
-    </div>
-</td>
+                                    <div class="d-flex gap-2">
+                                        <!-- Grade Dropdown -->
+                                        <select class="form-select form-select-sm grade-input" data-id="${assignment.s_ass_id}">
+                                            <option value="">Select Grade</option>
+                                            <option value="A">A</option>
+                                            <option value="A-">A-</option>
+                                            <option value="B+">B+</option>
+                                            <option value="B">B</option>
+                                            <option value="B-">B-</option>
+                                            <option value="C+">C+</option>
+                                            <option value="C">C</option>
+                                            <option value="C-">C-</option>
+                                            <option value="D">D</option>
+                                            <option value="F">F</option>
+                                        </select>
+                                OR
+                                        <!-- Marks Input -->
+                                        <input type="text" 
+                                            class="form-control form-control-sm mark-input" 
+                                            data-id="${assignment.s_ass_id}" 
+                                            placeholder="Enter %" 
+                                            value="${assignment.marks || ''}">
+                                    </div>
+                                </td>
                                  
                                 </tr>`;
                                 tbody.append(row);

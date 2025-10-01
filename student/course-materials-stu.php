@@ -34,6 +34,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
     <style>
         a {
             text-decoration: none;
+            
         }
 
         .course-card {

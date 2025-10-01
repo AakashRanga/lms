@@ -419,7 +419,7 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
 
                         let html = '<div class="course-card shadow rounded p-4">';
                         html += `<h5><strong>${sub.course}</strong></h5>`;
-                        html += '<div class="border-bottom pb-3 shadow p-4 mb-3">';
+                        html += '<div class="border-bottom pb-3 shadow p-4 mb-3" style="overflow-y:auto; max-height:330px;">';
 
                         html += `<div class="d-flex gap-2 align-items-center justify-content-between">
                             <h6 class="mb-1">${sub.title}</h6>`;

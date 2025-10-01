@@ -1,5 +1,5 @@
 <?php
-session_start();
+include "../includes/config.php";
 
 if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
     // Not logged in → redirect to login
@@ -13,6 +13,21 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
     header("Location: ../index.php");
     exit;
 }
+
+$cmid = $_GET['cm_id'];
+
+$launchid = 0; 
+$query = "SELECT * FROM course_material WHERE cm_id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $cmid);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result && $result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+    $launchid = $user['launch_course_id'] ?? 0; 
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -38,6 +53,10 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
     <link rel="stylesheet" href="../stylesheet/styles.css" />
 
     <style>
+        a {
+            text-decoration: none;
+            
+        }
         .course-card {
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -140,7 +159,16 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
                 <?php include('topbar.php') ?>
 
                 <div class="p-4">
+                   <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="mycourses.php">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="course-details.php?cm_id=<?php echo $cmid; ?>&launch_c=<?php echo $launchid; ?>">Course Details</a></li>
+                            <li class="breadcrumb-item"><a href="course-materials-stu.php?cm_id=<?php echo $cmid; ?>&launch_c=<?php echo $launchid; ?>">Course Materials</a></li>
 
+                            <li class="breadcrumb-item active" aria-current="page">Module</li>
+                        </ol>
+                    </nav>
+                    <br>
                     <!-- Chapter Header -->
                     <div
                         class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-3 gap-sm-0">

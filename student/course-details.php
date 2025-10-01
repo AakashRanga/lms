@@ -15,13 +15,19 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Student") {
     header("Location: ../index.php");
     exit;
 }
+$ass_id = 0; // default value
 
-$query = "SELECT ass_id FROM assignment WHERE c_id = ? AND launch_id=? ";
+$query = "SELECT ass_id FROM assignment WHERE c_id = ? AND launch_id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("ii", $cmid, $launchid);
 $stmt->execute();
 $result = $stmt->get_result();
-$user = $result->fetch_assoc();
+
+if ($result && $result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+    $ass_id = $user['ass_id'] ?? 0; // fallback just in case
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -126,7 +132,7 @@ $user = $result->fetch_assoc();
 
                                 <!-- Assignments -->
                                 <div class="col">
-                                    <a href="assignments.php?cm_id=<?php echo $cmid; ?>&launch_c=<?php echo $launchid; ?>&ass_id=<?php echo $user['ass_id']?>"
+                                    <a href="assignments.php?cm_id=<?php echo $cmid; ?>&launch_c=<?php echo $launchid; ?>&ass_id=<?php echo $ass_id?>"
                                         class="text-decoration-none text-dark">
                                         <div class="feature-card h-100">
                                             <i class="bi bi-journal-text feature-icon"></i>
