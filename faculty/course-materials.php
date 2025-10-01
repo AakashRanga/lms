@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="p-4 content-scroll">
                     <?php
                     $pageTitles = [
-                     
+
                         "course-admin.php" => "Course Admin",
                         "add-course.php" => "Add Course"
                     ];
@@ -207,18 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div class="questions-container"></div>
                                         <div class="col-12 text-center mt-3 d-flex justify-content-start gap-2">
 
-                                            <!-- CO Level Select -->
-                                            <!-- <select class="form-select form-select-sm mt-2" style="width: auto;" id="coLevelSelect">
-                                                <option selected disabled>Select CO Level</option>
-                                                <option value="CO1">CO1</option>
-                                                <option value="CO2">CO2</option>
-                                                <option value="CO3">CO3</option>
-                                                <option value="CO4">CO4</option>
-                                                <option value="CO5">CO5</option>
-                                                <option value="CO6">CO6</option>
-                                            </select> -->
-                                            <select class="form-select form-select-sm mt-2" style="width: auto;"
-                                                id="coLevelSelect">
+                                            <select class="form-select form-select-sm mt-2 co-level-select" style="width: auto;">
                                                 <option selected disabled>Loading CO Levels...</option>
                                             </select>
 
@@ -257,31 +246,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         document.addEventListener('DOMContentLoaded', () => {
             const modulesContainer = document.getElementById('modulesContainer');
             const addModuleBtn = document.getElementById('addModuleBtn');
+            let launch_c_id = <?php echo $lauch_course_id; ?>;
 
-            function createQuestionBlock(num, coLevel, moduleIndex) {
+            // Function to load CO levels for a specific select element
+            function loadCOLevels(selectElement) {
+                $.ajax({
+                    url: 'api/get_co_levels.php',
+                    type: 'GET',
+                    data: {
+                        launch_c_id: launch_c_id
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        $(selectElement).empty();
+
+                        if (data.status === 404) {
+                            $(selectElement).append('<option selected disabled>No data found</option>');
+                            return;
+                        }
+
+                        if (data.status === 200 && data.data.length > 0) {
+                            $(selectElement).append('<option selected disabled>Select CO Level</option>');
+                            $.each(data.data, function(index, co) {
+                                $(selectElement).append(
+                                    '<option value="' + co.co_id + '">' +
+                                    co.co_level + ' - ' + co.course_description +
+                                    '</option>'
+                                );
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                        $(selectElement).html('<option disabled>Error loading CO Levels</option>');
+                    }
+                });
+            }
+
+            function createQuestionBlock(num, coId, coText, moduleIndex) {
                 const block = document.createElement('div');
                 block.classList.add('question-block', 'border', 'p-3', 'mt-3', 'rounded');
                 block.innerHTML = `
             <div class="d-flex justify-content-between mb-2">
-                <h5>CO Level: <span class="text-primary">${coLevel}</span></h5>
+                <h5>CO Level: <span class="text-primary">${coText}</span></h5>
                 <i class="bi bi-x-circle removeQuestionBtn" style="color:red;cursor:pointer;"></i>
             </div>
             <div class="d-flex justify-content-between align-items-center question-index mb-2">
                 <h6 class="mb-0">Q${num}</h6>
-                <input type="text" name="question_text[${moduleIndex}][]" class="form-control" placeholder="Enter Question ${num}">
-                <input type="hidden" name="co_level[${moduleIndex}][]" value="${coLevel}">
+                <input type="text" name="question_text[${moduleIndex}][]" class="form-control" placeholder="Enter Question ${num}" required>
+                <input type="hidden" name="co_level[${moduleIndex}][]" value="${coId}">
             </div>
             <div class="row g-2">
-                ${['A', 'B', 'C', 'D'].map(opt => `
+                ${['A','B','C','D'].map(opt => `
                     <div class="col-md-6 d-flex align-items-center">
                         <div class="form-check me-2">
-                            <input class="form-check-input" type="radio" tabindex="-1" name="correct_answer_${moduleIndex}_${num}" value="${opt}">
+                            <input class="form-check-input" type="radio" tabindex="-1" 
+                                   name="correct_answer_${moduleIndex}_${num}" value="${opt}" required>
                         </div>
-                        <input type="text" class="form-control" name="option_${opt.toLowerCase()}[${moduleIndex}][]" placeholder="Option ${opt}">
+                        <input type="text" class="form-control" 
+                               name="option_${opt.toLowerCase()}[${moduleIndex}][]" 
+                               placeholder="Option ${opt}" required>
                     </div>
                 `).join('')}
             </div>
         `;
+
                 return block;
             }
 
@@ -289,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 const questionsContainer = moduleBlock.querySelector('.questions-container');
                 const addQuestionBtn = moduleBlock.querySelector('.addQuestionBtn');
                 const questionCount = moduleBlock.querySelector('.question-count');
-                const coLevelSelect = moduleBlock.querySelector('#coLevelSelect');
+                const coLevelSelect = moduleBlock.querySelector('.co-level-select');
 
                 function updateQuestionNumbers() {
                     const blocks = questionsContainer.querySelectorAll('.question-block');
@@ -297,13 +326,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         const num = idx + 1;
                         block.querySelector('h6').textContent = `Q${num}`;
                         block.querySelector("input[name^='question_text']").setAttribute('placeholder', `Enter Question ${num}`);
-                        block.querySelectorAll('.form-check-input').forEach(r => r.setAttribute("name", `correct_answer_${moduleIndex}_${num}`));
+
+                        // Update radio button names
+                        block.querySelectorAll('.form-check-input').forEach(radio => {
+                            radio.setAttribute("name", `correct_answer_${moduleIndex}_${num}`);
+                        });
                     });
                     questionCount.textContent = blocks.length;
                 }
 
                 addQuestionBtn.addEventListener('click', () => {
                     const selectedCO = coLevelSelect.value;
+                    const selectedCOText = coLevelSelect.options[coLevelSelect.selectedIndex].text;
+
                     if (!selectedCO || selectedCO === "Select CO Level") {
                         Swal.fire({
                             icon: 'warning',
@@ -312,10 +347,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         });
                         return;
                     }
+
                     for (let i = 1; i <= 10; i++) {
                         const currentIndex = questionsContainer.querySelectorAll('.question-block').length + 1;
-                        const block = createQuestionBlock(currentIndex, selectedCO, moduleIndex);
+                        const block = createQuestionBlock(currentIndex, selectedCO, selectedCOText, moduleIndex);
                         questionsContainer.appendChild(block);
+
+                        // Add remove event listener
                         block.querySelector('.removeQuestionBtn').addEventListener('click', () => {
                             block.remove();
                             updateQuestionNumbers();
@@ -323,77 +361,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     updateQuestionNumbers();
                 });
+
+                // Initialize question count
+                updateQuestionNumbers();
             }
 
-            // Attach logic to existing modules
-            document.querySelectorAll('.module-block').forEach((mod, idx) => attachQuestionLogic(mod, idx));
+            // Load CO levels for the first module and attach logic
+            const firstModule = document.querySelector('.module-block');
+            const firstCOSelect = firstModule.querySelector('.co-level-select');
+            loadCOLevels(firstCOSelect);
+            attachQuestionLogic(firstModule, 0);
 
+            // Add new module functionality
             addModuleBtn.addEventListener('click', () => {
                 const moduleIndex = modulesContainer.querySelectorAll('.module-block').length;
                 const moduleBlock = document.createElement('div');
                 moduleBlock.classList.add('module-block', 'border', 'rounded', 'p-3', 'mb-3');
                 moduleBlock.innerHTML = `
-                    <div class="row g-3">
-                        <div class="col-12 text-end">
-                            <i class="bi bi-x-circle removeModuleBtn" style="color:red;cursor:pointer;"></i>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" name="chapter_number[]" placeholder="Chapter Number" required>
-                                <label>Chapter Number</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" name="chapter_title[]" placeholder="Chapter Title" required>
-                                <label>Chapter Title</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Reading Material (PDF)</label>
-                            <input type="file" class="form-control" name="reading_material[]" accept=".pdf">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Video Material</label>
-                            <input type="file" class="form-control" name="video_material[]" accept="video/*">
-                        </div>
-                        <div class="col-12">
-                            <hr>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5>Practice Questions</h5>
-                                <span class="badge bg-primary">Total: <span class="question-count">0</span></span>
-                            </div>
-                            <div class="questions-container"></div>
-                            <div class="col-12 text-center mt-3 d-flex justify-content-start gap-2">
-                                <select class="form-select form-select-sm mt-2" style="width: auto;"
-                                                        id="coLevelSelect">
-                                                        <option selected disabled>Loading CO Levels...</option>
-                                                    </select>
-                                <button type="button" class="btn btn-primary btn-sm mt-2 addQuestionBtn">+ Add 10 Questions</button>
-                            </div>
-                        </div>
+            <div class="row g-3">
+                <div class="col-12 text-end">
+                    <i class="bi bi-x-circle removeModuleBtn" style="color:red;cursor:pointer;"></i>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="chapter_number[]" placeholder="Chapter Number" required>
+                        <label>Chapter Number</label>
                     </div>
-                `;
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="chapter_title[]" placeholder="Chapter Title" required>
+                        <label>Chapter Title</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Reading Material (PDF)</label>
+                    <input type="file" class="form-control" name="reading_material[]" accept=".pdf">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Video Material</label>
+                    <input type="file" class="form-control" name="video_material[]" accept="video/*">
+                </div>
+                <div class="col-12">
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5>Practice Questions</h5>
+                        <span class="badge bg-primary">Total: <span class="question-count">0</span></span>
+                    </div>
+                    <div class="questions-container"></div>
+                    <div class="col-12 text-center mt-3 d-flex justify-content-start gap-2">
+                        <select class="form-select form-select-sm mt-2 co-level-select" style="width: auto;">
+                            <option selected disabled>Loading CO Levels...</option>
+                        </select>
+                        <button type="button" class="btn btn-primary btn-sm mt-2 addQuestionBtn">+ Add 10 Questions</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
                 modulesContainer.appendChild(moduleBlock);
-                // Fetch CO levels for the newly added select
-                const newSelect = moduleBlock.querySelector('#coLevelSelect');
-                $.ajax({
-                    url: 'api/get_co_levels.php',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        $(newSelect).empty().append('<option selected disabled>Select CO Level</option>');
-                        $.each(data, function (index, co) {
-                            $(newSelect).append('<option value="' + co.co_level + '">' + co.co_level + ' - ' + co.course_description + '</option>');
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                        $(newSelect).html('<option disabled>Error loading CO Levels</option>');
-                    }
-                });
-                moduleBlock.querySelector('.removeModuleBtn').addEventListener('click', () => moduleBlock.remove());
+
+                // Load CO levels for the new module
+                const newCOSelect = moduleBlock.querySelector('.co-level-select');
+                loadCOLevels(newCOSelect);
+
+                // Attach question logic to the new module
                 attachQuestionLogic(moduleBlock, moduleIndex);
+
+                // Add remove module functionality
+                moduleBlock.querySelector('.removeModuleBtn').addEventListener('click', () => {
+                    moduleBlock.remove();
+                });
             });
         });
     </script>
@@ -473,7 +511,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- submit module -->
     <script>
-        document.getElementById('submitBtn').addEventListener('click', function (e) {
+        document.getElementById('submitBtn').addEventListener('click', function(e) {
             e.preventDefault();
 
             // ✅ Step 1: Validate modules
@@ -494,9 +532,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
 
             fetch("api/upload_material.php", {
-                method: "POST",
-                body: formData
-            })
+                    method: "POST",
+                    body: formData
+                })
                 .then(response => response.json())
                 .then(data => {
                     Swal.close();
@@ -527,29 +565,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     </script>
 
-    <!-- fetch co level -->
-    <script>
-        $(document).ready(function () {
-            // Fetch CO levels from backend
-            $.ajax({
-                url: 'api/get_co_levels.php', // PHP file to fetch CO levels
-                type: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    $('#coLevelSelect').empty().append('<option selected disabled>Select CO Level</option>');
-                    $.each(data, function (index, co) {
-                        $('#coLevelSelect').append('<option value="' + co.co_level + '">' + co.co_level + ' - ' + co.course_description + '</option>');
-                    });
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                    $('#coLevelSelect').html('<option disabled>Error loading CO Levels</option>');
-                }
-            });
 
-
-        });
-    </script>
+   
 
 </body>
 

@@ -32,9 +32,23 @@ $chapter['progress'] =  0;
 
 
 // Fetch quiz questions
-$quizSql = "SELECT p_id, question, option1, option2, option3, option4, answer, co_level
-            FROM practise_question
-            WHERE cm_id=? AND module_id=?";
+$quizSql = "SELECT 
+    pq.p_id,
+    pq.question,
+    pq.option1,
+    pq.option2,
+    pq.option3,
+    pq.option4,
+    pq.answer,
+    CONCAT(co.co_level, ' - ', co.course_description) AS co_level,
+    pq.co_level AS co_id
+FROM practise_question pq
+LEFT JOIN course_outcome co 
+    ON pq.co_level = co.co_id
+WHERE pq.cm_id = ? 
+  AND pq.module_id = ?
+ORDER BY pq.p_id ASC
+";
 
 $stmt = $conn->prepare($quizSql);
 $stmt->bind_param("ii", $cm_id, $chapter_id);
