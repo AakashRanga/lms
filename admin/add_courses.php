@@ -102,9 +102,6 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] !== "Admin") {
                                     </div>
                                 </div>
 
-
-
-
                             </div>
 
                             <!-- Submit Button -->

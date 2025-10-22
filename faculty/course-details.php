@@ -189,6 +189,21 @@ if ($lauch_course_id) {
                                     </a>
                                 </div>
 
+                                <!-- Manage Course Materials -->
+                                <div class="col">
+                                    <a href="course_material_manage.php?launch_c_id=<?php echo $lauch_course_id; ?>"
+                                        class="text-decoration-none text-dark">
+                                        <div class="dashboard-card text-center p-4">
+                                            <div class="icon-circle mb-2">
+                                                <i class="bi bi-gear"></i>
+                                            </div>
+                                            <h6 class="fw-semibold mb-1">Manage Course Materials</h6>
+                                            <p class="text-muted small mb-0">Edit / View List Of Course Materials.
+                                            </p>
+                                        </div>
+                                    </a>
+                                </div>
+
 
                                 <!-- Assignment Approval -->
                                 <div class="col">
